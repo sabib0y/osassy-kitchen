@@ -1,5 +1,5 @@
 .app_wrapper {
-  background-image: url("./assets/images/Shipping.jpg");
+  background-image: url("./assets/images/food.jpg");
   background-size: cover;
   position: relative;
   height: 100%;
@@ -50,9 +50,8 @@
 }
 
 .logo {
-  font-weight: bold;
-  font-size: 1.5em;
-  transition: opacity 0.05s ease;
+  width: 100px;
+  height: auto;
 }
 
 .logo:hover {
