@@ -30,7 +30,7 @@ const SinglePricingOne = ({ singlePricing = {} }) => {
         <Row>
           {dish.map((menuItem, index) => {
             return (
-              <Col lg={6} md={12}>
+              <Col lg={6} md={12} key={index}>
                 <MenutItem menuItem={menuItem} key={index} />
               </Col>
             );
