@@ -16,8 +16,8 @@ const CtaOne = ({ isScrollActive = false }) => {
             <TextSplit text={title} />
           </h2>
         </div>
-        <a href="#" className="thm-btn cta-one__btn">
-          Learn More
+        <a href="tel:+447473301272" className="thm-btn cta-one__btn">
+          Call Now on +44 7473 301272
         </a>
       </div>
     </section>

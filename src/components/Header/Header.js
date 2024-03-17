@@ -9,7 +9,7 @@ import NavItem from "./NavItem";
 const { logo, navData } = headerData;
 
 const Header = () => {
-  const { scrollTop } = useScroll(100);
+  const { scrollTop } = useScroll(-1000);
   const { toggleMenu, menuStatus } = useRootContext();
 
   return (
@@ -47,7 +47,7 @@ const Header = () => {
             </ul>
           </div>
           <div className="right-side-box">
-            <a href="#" className="thm-btn header-one__btn">
+            <a href="tel:+447473301272" className="thm-btn header-one__btn">
               Contact
             </a>
           </div>

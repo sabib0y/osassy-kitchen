@@ -19,12 +19,8 @@ const Home = () => {
     <Layout pageTitle="Home One">
       <BannerOne />
       <ServiceOne />
-      <CtaThree />
-      {/* <CtaTwo /> */}
-      <PricingOne />
       <TestimonialsOne />
-      {/* <BrandOneWithNoSSR /> */}
-      {/* <FunFactOne /> */}
+      <PricingOne />
       <CtaOne isScrollActive />
     </Layout>
   );

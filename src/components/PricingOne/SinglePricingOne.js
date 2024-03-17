@@ -1,25 +1,41 @@
 import React from "react";
-import { Col } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
+
+const MenutItem = ({ menuItem }) => {
+  const { name, subText, contains } = menuItem;
+  return (
+    <div className="menu-item">
+      <h4 className="menu-item__name">
+        {name}
+        {subText && <span>{subText}</span>}
+      </h4>
+      <ul className="menu-item__content">
+        {contains.map((item, i) => (
+          <li key={i} className="menu-item__list-item">
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 const SinglePricingOne = ({ singlePricing = {} }) => {
-  const { isPopular, amount, pack, features, tagline } = singlePricing;
+  const { title, dish } = singlePricing;
 
   return (
-    <Col lg={4}>
-      <div className={`pricing-one__single${isPopular ? " popular" : ""}`}>
-        <h3 className="pricing-one__amount">${amount}</h3>
-        <span className="pricing-one__month">{pack}</span>
-        <ul className="pricing-one__list">
-          {features.map((feature, i) => (
-            <li key={i} className="pricing-one__list-item">
-              {feature}
-            </li>
-          ))}
-        </ul>
-        <a href="#" className="thm-btn pricing-one__btn">
-          Choose Plan
-        </a>
-        <span className="pricing-one__tag-line">{tagline}</span>
+    <Col lg={12}>
+      <div className="food-menu__single">
+        <h3 className="food-menu__heading">{title}</h3>
+        <Row>
+          {dish.map((menuItem, index) => {
+            return (
+              <Col lg={6} md={12}>
+                <MenutItem menuItem={menuItem} key={index} />
+              </Col>
+            );
+          })}
+        </Row>
       </div>
     </Col>
   );

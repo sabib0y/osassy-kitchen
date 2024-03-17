@@ -23,11 +23,9 @@ const BannerOne = () => {
         <Row>
           <Col xl={6}>
             <div className="banner-one__content">
-              <p className="banner-one__tag-line">
-                {tagline}
-              </p>
+              <p className="banner-one__tag-line">{title}</p>
               <h3 className="banner-one__title">
-                <TextSplit text={title} />
+                <TextSplit text={tagline} />
               </h3>
             </div>
           </Col>

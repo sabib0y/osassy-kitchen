@@ -3,21 +3,21 @@ const serviceOne = {
   services: [
     {
       id: 1,
-      icon: "icon-catering",
+      icon: "catering",
       title: "Catering",
-      text: "Discover the essence of taste with our premium catering services. From intimate gatherings to grand banquets, we ensure every dish is a celebration of flavor and artistry. Elevate your event with our bespoke menus, crafted to leave a lasting impression.",
+      text: "Experience exceptional dining with our catering. Perfect for any event, our menus promise to impress with their flavor and elegance. Transform your gathering with our culinary creations.",
     },
     {
       id: 2,
-      icon: "icon-order",
+      icon: "order",
       title: "Order booking",
       text: "Reserve your culinary experience with ease. Enjoy the convenience of planning ahead for a dining experience you won't forget.",
     },
     {
       id: 3,
-      icon: "icon-rentals",
+      icon: "rentals",
       title: "Rentals",
-      text: "Complete your event with our high-quality rentals. Whether you're hosting a corporate affair or a private celebration, our wide range of rental options provides the perfect backdrop for any occasion. Trust in our dependable service to enhance your event's ambiance.",
+      text: "Elevate your event with our premium rentals. Suitable for all gatherings, we offer a variety of choices to suit your occasion. Rely on us for reliable service and an enhanced atmosphere.",
     },
   ],
 };

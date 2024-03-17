@@ -81,9 +81,6 @@ const TestimonialsOne = () => {
                           className="testimonials-one__thumb"
                           alt="Awesome Image"
                         />
-                        <div className="testimonials-one__qoute">
-                          <Image src={qoute.src} alt="Awesome Image" />
-                        </div>
                       </div>
                     </div>
                   </SwiperSlide>
@@ -134,13 +131,6 @@ const TestimonialsOne = () => {
                       <div className="item">
                         <div className="testimonials-one__single">
                           <p className="testimonials-one__text">{text}</p>
-                          <div className="testimonials-one__bottom">
-                            <h3 className="testimonials-one__title">{name}</h3>
-                            <div className="testimonials-one__sep">.</div>
-                            <p className="testimonials-one__designation">
-                              {designation}
-                            </p>
-                          </div>
                         </div>
                       </div>
                     </SwiperSlide>

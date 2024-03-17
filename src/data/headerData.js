@@ -15,16 +15,11 @@ const headerData = {
     },
     {
       id: 3,
-      href: "#pricing",
-      name: "Pricing",
+      href: "#menu",
+      name: "Our menu",
     },
     {
       id: 4,
-      href: "#testimonials",
-      name: "Reviews",
-    },
-    {
-      id: 6,
       href: "#contact",
       name: "Contact",
     },

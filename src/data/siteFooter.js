@@ -78,18 +78,8 @@ const footerData = {
       href: "#",
     },
     {
-      id: 2,
-      icon: "fa fa-twitter",
-      href: "#",
-    },
-    {
       id: 3,
       icon: "fa fa-instagram",
-      href: "#",
-    },
-    {
-      id: 4,
-      icon: "fa fa-pinterest-p",
       href: "#",
     },
   ],

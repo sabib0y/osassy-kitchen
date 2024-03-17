@@ -1,5 +1,5 @@
 const ctaOne = {
-  title: "Looking for new \n projects?",
+  title: "Want to make a\n booking?",
 };
 
 export default ctaOne;

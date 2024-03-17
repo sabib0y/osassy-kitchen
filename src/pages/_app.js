@@ -9,8 +9,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // import "tiny-slider/dist/tiny-slider.css";
 
 // extra css
-import "@/styles/style.css";
-import "@/styles/responsive.css";
+import "@/styles/style.scss";
+import "@/styles/responsive.scss";
 
 const MyApp = ({ Component, pageProps }) => {
   return (
