@@ -87,7 +87,7 @@ const pricingOne = {
             "Beef",
             "Goat meat",
             "Chicken",
-            "Assorted meat (tripe , cow foot, beef).",
+            "Assorted meat (tripe, cow foot, beef).",
           ],
         },
         {
@@ -98,7 +98,7 @@ const pricingOne = {
             "Beef",
             "Goat meat",
             "Chicken",
-            "Assorted meat (tripe , cow foot, beef).",
+            "Assorted meat (tripe, cow foot, beef).",
           ],
         },
         {
@@ -109,7 +109,7 @@ const pricingOne = {
             "Beef",
             "Goat meat",
             "Chicken",
-            "Assorted meat (tripe , cow foot, beef).",
+            "Assorted meat (tripe, cow foot, beef).",
           ],
         },
         {
@@ -120,7 +120,7 @@ const pricingOne = {
             "Beef",
             "Goat meat",
             "Chicken",
-            "Assorted meat (tripe , cow foot, beef).",
+            "Assorted meat (tripe, cow foot, beef).",
           ],
         },
         {
@@ -131,7 +131,7 @@ const pricingOne = {
             "Beef",
             "Goat meat",
             "Chicken",
-            "Assorted meat (tripe , cow foot, beef).",
+            "Assorted meat (tripe, cow foot, beef).",
           ],
         },
       ],
