@@ -430,6 +430,7 @@
   .banner-one__title {
     font-size: 50px;
     line-height: 1.3em;
+    margin-top: 45px;
   }
 
   .block-title__title {
@@ -540,9 +541,10 @@
   }
 
   .service-one__text {
-    max-width: 60%;
     margin-left: auto;
     margin-right: auto;
+    padding-top: 20px;
+    line-height: 22px;
   }
 
   .site-footer:before,

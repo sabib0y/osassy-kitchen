@@ -515,6 +515,11 @@ a:visited {
   padding-bottom: 689px;
   z-index: 11;
 
+  & > .container {
+    position: relative;
+    z-index: 1;
+  }
+
   &__content {
     display: flex;
     flex-direction: column-reverse;
@@ -553,8 +558,8 @@ a:visited {
 }
 .banner-one__moc {
   position: absolute;
-  top: 140px;
-  right: 0;
+  top: -140px;
+  right: -250px;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   -webkit-animation-name: shapeRotate;
@@ -567,6 +572,7 @@ a:visited {
   animation-iteration-count: infinite;
   -webkit-transform-origin: center center;
   transform-origin: center center;
+  width: 850px;
 }
 .banner-one__tag-line {
   margin: 0;
@@ -2185,7 +2191,7 @@ a:visited {
   border: 130px solid #f7c324;
   position: absolute;
   top: -40%;
-  left: 75%;
+  right: 75%;
   border-radius: 50%;
   // -webkit-transform-origin: center bottom;
   // transform-origin: center bottom;

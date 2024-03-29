@@ -11,14 +11,6 @@ const BannerOne = () => {
 
   return (
     <section ref={ref} className="banner-one" id="home">
-      {images.map(({ id, image, className }) => (
-        <Image
-          key={id}
-          src={require(`src/assets/images/${image}`).default.src}
-          className={className}
-          alt="Awesome Image"
-        />
-      ))}
       <Container>
         <Row>
           <Col xl={6}>
@@ -29,6 +21,14 @@ const BannerOne = () => {
               </h3>
             </div>
           </Col>
+          {images.map(({ id, image, className }) => (
+            <Image
+              key={id}
+              src={require(`src/assets/images/${image}`).default.src}
+              className={className}
+              alt="Awesome Image"
+            />
+          ))}
         </Row>
       </Container>
     </section>
