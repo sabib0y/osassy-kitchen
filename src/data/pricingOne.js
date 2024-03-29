@@ -142,7 +142,7 @@ const pricingOne = {
       dish: [
         {
           name: "Plantain and Dodo  ",
-          subText: "comes in two options",
+          subText: "",
           contains: ["Garnished in red sauce."],
         },
         {
