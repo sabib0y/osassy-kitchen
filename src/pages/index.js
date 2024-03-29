@@ -5,9 +5,6 @@ const BrandOneWithNoSSR = dynamic(
   { ssr: false }
 );
 import CtaOne from "@/components/CtaOne/CtaOne";
-import CtaThree from "@/components/CtaThree/CtaThree";
-import CtaTwo from "@/components/CtaTwo/CtaTwo";
-import FunFactOne from "@/components/FunFactOne/FunFactOne";
 import Layout from "@/components/Layout/Layout";
 import PricingOne from "@/components/PricingOne/PricingOne";
 import ServiceOne from "@/components/ServiceOne/ServiceOne";
@@ -16,7 +13,7 @@ import React from "react";
 
 const Home = () => {
   return (
-    <Layout pageTitle="Home One">
+    <Layout pageTitle="Osassy's Kitchen">
       <BannerOne />
       <ServiceOne />
       <TestimonialsOne />
