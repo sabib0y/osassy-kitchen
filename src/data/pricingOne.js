@@ -141,7 +141,7 @@ const pricingOne = {
       title: "Specials",
       dish: [
         {
-          name: "Fizzard and Dodo  ",
+          name: "Gizzard and Dodo  ",
           subText: "",
           contains: ["Garnished in red sauce."],
         },
