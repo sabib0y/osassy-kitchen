@@ -141,7 +141,7 @@ const pricingOne = {
       title: "Specials",
       dish: [
         {
-          name: "Plantain and Dodo  ",
+          name: "Fizzard and Dodo  ",
           subText: "",
           contains: ["Garnished in red sauce."],
         },
@@ -163,14 +163,7 @@ const pricingOne = {
         {
           name: "Fish Pepper Soup",
           subText: "comes in two options",
-          contains: [
-            "Croaker",
-            "Tilapia",
-            "Plantain",
-            "Yam Chips",
-            "Meat",
-            "Salad & Coleslaw",
-          ],
+          contains: ["Croaker", "Tilapia"],
         },
       ],
     },
