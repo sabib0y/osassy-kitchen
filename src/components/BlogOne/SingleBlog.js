@@ -15,32 +15,30 @@ const SingleBlog = ({ blog = {} }) => {
               src={require(`src/assets/images/${image}`).default.src}
               alt="Awesome Image"
             />
-            <Link href="/blog-details">
-              <a className="blog-one__link">Read More</a>
+            <Link href="/blog-details" className="blog-one__link">
+              Read More
             </Link>
           </div>
         </div>
 
         <div className="blog-one__content">
           <div className="blog-one__meta">
-            <Link href="/blog-details">
-              <a className="blog-one__meta-link">By {admin}</a>
+            <Link href="/blog-details" className="blog-one__meta-link">
+              By {admin}
             </Link>
             <span className="blog-one__meta-sep">.</span>
-            <Link href="/blog-details">
-              <a className="blog-one__meta-link">{date}</a>
+            <Link href="/blog-details" className="blog-one__meta-link">
+              {date}
             </Link>
             <span className="blog-one__meta-sep">.</span>
-            <Link href="/blog-details">
-              <a className="blog-one__meta-link">{comments} comments</a>
+            <Link href="/blog-details" className="blog-one__meta-link">
+              {comments} comments
             </Link>
           </div>
 
           <h3 className="blog-one__title">
             <Link href="/blog-details">
-              <a>
-                <TextSplit text={title} />
-              </a>
+              <TextSplit text={title} />
             </Link>
           </h3>
         </div>

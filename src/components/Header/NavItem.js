@@ -24,17 +24,15 @@ const NavItem = ({ navItem = {} }) => {
   return (
     <li className={`${newActive ? "current " : ""}scrollToLink`}>
       <Link href={isHome ? href : "/" + href}>
-        <a>
-          {name}
-          {subItems?.length > 0 && (
-            <button onClick={handleCurrent} className="sub-nav-toggler">
-              <span className="sr-only">Toggle navigation</span>{" "}
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-            </button>
-          )}
-        </a>
+        {name}
+        {subItems?.length > 0 && (
+          <button onClick={handleCurrent} className="sub-nav-toggler">
+            <span className="sr-only">Toggle navigation</span>{" "}
+            <span className="icon-bar"></span>
+            <span className="icon-bar"></span>
+            <span className="icon-bar"></span>
+          </button>
+        )}
       </Link>
       {subItems?.length > 0 && (
         <ul

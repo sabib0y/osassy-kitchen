@@ -11,16 +11,16 @@ const BlogDetailsContent = ({ blog = {} }) => {
         <Image src={image.src} alt="Awesome Image" />
       </div>
       <div className="blog-one__meta">
-        <Link href="/blog-details">
-          <a className="blog-one__meta-link">By {admin}</a>
+        <Link href="/blog-details" className="blog-one__meta-link">
+          By {admin}
         </Link>
         <span className="blog-one__meta-sep">.</span>
-        <Link href="/blog-details">
-          <a className="blog-one__meta-link">{date}</a>
+        <Link href="/blog-details" className="blog-one__meta-link">
+          {date}
         </Link>
         <span className="blog-one__meta-sep">.</span>
-        <Link href="/blog-details">
-          <a className="blog-one__meta-link">{comments.length} comments</a>
+        <Link href="/blog-details" className="blog-one__meta-link">
+          {comments.length} comments
         </Link>
       </div>
       <h3 className="blog-one__title">{title}</h3>

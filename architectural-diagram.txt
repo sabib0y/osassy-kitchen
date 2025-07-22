@@ -1,0 +1,47 @@
+ ┌───────────────┐
+                                │   Browser /   │
+                                │   Mobile App  │
+                                └──────┬────────┘
+                                       │ HTTPS
+                                       ▼
+                          ┌───────────────────────────┐
+                          │       Next.js Frontend    │
+                          │  (pages, React components)│
+                          └──────┬──────────────┬─────┘
+               Auth & Data  │              Data   │  Admin UI
+            ┌────────────────▼──────────┐     ┌───▼───────────┐
+            │ /api/auth   NextAuth.js   │     │ /api/menu-items│
+            │  (signup, login, session) │     │ CRUD (Admin)   │
+            └───────────────────────────┘     └───┬───────────┘
+                 │    │                          │
+     Prisma ORM   │    │  Subscription &         │
+       Client     │    │  Checkout API           │
+            ┌─────▼────▼──────────────────┐     │
+            │ /api/subscribe               │     │
+            │ (create Stripe Checkout)     │     │
+            └──────────────────────────────┘     │
+                 │                                  │
+   Webhooks      │                                  │
+┌────────────────▼────────────────────────┐         │
+│ /api/webhooks/stripe                   │         │
+│ • invoice.paid → create Subscription   │         │
+│ • subscription.updated → update status │         │
+│ • payment_failed → notify user         │         │
+└─────────────────────────────────────────┘         │
+                 │                                  │
+                 │                              ┌───▼───────────┐
+                 │                              │Postmark /     │
+                 │                              │Twilio / Email │
+                 │                              └───────────────┘
+                 │
+            ┌────▼───────────────────────────┐
+            │        Prisma Client           │
+            │  (auto-generated, type-safe)   │
+            └────┬───────────────┬───────────┘
+                 │               │
+                 │               │
+     ┌───────────▼───┐     ┌─────▼───────────┐
+     │  PostgreSQL    │     │    Stripe       │
+     │(Hosted or via  │     │(Billing &       │
+     │ Supabase)      │     │ Checkout API)   │
+     └────────────────┘     └─────────────────┘

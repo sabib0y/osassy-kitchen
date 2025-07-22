@@ -2,17 +2,12 @@ import testimonialsOne from "@/data/testimonialsOne";
 import useActive from "@/hooks/useActive";
 import React, { useState } from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
-import SwiperCore, {
-  Autoplay,
-  Controller,
-  EffectFade,
-  Navigation,
-} from "swiper";
-import "swiper/css";
+import { Autoplay, Controller, EffectFade, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/navigation";
 import TextSplit from "../Reuseable/TextSplit";
-
-SwiperCore.use([Controller, Autoplay, Navigation, EffectFade]);
 
 const { title, testimonials, buttons } = testimonialsOne;
 
@@ -31,10 +26,6 @@ const mainSlideOptions = {
     delay: 5000,
   },
 };
-
-const controller = (swiper) => ({
-  control: swiper?.destroyed ? null : swiper,
-});
 
 const TestimonialsOne = () => {
   const [firstSwiper, setFirstSwiper] = useState(null);
@@ -55,8 +46,9 @@ const TestimonialsOne = () => {
             <div className="testimonials-one__image-block">
               <Swiper
                 {...mainSlideOptions}
+                modules={[Controller, Autoplay, Navigation, EffectFade]}
                 onSwiper={setFirstSwiper}
-                controller={controller(secondSwiper)}
+                controller={{ control: secondSwiper }}
                 onActiveIndexChange={({ activeIndex }) => {
                   const active = activeIndex
                     ? activeIndex > length
@@ -121,9 +113,10 @@ const TestimonialsOne = () => {
               </div>
               <Swiper
                 {...mainSlideOptions}
+                modules={[Controller, Autoplay, Navigation]}
                 effect="slide"
                 onSwiper={setSecondSwiper}
-                controller={controller(firstSwiper)}
+                controller={{ control: firstSwiper }}
               >
                 <div className="swiper-wrapper">
                   {testimonials.map(({ id, text, name, designation }) => (

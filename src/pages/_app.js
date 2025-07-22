@@ -1,3 +1,4 @@
+import { SessionProvider } from "next-auth/react";
 import ContextProvider from "@/context/ContextProvider";
 import "@/vendors/animate.css";
 import "@/vendors/font-awesome.min.css";
@@ -12,11 +13,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@/styles/style.scss";
 import "@/styles/responsive.scss";
 
-const MyApp = ({ Component, pageProps }) => {
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
-    <ContextProvider>
-      <Component {...pageProps} />
-    </ContextProvider>
+    <SessionProvider session={session}>
+      <ContextProvider>
+        <Component {...pageProps} />
+      </ContextProvider>
+    </SessionProvider>
   );
 };
 

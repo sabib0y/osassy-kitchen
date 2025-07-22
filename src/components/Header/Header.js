@@ -21,15 +21,13 @@ const Header = () => {
       >
         <div className="container clearfix">
           <div className="logo-box clearfix">
-            <Link href="/">
-              <a className="navbar-brand">
-                <Image
-                  src={logo.src}
-                  className="main-logo"
-                  width={66}
-                  alt="Awesome Image"
-                />
-              </a>
+            <Link href="/" className="navbar-brand">
+              <Image
+                src={logo.src}
+                className="main-logo"
+                width={66}
+                alt="Awesome Image"
+              />
             </Link>
             <button onClick={toggleMenu} className="menu-toggler">
               <span className="fa fa-bars"></span>
