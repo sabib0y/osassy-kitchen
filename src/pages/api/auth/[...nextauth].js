@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs"
 const prisma = new PrismaClient()
 
 export default NextAuth({
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma), // Removed because it can conflict with CredentialsProvider
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -51,18 +51,21 @@ export default NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
+      // This is the initial sign-in
       if (user) {
-        token.role = user.role
+        token.id = user.id;
+        token.role = user.role;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
+      // The token has the id and role from the jwt callback
       if (token) {
-        session.user.id = token.sub
-        session.user.role = token.role
+        session.user.id = token.id;
+        session.user.role = token.role;
       }
-      return session
-    }
+      return session;
+    },
   },
   pages: {
     signIn: "/login",

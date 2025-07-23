@@ -1,5 +1,5 @@
-import author from "@/images/author-1-1.jpg";
-import image from "@/images/blog-d-1-1.jpg";
+import author from "../assets/images/author-1-1.jpg";
+import image from "../assets/images/blog-d-1-1.jpg";
 
 const blogDetailsPage = {
   blog: {

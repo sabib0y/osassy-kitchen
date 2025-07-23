@@ -1,4 +1,4 @@
-import logo from "@/images/logo-dark.png";
+import logo from "../assets/images/logo-dark.png";
 
 const footerData = {
   logo,

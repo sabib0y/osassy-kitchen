@@ -7,6 +7,7 @@ import Header from "../Header/Header";
 import SiteFooter from "../SiteFooter/SiteFooter";
 
 const Layout = ({ children, pageTitle }) => {
+  console.log("pageTitle:", pageTitle, "type:", typeof pageTitle);
   const [loading, setLoading] = useState(true);
   const { scrollTop } = useScroll(100);
 
@@ -22,7 +23,7 @@ const Layout = ({ children, pageTitle }) => {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{pageTitle} || LUMS || SEO Landing Page NextJs Template</title>
+        <title>{pageTitle}</title>
       </Head>
       <Preloader loading={loading} />
       <main

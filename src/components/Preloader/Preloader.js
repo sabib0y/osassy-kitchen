@@ -1,4 +1,4 @@
-import image from "@/images/preloader.png";
+import image from "../../assets/images/preloader.png";
 import React from "react";
 import { Image } from "react-bootstrap";
 

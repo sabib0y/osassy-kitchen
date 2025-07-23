@@ -12,7 +12,7 @@ const SingleBlog = ({ blog = {} }) => {
         <div className="blog-one__image-outer">
           <div className="blog-one__image">
             <Image
-              src={require(`src/assets/images/${image}`).default.src}
+              src={require(`../../assets/images/${image}`).default.src}
               alt="Awesome Image"
             />
             <Link href="/blog-details" className="blog-one__link">

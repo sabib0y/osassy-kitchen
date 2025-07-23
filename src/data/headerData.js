@@ -1,4 +1,4 @@
-import logo from "@/images/logo-light.png";
+import logo from "../assets/images/logo-light.png";
 
 const headerData = {
   logo,
@@ -20,6 +20,11 @@ const headerData = {
     },
     {
       id: 4,
+      href: "/subscribe",
+      name: "Subscribe",
+    },
+    {
+      id: 5,
       href: "#contact",
       name: "Contact",
     },

@@ -1,4 +1,4 @@
-import image from "@/images/cta-1-1.jpg";
+import image from "../assets/images/cta-1-1.jpg";
 
 const ctaThree = {
   image,

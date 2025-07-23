@@ -23,7 +23,7 @@ const NavItem = ({ navItem = {} }) => {
 
   return (
     <li className={`${newActive ? "current " : ""}scrollToLink`}>
-      <Link href={isHome ? href : "/" + href}>
+      <Link href={href}>
         {name}
         {subItems?.length > 0 && (
           <button onClick={handleCurrent} className="sub-nav-toggler">

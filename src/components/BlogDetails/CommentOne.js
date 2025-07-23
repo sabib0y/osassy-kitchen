@@ -13,7 +13,7 @@ const CommentOne = ({ comments = [] }) => {
             <div className="comment-one__image">
               <div className="inner-block">
                 <Image
-                  src={require(`src/assets/images/${image}`).default.src}
+                  src={require(`../../assets/images/${image}`).default.src}
                   alt="Awesome Image"
                 />
               </div>

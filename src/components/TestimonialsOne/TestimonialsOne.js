@@ -68,7 +68,7 @@ const TestimonialsOne = () => {
                       <div className="testimonials-one__image">
                         <Image
                           src={
-                            require(`src/assets/images/${image}`).default.src
+                            require(`../../assets/images/${image}`).default.src
                           }
                           className="testimonials-one__thumb"
                           alt="Awesome Image"
@@ -94,7 +94,7 @@ const TestimonialsOne = () => {
                       style={
                         image && {
                           backgroundImage: `url(${
-                            require(`src/assets/images/${image}`).default.src
+                            require(`../../assets/images/${image}`).default.src
                           })`,
                         }
                       }

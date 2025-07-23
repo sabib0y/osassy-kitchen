@@ -1,4 +1,4 @@
-import image from "@/images/brand-1-1.png";
+import image from "../assets/images/brand-1-1.png";
 
 const brandOne = [
   image,
