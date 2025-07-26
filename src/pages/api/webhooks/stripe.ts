@@ -1,5 +1,7 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { buffer } from 'micro';
 import { PrismaClient } from '@prisma/client';
+import Stripe from 'stripe';
 import stripe from '../../../lib/stripe';
 
 // Disable body parsing to receive raw body for webhook verification
@@ -11,22 +13,41 @@ export const config = {
 
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
+interface CheckoutSessionMetadata {
+  userId: string;
+  items: string;
+}
+
+interface SubscriptionItem {
+  menuItemId: string;
+  quantity: number;
+}
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const buf = await buffer(req);
-  const sig = req.headers['stripe-signature'];
+  const sig = req.headers['stripe-signature'] as string;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  let event;
+  if (!webhookSecret) {
+    console.error('Stripe webhook secret not configured');
+    return res.status(500).json({ error: 'Webhook secret not configured' });
+  }
+
+  let event: Stripe.Event;
   
   try {
     event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Webhook signature verification failed:', errorMessage);
+    return res.status(400).send(`Webhook Error: ${errorMessage}`);
   }
 
   console.log('Received Stripe event:', event.type);
@@ -34,34 +55,34 @@ export default async function handler(req, res) {
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object;
-        const { userId, items } = session.metadata;
+        const session = event.data.object as Stripe.Checkout.Session;
+        const metadata = session.metadata as CheckoutSessionMetadata | null;
         
-        if (!userId || !items) {
+        if (!metadata?.userId || !metadata?.items) {
           console.error('Missing metadata in checkout session:', session.metadata);
           return res.status(400).json({ error: 'Missing required metadata' });
         }
 
-        const parsedItems = JSON.parse(items);
+        const parsedItems: SubscriptionItem[] = JSON.parse(metadata.items);
         
         // Verify user exists
         const user = await prisma.user.findUnique({
-          where: { id: userId }
+          where: { id: metadata.userId }
         });
 
         if (!user) {
-          console.error('User not found:', userId);
+          console.error('User not found:', metadata.userId);
           return res.status(400).json({ error: 'User not found' });
         }
 
         // Create subscription record
         const subscription = await prisma.subscription.create({
           data: {
-            userId: userId,
-            stripeSubscriptionId: session.subscription,
+            userId: metadata.userId,
+            stripeSubscriptionId: session.subscription as string,
             planName: 'Custom Meal Plan',
             interval: 'WEEKLY', // Default, can be enhanced later
-            price: session.amount_total / 100,
+            price: (session.amount_total || 0) / 100,
             status: 'ACTIVE',
             nextDeliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
           },
@@ -83,12 +104,12 @@ export default async function handler(req, res) {
       }
 
       case 'customer.subscription.updated': {
-        const subscription = event.data.object;
+        const subscription = event.data.object as Stripe.Subscription;
         
         await prisma.subscription.update({
           where: { stripeSubscriptionId: subscription.id },
           data: {
-            status: subscription.status.toUpperCase(),
+            status: subscription.status.toUpperCase() as any,
             updatedAt: new Date(),
           },
         });
@@ -98,7 +119,7 @@ export default async function handler(req, res) {
       }
 
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object;
+        const subscription = event.data.object as Stripe.Subscription;
         
         await prisma.subscription.update({
           where: { stripeSubscriptionId: subscription.id },

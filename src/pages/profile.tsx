@@ -1,8 +1,9 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { NextPage } from 'next';
 
-const ProfilePage = () => {
+const ProfilePage: NextPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -16,18 +17,18 @@ const ProfilePage = () => {
     return <p>Loading...</p>;
   }
 
-  if (session) {
+  if (session?.user) {
     return (
       <div>
         <h1>Profile</h1>
         <p>
-          <strong>Name:</strong> {session.user.name}
+          <strong>Name:</strong> {session.user.name || 'N/A'}
         </p>
         <p>
-          <strong>Email:</strong> {session.user.email}
+          <strong>Email:</strong> {session.user.email || 'N/A'}
         </p>
         <p>
-          <strong>Role:</strong> {session.user.role}
+          <strong>Role:</strong> {(session.user as any).role || 'USER'}
         </p>
         <button onClick={() => signOut()}>Logout</button>
       </div>

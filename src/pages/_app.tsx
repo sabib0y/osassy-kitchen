@@ -1,6 +1,8 @@
 import { SessionProvider } from "next-auth/react";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import type { AppProps } from 'next/app';
+import type { Session } from 'next-auth';
 import ContextProvider from "../context/ContextProvider";
 import "../assets/vendors/animate.css";
 import "../assets/vendors/font-awesome.min.css";
@@ -16,9 +18,11 @@ import "@/styles/style.scss";
 import "@/styles/responsive.scss";
 
 // Initialize Stripe
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
+  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  : null;
 
-const MyApp = ({ Component, pageProps: { session, ...pageProps } }) => {
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }: AppProps<{ session: Session }>) => {
   return (
     <SessionProvider session={session}>
       <Elements stripe={stripePromise}>

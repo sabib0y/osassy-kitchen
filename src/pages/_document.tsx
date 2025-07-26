@@ -1,7 +1,7 @@
-import Document, { Head, Html, Main, NextScript } from "next/document";
+import Document, { DocumentContext, Head, Html, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx) {
+  static async getInitialProps(ctx: DocumentContext) {
     const originalRenderPage = ctx.renderPage;
 
     // Run the React rendering logic synchronously

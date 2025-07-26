@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { NextPage } from 'next';
+import Link from 'next/link';
 
-const LoginPage = () => {
+const LoginPage: NextPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -18,7 +20,7 @@ const LoginPage = () => {
       password,
     });
 
-    if (result.error) {
+    if (result?.error) {
       setError(result.error);
     } else {
       router.push('/profile');
@@ -51,7 +53,7 @@ const LoginPage = () => {
         <button type="submit">Login</button>
       </form>
       <p>
-        Don't have an account? <a href="/signup">Sign up</a>
+        Don&apos;t have an account? <Link href="/signup">Sign up</Link>
       </p>
     </div>
   );

@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import CredentialsProvider from "next-auth/providers/credentials"
@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   // adapter: PrismaAdapter(prisma), // Removed because it can conflict with CredentialsProvider
   providers: [
     CredentialsProvider({
@@ -40,7 +40,7 @@ export default NextAuth({
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
+          name: user.name || null,
           role: user.role,
         }
       }
@@ -54,23 +54,25 @@ export default NextAuth({
       // This is the initial sign-in
       if (user) {
         token.id = user.id;
-        token.role = user.role;
+        token.role = (user as any).role;
       }
       return token;
     },
     async session({ session, token }) {
       // The token has the id and role from the jwt callback
-      if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        (session.user as any).role = token.role;
       }
       return session;
     },
   },
   pages: {
     signIn: "/login",
-    signUp: "/signup",
+    // signUp: "/signup", // NextAuth doesn't have a signUp page config, but we keep the page
     error: "/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
-})
+}
+
+export default NextAuth(authOptions)

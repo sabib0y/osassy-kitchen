@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { NextPage } from "next";
 import BannerOne from "@/components/BannerOne/BannerOne";
 const BrandOneWithNoSSR = dynamic(
   () => import("@/components/BrandOne/BrandOne"),
@@ -11,7 +12,7 @@ import ServiceOne from "@/components/ServiceOne/ServiceOne";
 import TestimonialsOne from "@/components/TestimonialsOne/TestimonialsOne";
 import React from "react";
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <Layout pageTitle="Osassy's Kitchen">
       <BannerOne />

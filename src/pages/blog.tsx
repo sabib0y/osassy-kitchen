@@ -4,8 +4,9 @@ import CtaOne from "@/components/CtaOne/CtaOne";
 import InnerBanner from "@/components/InnerBanner/InnerBanner";
 import Layout from "@/components/Layout/Layout";
 import React from "react";
+import { NextPage } from "next";
 
-const Blog = () => {
+const Blog: NextPage = () => {
   return (
     <Layout pageTitle="Blog Page">
       <InnerBanner title="Blog Posts" page="Blog Page" />

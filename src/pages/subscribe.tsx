@@ -2,13 +2,25 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { loadStripe } from '@stripe/stripe-js';
+import { GetServerSideProps } from 'next';
+import { MenuItem, PrismaClient } from '@prisma/client';
 import Layout from '../components/Layout/Layout';
 
 // Initialize Stripe
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  priceId: string;
+  interval: string;
+  features: string[];
+}
 
 // Subscription plans - these should match your Stripe price IDs
-const subscriptionPlans = [
+const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 'weekly',
     name: 'Weekly Meal Plan',
@@ -29,9 +41,12 @@ const subscriptionPlans = [
   }
 ];
 
+interface SubscribePageProps {
+  menuItems: MenuItem[];
+}
+
 // Fetch menu items server-side
-export async function getServerSideProps() {
-  const { PrismaClient } = require('@prisma/client');
+export const getServerSideProps: GetServerSideProps<SubscribePageProps> = async () => {
   const prisma = new PrismaClient();
   
   try {
@@ -55,15 +70,15 @@ export async function getServerSideProps() {
   } finally {
     await prisma.$disconnect();
   }
-}
+};
 
-const SubscribePage = ({ menuItems }) => {
+const SubscribePage: React.FC<SubscribePageProps> = ({ menuItems }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState(subscriptionPlans[0].priceId);
-  const [selectedItems, setSelectedItems] = useState({}); // { menuItemId: quantity }
+  const [selectedItems, setSelectedItems] = useState<Record<string, number>>({}); // { menuItemId: quantity }
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -73,7 +88,7 @@ const SubscribePage = ({ menuItems }) => {
     }
   }, [session, status, router]);
 
-  const handleItemChange = (itemId, quantity) => {
+  const handleItemChange = (itemId: string, quantity: string) => {
     setSelectedItems(prev => ({ ...prev, [itemId]: Math.max(0, parseInt(quantity) || 0) }));
   };
 
@@ -115,6 +130,10 @@ const SubscribePage = ({ menuItems }) => {
       }
 
       const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error('Stripe failed to load');
+      }
+
       const { error } = await stripe.redirectToCheckout({
         sessionId: data.sessionId,
       });
@@ -124,13 +143,13 @@ const SubscribePage = ({ menuItems }) => {
       }
     } catch (err) {
       console.error('Subscription error:', err);
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  const groupedMenuItems = menuItems.reduce((acc, item) => {
+  const groupedMenuItems = menuItems.reduce<Record<string, MenuItem[]>>((acc, item) => {
     if (!acc[item.category]) acc[item.category] = [];
     acc[item.category].push(item);
     return acc;
@@ -208,7 +227,7 @@ const SubscribePage = ({ menuItems }) => {
             <div className="col-12">
               <h3 className="text-center mb-4">Customize Your Menu</h3>
               <p className="text-center text-muted mb-4">
-                Select the meals you'd like to include in your subscription
+                Select the meals you&apos;d like to include in your subscription
               </p>
               
               {Object.entries(groupedMenuItems).map(([category, items]) => (
@@ -257,7 +276,7 @@ const SubscribePage = ({ menuItems }) => {
                         const item = menuItems.find(i => i.id === itemId);
                         return (
                           <li key={itemId}>
-                            {item?.name} x {quantity} = ${(item?.price * quantity).toFixed(2)}
+                            {item?.name} x {quantity} = ${(Number(item?.price) * quantity).toFixed(2)}
                           </li>
                         );
                       })}
@@ -280,7 +299,7 @@ const SubscribePage = ({ menuItems }) => {
           <div className="text-center mt-5">
             <p className="text-muted">
               <small>
-                Note: You'll need to replace the placeholder price IDs with actual Stripe price IDs
+                Note: You&apos;ll need to replace the placeholder price IDs with actual Stripe price IDs
                 in the subscriptionPlans array above.
               </small>
             </p>
