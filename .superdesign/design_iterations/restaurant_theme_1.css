@@ -1,0 +1,63 @@
+:root {
+  --background: oklch(0.98 0.02 70);
+  --foreground: oklch(0.18 0.02 70);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.02 70);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.02 70);
+  --primary: oklch(0.65 0.18 29); /* Terracotta */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.85 0.09 140); /* Olive */
+  --secondary-foreground: oklch(0.18 0.02 70);
+  --muted: oklch(0.95 0.01 80);
+  --muted-foreground: oklch(0.35 0.01 80);
+  --accent: oklch(0.92 0.13 85); /* Gold */
+  --accent-foreground: oklch(0.18 0.02 70);
+  --destructive: oklch(0.55 0.18 29);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9 0.01 80);
+  --input: oklch(0.9 0.01 80);
+  --ring: oklch(0.65 0.18 29);
+  --chart-1: oklch(0.65 0.18 29);
+  --chart-2: oklch(0.85 0.09 140);
+  --chart-3: oklch(0.92 0.13 85);
+  --chart-4: oklch(0.55 0.18 29);
+  --chart-5: oklch(0.35 0.09 140);
+  --sidebar: oklch(0.95 0.01 80);
+  --sidebar-foreground: oklch(0.18 0.02 70);
+  --sidebar-primary: oklch(0.65 0.18 29);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.92 0.13 85);
+  --sidebar-accent-foreground: oklch(0.18 0.02 70);
+  --sidebar-border: oklch(0.9 0.01 80);
+  --sidebar-ring: oklch(0.65 0.18 29);
+  --font-sans: 'Inter', 'Open Sans', Arial, sans-serif;
+  --font-serif: 'Playfair Display', 'Merriweather', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 1rem;
+  --shadow-2xs: 0 1px 2px 0px hsl(29 30% 60% / 0.05);
+  --shadow-xs: 0 2px 4px 0px hsl(29 30% 60% / 0.08);
+  --shadow-sm: 0 4px 8px 0px hsl(29 30% 60% / 0.10);
+  --shadow: 0 8px 16px 0px hsl(29 30% 60% / 0.12);
+  --shadow-md: 0 12px 24px 0px hsl(29 30% 60% / 0.14);
+  --shadow-lg: 0 16px 32px 0px hsl(29 30% 60% / 0.16);
+  --shadow-xl: 0 24px 48px 0px hsl(29 30% 60% / 0.18);
+  --shadow-2xl: 0 32px 64px 0px hsl(29 30% 60% / 0.20);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+}
+
+body {
+  font-family: var(--font-sans) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif) !important;
+  color: var(--primary) !important;
+  letter-spacing: 0.01em !important;
+}

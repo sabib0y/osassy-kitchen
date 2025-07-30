@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terracotta Table | Modern Restaurant</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="./restaurant_theme_1.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flowbite@2.0.0/dist/flowbite.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    .hero-bg {
+      background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.2)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    }
+    .menu-img {
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      object-fit: cover;
+      width: 100%;
+      height: 180px;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 2rem;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: var(--shadow-xs);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover {
+      transform: scale(1.04);
+      box-shadow: var(--shadow-md);
+      background: var(--accent);
+      color: var(--accent-foreground);
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 0.5em;
+      font-weight: 900;
+    }
+    .testimonial {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-xs);
+      padding: 1.5rem;
+      font-style: italic;
+      color: var(--foreground);
+    }
+    .footer-link:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)]">
+  <!-- Header -->
+  <header class="w-full px-6 py-4 flex justify-between items-center bg-white/80 shadow-sm sticky top-0 z-30">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl font-serif font-bold tracking-tight text-[var(--primary)]">Terracotta Table</span>
+    </div>
+    <nav class="hidden md:flex gap-8 text-lg font-medium">
+      <a href="#menu" class="hover:text-[var(--primary)] transition">Menu</a>
+      <a href="#about" class="hover:text-[var(--primary)] transition">About</a>
+      <a href="#reservation" class="hover:text-[var(--primary)] transition">Reservations</a>
+      <a href="#contact" class="hover:text-[var(--primary)] transition">Contact</a>
+    </nav>
+    <a href="#reservation" class="btn-primary hidden md:inline-block">Book a Table</a>
+    <button class="md:hidden p-2" aria-label="Open menu" onclick="document.getElementById('mobileNav').classList.toggle('hidden')">
+      <i data-lucide="menu"></i>
+    </button>
+  </header>
+  <!-- Mobile Nav -->
+  <div id="mobileNav" class="hidden md:hidden absolute top-16 left-0 w-full bg-white/95 shadow-md z-40">
+    <nav class="flex flex-col gap-4 p-6 text-lg">
+      <a href="#menu" class="hover:text-[var(--primary)] transition">Menu</a>
+      <a href="#about" class="hover:text-[var(--primary)] transition">About</a>
+      <a href="#reservation" class="hover:text-[var(--primary)] transition">Reservations</a>
+      <a href="#contact" class="hover:text-[var(--primary)] transition">Contact</a>
+      <a href="#reservation" class="btn-primary mt-2">Book a Table</a>
+    </nav>
+  </div>
+  <!-- Hero Section -->
+  <section class="hero-bg flex flex-col items-center justify-center text-center py-24 px-4 fade-in">
+    <h1 class="text-5xl md:text-6xl font-serif font-extrabold mb-4 drop-shadow-lg">Terracotta Table</h1>
+    <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto font-medium">A modern dining experience inspired by tradition. Savor the warmth of our kitchen, where every meal is a celebration.</p>
+    <a href="#reservation" class="btn-primary">Reserve Now</a>
+  </section>
+  <!-- About Section -->
+  <section id="about" class="max-w-5xl mx-auto py-16 px-4 grid md:grid-cols-2 gap-12 items-center fade-in">
+    <div>
+      <h2 class="section-title">Our Story</h2>
+      <p class="text-lg mb-4">Nestled in the heart of the city, Terracotta Table blends rustic charm with modern elegance. Our chefs craft seasonal menus using the freshest local ingredients, bringing you dishes that are both comforting and innovative.</p>
+      <p class="text-lg">From intimate dinners to lively gatherings, we invite you to experience the flavors and hospitality that make us a neighborhood favorite.</p>
+    </div>
+    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80" alt="Restaurant interior" class="rounded-2xl shadow-lg w-full h-72 object-cover" />
+  </section>
+  <!-- Menu Preview -->
+  <section id="menu" class="bg-[var(--muted)] py-16 px-4 fade-in">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="section-title text-center">Featured Dishes</h2>
+      <div class="grid md:grid-cols-3 gap-8 mt-8">
+        <div class="bg-white p-4 rounded-xl shadow menu-img flex flex-col items-center">
+          <img src="https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80" alt="Dish 1" class="menu-img mb-4" />
+          <h3 class="font-serif text-xl font-bold mb-2">Herb-Crusted Lamb</h3>
+          <p class="text-base text-center">Tender lamb with a rosemary crust, served with roasted root vegetables and a red wine jus.</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow menu-img flex flex-col items-center">
+          <img src="https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=400&q=80" alt="Dish 2" class="menu-img mb-4" />
+          <h3 class="font-serif text-xl font-bold mb-2">Wild Mushroom Risotto</h3>
+          <p class="text-base text-center">Creamy arborio rice with wild mushrooms, finished with truffle oil and parmesan.</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow menu-img flex flex-col items-center">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Dish 3" class="menu-img mb-4" />
+          <h3 class="font-serif text-xl font-bold mb-2">Citrus Glazed Salmon</h3>
+          <p class="text-base text-center">Pan-seared salmon with a tangy citrus glaze, served over a bed of sautéed greens.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Reservation Section -->
+  <section id="reservation" class="max-w-3xl mx-auto py-16 px-4 fade-in">
+    <h2 class="section-title text-center">Reserve Your Table</h2>
+    <form class="bg-white rounded-xl shadow-md p-8 mt-8 grid gap-6">
+      <div class="grid md:grid-cols-2 gap-6">
+        <input type="text" placeholder="Name" required class="border border-[var(--border)] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--primary)] outline-none" />
+        <input type="email" placeholder="Email" required class="border border-[var(--border)] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--primary)] outline-none" />
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <input type="date" required class="border border-[var(--border)] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--primary)] outline-none" />
+        <input type="time" required class="border border-[var(--border)] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--primary)] outline-none" />
+      </div>
+      <input type="number" min="1" max="20" placeholder="Guests" required class="border border-[var(--border)] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[var(--primary)] outline-none" />
+      <button type="submit" class="btn-primary w-full mt-2">Book Now</button>
+    </form>
+  </section>
+  <!-- Testimonials -->
+  <section class="bg-[var(--muted)] py-16 px-4 fade-in">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="section-title text-center">What Our Guests Say</h2>
+      <div class="grid md:grid-cols-3 gap-8 mt-8">
+        <div class="testimonial">
+          “Absolutely wonderful! The food was divine and the atmosphere was so welcoming. Will be back soon!”<br><span class="block mt-2 font-bold text-[var(--primary)]">– Jamie L.</span>
+        </div>
+        <div class="testimonial">
+          “A perfect spot for a special night out. Every dish was a delight and the staff made us feel at home.”<br><span class="block mt-2 font-bold text-[var(--primary)]">– Priya S.</span>
+        </div>
+        <div class="testimonial">
+          “The best risotto I’ve ever had! Beautiful setting and top-notch service.”<br><span class="block mt-2 font-bold text-[var(--primary)]">– Marco D.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer -->
+  <footer id="contact" class="bg-white/90 py-8 px-4 mt-auto border-t border-[var(--border)]">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-center md:text-left">
+        <div class="font-serif text-2xl font-bold text-[var(--primary)] mb-1">Terracotta Table</div>
+        <div class="text-base">123 Main Street, Cityville</div>
+        <div class="text-base">Open: Mon–Sat 5pm–11pm</div>
+      </div>
+      <div class="flex gap-6 items-center">
+        <a href="#" class="footer-link" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+        <a href="#" class="footer-link" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+        <a href="#" class="footer-link" aria-label="Mail"><i data-lucide="mail"></i></a>
+      </div>
+      <div class="text-center md:text-right text-sm text-[var(--muted-foreground)]">&copy; 2024 Terracotta Table. All rights reserved.</div>
+    </div>
+  </footer>
+  <script>
+    lucide.createIcons();
+    // Animate fade-in sections on scroll
+    const fadeEls = document.querySelectorAll('.fade-in');
+    const fadeInOnScroll = () => {
+      fadeEls.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 60) {
+          el.style.animationPlayState = 'running';
+        }
+      });
+    };
+    window.addEventListener('scroll', fadeInOnScroll);
+    window.addEventListener('DOMContentLoaded', fadeInOnScroll);
+  </script>
+</body>
+</html>

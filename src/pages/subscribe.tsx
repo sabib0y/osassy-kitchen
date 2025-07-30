@@ -296,14 +296,6 @@ const SubscribePage: React.FC<SubscribePageProps> = ({ menuItems }) => {
             </div>
           </div>
 
-          <div className="text-center mt-5">
-            <p className="text-muted">
-              <small>
-                Note: You&apos;ll need to replace the placeholder price IDs with actual Stripe price IDs
-                in the subscriptionPlans array above.
-              </small>
-            </p>
-          </div>
         </div>
       </section>
     </Layout>

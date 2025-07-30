@@ -103,6 +103,85 @@ export default async function handler(
         break;
       }
 
+      case 'invoice.paid': {
+        const invoice = event.data.object as Stripe.Invoice;
+        // Handle subscription property - it can be string, Subscription object, or null
+        const invoiceAny = invoice as any;
+        const stripeSubscriptionId = invoiceAny.subscription 
+          ? (typeof invoiceAny.subscription === 'string' 
+              ? invoiceAny.subscription 
+              : invoiceAny.subscription.id)
+          : null;
+
+        // Only process for subscription invoices (not one-time payments)
+        if (stripeSubscriptionId) {
+          console.log('Processing invoice.paid for subscription:', stripeSubscriptionId);
+
+          // Find the subscription in our database
+          const subscription = await prisma.subscription.findUnique({
+            where: { stripeSubscriptionId },
+            include: { 
+              subscriptionItems: {
+                include: {
+                  menuItem: true
+                }
+              }
+            },
+          });
+
+          if (subscription && subscription.subscriptionItems.length > 0) {
+            // Calculate delivery date based on subscription interval
+            const deliveryDate = new Date();
+            if (subscription.interval === 'WEEKLY') {
+              deliveryDate.setDate(deliveryDate.getDate() + 7);
+            } else if (subscription.interval === 'MONTHLY') {
+              deliveryDate.setMonth(deliveryDate.getMonth() + 1);
+            }
+
+            // Calculate total price from current menu item prices
+            const totalPrice = subscription.subscriptionItems.reduce((total, item) => {
+              return total + (item.menuItem.price * item.quantity);
+            }, 0);
+
+            // Create the Order record
+            const order = await prisma.order.create({
+              data: {
+                userId: subscription.userId,
+                subscriptionId: subscription.id,
+                totalPrice: totalPrice,
+                deliveryDate: deliveryDate,
+                status: 'PENDING',
+                notes: `Auto-generated from subscription ${subscription.planName}`,
+              },
+            });
+
+            // Create the associated OrderItem records
+            await prisma.orderItem.createMany({
+              data: subscription.subscriptionItems.map(item => ({
+                orderId: order.id,
+                menuItemId: item.menuItemId,
+                quantity: item.quantity,
+                price: item.menuItem.price, // Use current menu item price
+              })),
+            });
+
+            // Update subscription's next delivery date
+            await prisma.subscription.update({
+              where: { id: subscription.id },
+              data: {
+                nextDeliveryDate: deliveryDate,
+                updatedAt: new Date(),
+              },
+            });
+
+            console.log('Order created successfully from subscription:', order.id);
+          } else {
+            console.log('No subscription found or no items for subscription:', stripeSubscriptionId);
+          }
+        }
+        break;
+      }
+
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
         

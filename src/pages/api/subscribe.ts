@@ -48,6 +48,7 @@ export default async function handler(
     let stripeCustomerId = user.stripeCustomerId;
     
     if (!stripeCustomerId) {
+      // No customer ID stored, create new customer
       const customer = await stripe.customers.create({ 
         email: user.email || undefined,
         name: user.name || undefined,
@@ -59,6 +60,30 @@ export default async function handler(
         where: { id: user.id },
         data: { stripeCustomerId },
       });
+    } else {
+      // Verify the customer exists in Stripe (handle account switches)
+      try {
+        await stripe.customers.retrieve(stripeCustomerId);
+      } catch (error: any) {
+        if (error.code === 'resource_missing') {
+          // Customer doesn't exist, create new one and update database
+          console.log(`Customer ${stripeCustomerId} not found, creating new customer`);
+          
+          const customer = await stripe.customers.create({ 
+            email: user.email || undefined,
+            name: user.name || undefined,
+          });
+          
+          stripeCustomerId = customer.id;
+          
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { stripeCustomerId },
+          });
+        } else {
+          throw error; // Re-throw other Stripe errors
+        }
+      }
     }
 
     // Create Stripe checkout session
