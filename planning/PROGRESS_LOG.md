@@ -321,3 +321,94 @@ Build the user and admin-facing interfaces to interact with the powerful new bac
 1.  **✅ Admin Dashboard:** A comprehensive interface for admins to view analytics, manage orders, subscriptions, and menu items. **[COMPLETED - React Implementation]**
 2.  **🔄 User Profile/Dashboard:** A secure area for users to view their order history, manage their subscriptions, and update their profile. **[IN PROGRESS]**
 3.  **🔄 Integration:** Connect all new UI components to their respective backend endpoints. **[NEXT PHASE]**
+
+## 📝 **UPDATE: Phase 4 UI Design Alignment**
+**August 4, 2025 - 12:08 AM**
+
+### **🎨 Admin UI Theme Alignment Work**
+
+#### **Objective**
+Align the React admin components with the original HTML designs created in the `.superdesign/design_iterations/` folder to ensure visual consistency.
+
+#### **Work Completed Today**
+
+##### **1. CSS Variables & Theme Implementation** ✅
+- Created `src/styles/admin-theme.css` with comprehensive CSS variables matching the original design
+- Implemented blue primary color scheme (#2563EB) instead of red
+- Added CSS variables for colors, shadows, spacing, and other design tokens
+- Updated `_app.tsx` to import the admin theme CSS
+
+##### **2. Component Updates** ✅
+
+**AdminLayout.tsx:**
+- Changed sidebar width from 256px to 220px (matching original)
+- Applied CSS variables for styling
+- Updated color scheme from red to blue primary
+
+**StatsCard.tsx:**
+- Repositioned icon to right side (matching original design)
+- Added dynamic icon colors based on card title
+- Applied CSS variables for card styling
+
+**OrderTable.tsx:**
+- Fixed JSX syntax error (removed extra closing div)
+- Applied CSS variables for table styling
+- Updated button styles for View/Start actions
+- Maintained checkbox functionality
+
+**OrderFilters.tsx:**
+- Updated to use CSS variables for all styling
+- Maintained 5-column grid layout
+- Applied filter-input styling
+
+**StatusBadge.tsx:**
+- Changed from Tailwind classes to CSS variables
+- Updated color mapping to match theme
+
+**BulkActions.tsx:**
+- Applied CSS variables for button styling
+- Updated container styling
+
+**Menu Components:**
+- Updated MenuFilters to use CSS variables (4-column grid)
+- Updated MenuItemCard with proper styling
+- Added "Used in X subscriptions" badge
+- Fixed button sizes and added proper icons
+- Added usage badge styling
+
+**Button & Pagination Updates:**
+- Updated all buttons to use CSS variables
+- Fixed pagination button colors (blue instead of red)
+- Applied consistent button styling across all components
+
+##### **3. Menu Page Enhancements** ✅
+- Added "Bulk Toggle" button to menu page header
+- Imported Eye icon for bulk toggle functionality
+- Updated menu item card styling to match original design
+- Fixed category label styling with muted colors
+
+#### **CSS Variables Defined:**
+```css
+--primary: #2563EB (blue instead of red)
+--secondary: #475569
+--accent: #10B981
+--destructive: #DC2626
+--sidebar width: 220px
+```
+
+#### **Known Issues:**
+- Menu page still appears somewhat different from the original HTML design
+- Some fine-tuning of spacing and layout may be needed
+- Image handling in menu cards may need adjustment
+
+#### **Next Steps:**
+1. Further refine menu page layout to exactly match HTML design
+2. Test responsive behavior across different screen sizes
+3. Complete backend API integration
+4. Implement user dashboard components
+5. Add real image upload functionality
+
+#### **Technical Debt:**
+- Some inline styles could be moved to CSS classes
+- Consider creating a more comprehensive design system
+- Mock data in menu items (subscription count) needs real data integration
