@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu Management - Osassy's Kitchen Admin</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="osassy_admin_dashboard_theme.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    body { font-family: 'Inter', 'Roboto', Arial, sans-serif !important; background: var(--background) !important; color: var(--foreground) !important; }
+    h1, h2, h3, h4, h5, h6 { font-weight: 600 !important; }
+    .sidebar { background: var(--sidebar); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); min-width: 220px; }
+    .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-weight: 500; color: var(--sidebar-foreground); transition: background 0.2s; }
+    .sidebar-link.active, .sidebar-link:hover { background: var(--sidebar-primary); color: var(--sidebar-primary-foreground); }
+    .card { background: var(--card); color: var(--card-foreground); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .menu-item-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; transition: transform 0.2s; }
+    .menu-item-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .menu-item-image { width: 100%; height: 200px; object-fit: cover; background: var(--muted); }
+    .btn-primary { background: var(--primary); color: var(--primary-foreground); border-radius: 0.5rem; padding: 0.5rem 1rem; font-weight: 600; transition: background 0.2s; border: none; cursor: pointer; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: var(--secondary); color: var(--secondary-foreground); border-radius: 0.5rem; padding: 0.5rem 1rem; font-weight: 600; transition: background 0.2s; border: none; cursor: pointer; }
+    .btn-secondary:hover { opacity: 0.9; }
+    .btn-accent { background: var(--accent); color: var(--accent-foreground); border-radius: 0.5rem; padding: 0.5rem 1rem; font-weight: 600; transition: background 0.2s; border: none; cursor: pointer; }
+    .btn-accent:hover { opacity: 0.9; }
+    .btn-destructive { background: var(--destructive); color: var(--destructive-foreground); border-radius: 0.5rem; padding: 0.5rem 1rem; font-weight: 600; transition: background 0.2s; border: none; cursor: pointer; }
+    .btn-destructive:hover { opacity: 0.9; }
+    .filter-input { border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.5rem 0.75rem; background: var(--input); color: var(--foreground); }
+    .filter-input:focus { outline: none; border-color: var(--ring); }
+    .status-available { background: var(--accent); color: var(--accent-foreground); }
+    .status-unavailable { background: var(--destructive); color: var(--destructive-foreground); }
+    .usage-badge { background: var(--muted); color: var(--muted-foreground); border-radius: 1rem; padding: 0.25rem 0.75rem; font-size: 0.8rem; }
+    .category-filter { background: var(--card); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+    .modal.active { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: var(--card); border-radius: var(--radius); padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+    .form-input { width: 100%; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.75rem; background: var(--input); color: var(--foreground); }
+    .form-input:focus { outline: none; border-color: var(--ring); }
+    .form-textarea { width: 100%; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.75rem; background: var(--input); color: var(--foreground); min-height: 100px; resize: vertical; }
+    .form-textarea:focus { outline: none; border-color: var(--ring); }
+    .image-upload { border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .image-upload:hover { border-color: var(--primary); }
+    .image-upload.drag-over { border-color: var(--primary); background: var(--muted); }
+    @media (max-width: 1024px) {
+      .dashboard-main { flex-direction: column; }
+      .sidebar { min-width: 100%; border-right: none; border-bottom: 1px solid var(--sidebar-border); }
+      .menu-grid { grid-template-columns: 1fr; }
+      .filter-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .menu-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="flex dashboard-main min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar flex flex-col py-6 px-2">
+      <div class="flex items-center gap-2 mb-8 px-4">
+        <img src="https://placehold.co/40x40" alt="Logo" class="rounded-full w-10 h-10" />
+        <span class="font-bold text-lg">Osassy Admin</span>
+      </div>
+      <nav class="flex flex-col gap-1">
+        <a href="#" class="sidebar-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="#" class="sidebar-link"><i data-lucide="shopping-bag"></i> Orders</a>
+        <a href="#" class="sidebar-link"><i data-lucide="repeat"></i> Subscriptions</a>
+        <a href="#" class="sidebar-link active"><i data-lucide="utensils"></i> Menu Items</a>
+        <a href="#" class="sidebar-link"><i data-lucide="users"></i> Users</a>
+        <a href="#" class="sidebar-link"><i data-lucide="bar-chart-3"></i> Reports</a>
+        <a href="#" class="sidebar-link"><i data-lucide="settings"></i> Settings</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 bg-[var(--background)] min-h-screen">
+      <!-- Page Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-[var(--primary)]">Menu Management</h1>
+          <p class="text-[var(--secondary)] mt-1">Manage your restaurant menu items and pricing</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn-secondary flex items-center gap-2" onclick="bulkToggleAvailability()">
+            <i data-lucide="toggle-left"></i> Bulk Toggle
+          </button>
+          <button class="btn-primary flex items-center gap-2" onclick="openAddItemModal()">
+            <i data-lucide="plus"></i> Add Menu Item
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[var(--secondary)]">Total Items</p>
+              <p class="text-2xl font-bold">48</p>
+            </div>
+            <i data-lucide="utensils" class="w-8 h-8 text-[var(--primary)]"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[var(--secondary)]">Available</p>
+              <p class="text-2xl font-bold">42</p>
+            </div>
+            <i data-lucide="check-circle" class="w-8 h-8 text-[var(--accent)]"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[var(--secondary)]">Categories</p>
+              <p class="text-2xl font-bold">8</p>
+            </div>
+            <i data-lucide="grid-3x3" class="w-8 h-8 text-[var(--secondary)]"></i>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[var(--secondary)]">Avg Price</p>
+              <p class="text-2xl font-bold">₦4,200</p>
+            </div>
+            <i data-lucide="naira-sign" class="w-8 h-8 text-[var(--accent)]"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filters -->
+      <div class="category-filter">
+        <div class="grid filter-grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div>
+            <label class="block text-sm font-medium mb-2">Search Items</label>
+            <input type="text" placeholder="Search menu items..." class="filter-input w-full" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Category</label>
+            <select class="filter-input w-full">
+              <option value="">All Categories</option>
+              <option value="main-dishes">Main Dishes</option>
+              <option value="soups">Soups</option>
+              <option value="rice-dishes">Rice Dishes</option>
+              <option value="grilled">Grilled Items</option>
+              <option value="beverages">Beverages</option>
+              <option value="appetizers">Appetizers</option>
+              <option value="desserts">Desserts</option>
+              <option value="sides">Sides</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Availability</label>
+            <select class="filter-input w-full">
+              <option value="">All Items</option>
+              <option value="available">Available</option>
+              <option value="unavailable">Unavailable</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn-primary w-full">Apply Filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu Items Grid -->
+      <div class="grid menu-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Menu Item 1 -->
+        <div class="menu-item-card">
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=200&fit=crop" alt="Jollof Rice" class="menu-item-image" />
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-lg">Jollof Rice</h3>
+              <span class="status-badge status-available text-xs px-2 py-1 rounded">Available</span>
+            </div>
+            <p class="text-sm text-[var(--secondary)] mb-3">Delicious Nigerian jollof rice with vegetables and spices</p>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-lg text-[var(--primary)]">₦3,500</span>
+              <span class="usage-badge">Used in 15 subscriptions</span>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-secondary text-xs flex-1" onclick="editMenuItem('jollof-rice')">
+                <i data-lucide="edit-2" class="w-3 h-3 mr-1"></i> Edit
+              </button>
+              <button class="btn-accent text-xs" onclick="toggleAvailability('jollof-rice')">
+                <i data-lucide="toggle-right" class="w-3 h-3"></i>
+              </button>
+              <button class="btn-destructive text-xs" onclick="deleteMenuItem('jollof-rice')">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Item 2 -->
+        <div class="menu-item-card">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=200&fit=crop" alt="Egusi Soup" class="menu-item-image" />
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-lg">Egusi Soup</h3>
+              <span class="status-badge status-available text-xs px-2 py-1 rounded">Available</span>
+            </div>
+            <p class="text-sm text-[var(--secondary)] mb-3">Traditional Nigerian soup made with ground melon seeds</p>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-lg text-[var(--primary)]">₦4,200</span>
+              <span class="usage-badge">Used in 8 subscriptions</span>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-secondary text-xs flex-1" onclick="editMenuItem('egusi-soup')">
+                <i data-lucide="edit-2" class="w-3 h-3 mr-1"></i> Edit
+              </button>
+              <button class="btn-accent text-xs" onclick="toggleAvailability('egusi-soup')">
+                <i data-lucide="toggle-right" class="w-3 h-3"></i>
+              </button>
+              <button class="btn-destructive text-xs" onclick="deleteMenuItem('egusi-soup')">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Item 3 -->
+        <div class="menu-item-card">
+          <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=200&fit=crop" alt="Grilled Chicken" class="menu-item-image" />
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-lg">Grilled Chicken</h3>
+              <span class="status-badge status-unavailable text-xs px-2 py-1 rounded">Unavailable</span>
+            </div>
+            <p class="text-sm text-[var(--secondary)] mb-3">Perfectly grilled chicken with Nigerian spices</p>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-lg text-[var(--primary)]">₦5,000</span>
+              <span class="usage-badge">Used in 12 subscriptions</span>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-secondary text-xs flex-1" onclick="editMenuItem('grilled-chicken')">
+                <i data-lucide="edit-2" class="w-3 h-3 mr-1"></i> Edit
+              </button>
+              <button class="btn-accent text-xs" onclick="toggleAvailability('grilled-chicken')">
+                <i data-lucide="toggle-left" class="w-3 h-3"></i>
+              </button>
+              <button class="btn-destructive text-xs" onclick="deleteMenuItem('grilled-chicken')">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Item 4 -->
+        <div class="menu-item-card">
+          <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=200&fit=crop" alt="Pounded Yam" class="menu-item-image" />
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-lg">Pounded Yam</h3>
+              <span class="status-badge status-available text-xs px-2 py-1 rounded">Available</span>
+            </div>
+            <p class="text-sm text-[var(--secondary)] mb-3">Smooth and stretchy pounded yam, perfect with soups</p>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-lg text-[var(--primary)]">₦2,800</span>
+              <span class="usage-badge">Used in 6 subscriptions</span>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-secondary text-xs flex-1" onclick="editMenuItem('pounded-yam')">
+                <i data-lucide="edit-2" class="w-3 h-3 mr-1"></i> Edit
+              </button>
+              <button class="btn-accent text-xs" onclick="toggleAvailability('pounded-yam')">
+                <i data-lucide="toggle-right" class="w-3 h-3"></i>
+              </button>
+              <button class="btn-destructive text-xs" onclick="deleteMenuItem('pounded-yam')">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Item 5 -->
+        <div class="menu-item-card">
+          <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=200&fit=crop" alt="Nkwobi" class="menu-item-image" />
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-lg">Nkwobi</h3>
+              <span class="status-badge status-available text-xs px-2 py-1 rounded">Available</span>
+            </div>
+            <p class="text-sm text-[var(--secondary)] mb-3">Spicy cow foot delicacy with palm wine and utazi leaves</p>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-lg text-[var(--primary)]">₦6,500</span>
+              <span class="usage-badge">Used in 4 subscriptions</span>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-secondary text-xs flex-1" onclick="editMenuItem('nkwobi')">
+                <i data-lucide="edit-2" class="w-3 h-3 mr-1"></i> Edit
+              </button>
+              <button class="btn-accent text-xs" onclick="toggleAvailability('nkwobi')">
+                <i data-lucide="toggle-right" class="w-3 h-3"></i>
+              </button>
+              <button class="btn-destructive text-xs" onclick="deleteMenuItem('nkwobi')">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Item 6 -->
+        <div class="menu-item-card">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=200&fit=crop" alt="Chapman" class="menu-item-image" />
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-lg">Chapman</h3>
+              <span class="status-badge status-available text-xs px-2 py-1 rounded">Available</span>
+            </div>
+            <p class="text-sm text-[var(--secondary)] mb-3">Refreshing Nigerian cocktail drink with fruits</p>
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-lg text-[var(--primary)]">₦1,800</span>
+              <span class="usage-badge">Used in 9 subscriptions</span>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-secondary text-xs flex-1" onclick="editMenuItem('chapman')">
+                <i data-lucide="edit-2" class="w-3 h-3 mr-1"></i> Edit
+              </button>
+              <button class="btn-accent text-xs" onclick="toggleAvailability('chapman')">
+                <i data-lucide="toggle-right" class="w-3 h-3"></i>
+              </button>
+              <button class="btn-destructive text-xs" onclick="deleteMenuItem('chapman')">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex items-center justify-between mt-8">
+        <span class="text-sm text-[var(--secondary)]">Showing 1-6 of 48 items</span>
+        <div class="flex gap-2">
+          <button class="btn-secondary">Previous</button>
+          <button class="btn-primary">Next</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Menu Item Modal -->
+  <div class="modal" id="menuItemModal">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-bold text-[var(--primary)]" id="modalTitle">Add Menu Item</h2>
+        <button onclick="closeModal()" class="text-[var(--secondary)] hover:text-[var(--foreground)]">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      
+      <form id="menuItemForm">
+        <div class="form-group">
+          <label class="form-label">Item Name</label>
+          <input type="text" class="form-input" id="itemName" placeholder="Enter item name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="itemDescription" placeholder="Enter item description" required></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label">Price (₦)</label>
+            <input type="number" class="form-input" id="itemPrice" placeholder="0.00" step="0.01" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-input" id="itemCategory" required>
+              <option value="">Select category</option>
+              <option value="main-dishes">Main Dishes</option>
+              <option value="soups">Soups</option>
+              <option value="rice-dishes">Rice Dishes</option>
+              <option value="grilled">Grilled Items</option>
+              <option value="beverages">Beverages</option>
+              <option value="appetizers">Appetizers</option>
+              <option value="desserts">Desserts</option>
+              <option value="sides">Sides</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Item Image</label>
+          <div class="image-upload" id="imageUpload">
+            <i data-lucide="upload" class="w-12 h-12 mx-auto mb-2 text-[var(--secondary)]"></i>
+            <p class="text-[var(--secondary)] mb-2">Click to upload or drag and drop</p>
+            <p class="text-sm text-[var(--muted-foreground)]">PNG, JPG up to 5MB</p>
+            <input type="file" id="imageInput" accept="image/*" class="hidden" />
+          </div>
+          <div id="imagePreview" class="mt-3 hidden">
+            <img id="previewImg" class="w-full h-48 object-cover rounded" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="flex items-center">
+            <input type="checkbox" id="itemAvailable" class="mr-2" checked />
+            <span class="form-label mb-0">Available for ordering</span>
+          </label>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button type="button" class="btn-secondary flex-1" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-primary flex-1">Save Menu Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Modal functions
+    function openAddItemModal() {
+      document.getElementById('modalTitle').textContent = 'Add Menu Item';
+      document.getElementById('menuItemForm').reset();
+      document.getElementById('imagePreview').classList.add('hidden');
+      document.getElementById('menuItemModal').classList.add('active');
+    }
+
+    function editMenuItem(itemId) {
+      // In a real app, this would fetch item details from API
+      document.getElementById('modalTitle').textContent = 'Edit Menu Item';
+      
+      // Populate form with existing data (example for Jollof Rice)
+      if (itemId === 'jollof-rice') {
+        document.getElementById('itemName').value = 'Jollof Rice';
+        document.getElementById('itemDescription').value = 'Delicious Nigerian jollof rice with vegetables and spices';
+        document.getElementById('itemPrice').value = '3500';
+        document.getElementById('itemCategory').value = 'rice-dishes';
+        document.getElementById('itemAvailable').checked = true;
+      }
+      
+      document.getElementById('menuItemModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('menuItemModal').classList.remove('active');
+    }
+
+    function deleteMenuItem(itemId) {
+      if (confirm('Are you sure you want to delete this menu item? This action cannot be undone.')) {
+        // In a real app, this would call the API to delete the item
+        alert(`Menu item ${itemId} deleted successfully`);
+      }
+    }
+
+    function toggleAvailability(itemId) {
+      // In a real app, this would call the API to toggle availability
+      alert(`Toggled availability for ${itemId}`);
+    }
+
+    function bulkToggleAvailability() {
+      // In a real app, this would show a selection interface for bulk operations
+      alert('Bulk availability toggle feature - select items to toggle');
+    }
+
+    // Image upload handling
+    const imageUpload = document.getElementById('imageUpload');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+
+    imageUpload.addEventListener('click', () => {
+      imageInput.click();
+    });
+
+    imageInput.addEventListener('change', handleImageUpload);
+
+    imageUpload.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      imageUpload.classList.add('drag-over');
+    });
+
+    imageUpload.addEventListener('dragleave', () => {
+      imageUpload.classList.remove('drag-over');
+    });
+
+    imageUpload.addEventListener('drop', (e) => {
+      e.preventDefault();
+      imageUpload.classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleImageFile(files[0]);
+      }
+    });
+
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        handleImageFile(file);
+      }
+    }
+
+    function handleImageFile(file) {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImg.src = e.target.result;
+          imagePreview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert('Please select a valid image file');
+      }
+    }
+
+    // Form submission
+    document.getElementById('menuItemForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        name: document.getElementById('itemName').value,
+        description: document.getElementById('itemDescription').value,
+        price: parseFloat(document.getElementById('itemPrice').value),
+        category: document.getElementById('itemCategory').value,
+        available: document.getElementById('itemAvailable').checked,
+        image: imageInput.files[0] || null
+      };
+      
+      // In a real app, this would send data to the API
+      console.log('Menu item data:', formData);
+      alert('Menu item saved successfully!');
+      closeModal();
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('menuItemModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

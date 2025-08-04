@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Osassy's Kitchen - Admin Dashboard</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="osassy_admin_dashboard_theme.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    body { font-family: 'Inter', 'Roboto', Arial, sans-serif !important; background: var(--background) !important; color: var(--foreground) !important; }
+    h1, h2, h3, h4, h5, h6 { font-weight: 600 !important; }
+    .sidebar { background: var(--sidebar); color: var(--sidebar-foreground); border-right: 1px solid var(--sidebar-border); min-width: 220px; }
+    .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-weight: 500; color: var(--sidebar-foreground); transition: background 0.2s; }
+    .sidebar-link.active, .sidebar-link:hover { background: var(--sidebar-primary); color: var(--sidebar-primary-foreground); }
+    .kpi-card { background: var(--card); color: var(--card-foreground); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.5rem; min-width: 140px; flex: 1; }
+    .kpi-label { color: var(--secondary); font-size: 0.95rem; }
+    .kpi-value { font-size: 2rem; font-weight: 700; }
+    .status-badge { border-radius: 0.5rem; padding: 0.25rem 0.75rem; font-size: 0.9rem; font-weight: 600; }
+    .status-success { background: var(--accent); color: var(--accent-foreground); }
+    .status-warning { background: var(--primary); color: var(--primary-foreground); }
+    .status-error { background: var(--destructive); color: var(--destructive-foreground); }
+    .card { background: var(--card); color: var(--card-foreground); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .table th, .table td { padding: 0.5rem 0.75rem; }
+    .table th { color: var(--secondary); font-weight: 600; }
+    .table tr { border-bottom: 1px solid var(--border); }
+    .table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-xs); }
+    .chart-placeholder { background: var(--muted); border-radius: var(--radius); height: 220px; display: flex; align-items: center; justify-content: center; color: var(--muted-foreground); font-size: 1.2rem; }
+    @media (max-width: 1024px) {
+      .dashboard-main { flex-direction: column; }
+      .sidebar { min-width: 100%; border-right: none; border-bottom: 1px solid var(--sidebar-border); }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="flex dashboard-main min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar flex flex-col py-6 px-2">
+      <div class="flex items-center gap-2 mb-8 px-4">
+        <img src="https://placehold.co/40x40" alt="Logo" class="rounded-full w-10 h-10" />
+        <span class="font-bold text-lg">Osassy Admin</span>
+      </div>
+      <nav class="flex flex-col gap-1">
+        <a href="#" class="sidebar-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="#" class="sidebar-link"><i data-lucide="shopping-bag"></i> Orders</a>
+        <a href="#" class="sidebar-link"><i data-lucide="repeat"></i> Subscriptions</a>
+        <a href="#" class="sidebar-link"><i data-lucide="utensils"></i> Menu Items</a>
+        <a href="#" class="sidebar-link"><i data-lucide="users"></i> Users</a>
+        <a href="#" class="sidebar-link"><i data-lucide="bar-chart-3"></i> Reports</a>
+        <a href="#" class="sidebar-link"><i data-lucide="settings"></i> Settings</a>
+      </nav>
+    </aside>
+    <!-- Main Content -->
+    <main class="flex-1 p-8 bg-[var(--background)] min-h-screen">
+      <!-- KPI Cards -->
+      <section class="flex gap-6 mb-8 flex-wrap">
+        <div class="kpi-card">
+          <div class="kpi-label">Revenue</div>
+          <div class="kpi-value">₦1,200,000</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Subscriptions</div>
+          <div class="kpi-value">320</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Orders</div>
+          <div class="kpi-value">1,540</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Users</div>
+          <div class="kpi-value">890</div>
+        </div>
+      </section>
+      <!-- Analytics Charts -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="card">
+          <div class="font-bold mb-2">Revenue Trend</div>
+          <div class="chart-placeholder">[Recharts Line Chart Placeholder]</div>
+        </div>
+        <div class="card">
+          <div class="font-bold mb-2">Popular Menu Items</div>
+          <div class="chart-placeholder">[Recharts Bar Chart Placeholder]</div>
+        </div>
+      </section>
+      <!-- Recent Orders Table -->
+      <section class="card mb-8">
+        <div class="flex items-center justify-between mb-2">
+          <div class="font-bold">Recent Orders</div>
+          <a href="#" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold shadow-sm transition-all duration-150 bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--accent)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-none">
+  <i data-lucide="list"></i> View All Orders
+</a>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>123456</td>
+                <td>Jane Doe</td>
+                <td>2024-06-01</td>
+                <td><span class="status-badge status-success">Delivered</span></td>
+                <td>₦8,000</td>
+                <td><button class="status-badge status-warning">View</button></td>
+              </tr>
+              <tr>
+                <td>123457</td>
+                <td>John Smith</td>
+                <td>2024-05-30</td>
+                <td><span class="status-badge status-warning">In Progress</span></td>
+                <td>₦6,500</td>
+                <td><button class="status-badge status-warning">View</button></td>
+              </tr>
+              <tr>
+                <td>123458</td>
+                <td>Mary Ann</td>
+                <td>2024-05-28</td>
+                <td><span class="status-badge status-error">Cancelled</span></td>
+                <td>₦5,200</td>
+                <td><button class="status-badge status-warning">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <!-- Activity Feed / Notifications -->
+      <section class="card">
+        <div class="font-bold mb-2">Activity Feed</div>
+        <ul class="space-y-2 text-sm">
+          <li><span class="status-badge status-success">+ New User</span> John Smith registered</li>
+          <li><span class="status-badge status-warning">Order Updated</span> Order #123457 status changed to In Progress</li>
+          <li><span class="status-badge status-error">Order Cancelled</span> Order #123458 was cancelled</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

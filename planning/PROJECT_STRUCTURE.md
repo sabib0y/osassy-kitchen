@@ -102,6 +102,24 @@ lums-nextjs-main/
 │   │               ├── 📁 lums-icon.ttf
 │   │               └── 📁 lums-icon.woff
 │   ├── 📁 components/
+│   │   ├── 📁 admin/ [**NEW: Phase 4 Admin System**]
+│   │   │   ├── 📁 orders/
+│   │   │   │   ├── 📁 OrderTable.tsx
+│   │   │   │   ├── 📁 OrderModal.tsx
+│   │   │   │   ├── 📁 OrderFilters.tsx
+│   │   │   │   ├── 📁 BulkActions.tsx
+│   │   │   │   └── 📁 OrderStats.tsx
+│   │   │   ├── 📁 menu/
+│   │   │   │   ├── 📁 MenuGrid.tsx
+│   │   │   │   ├── 📁 MenuItemCard.tsx
+│   │   │   │   ├── 📁 MenuFilters.tsx
+│   │   │   │   └── 📁 MenuStats.tsx
+│   │   │   └── 📁 shared/
+│   │   │       ├── 📁 AdminLayout.tsx
+│   │   │       ├── 📁 StatusBadge.tsx
+│   │   │       ├── 📁 StatsCard.tsx
+│   │   │       ├── 📁 LoadingSpinner.tsx
+│   │   │       └── 📁 ErrorMessage.tsx
 │   │   ├── 📁 BannerOne/
 │   │   │   └── 📁 BannerOne.js
 │   │   ├── 📁 BlogDetails/

@@ -1,0 +1,152 @@
+/* Osassy Admin Dashboard Theme */
+:root {
+  --background: #F8FAFC;
+  --foreground: #1E293B;
+  --primary: #2563EB;
+  --primary-foreground: #F8FAFC;
+  --secondary: #475569;
+  --secondary-foreground: #F8FAFC;
+  --accent: #10B981;
+  --accent-foreground: #F8FAFC;
+  --muted: #E2E8F0;
+  --muted-foreground: #475569;
+  --destructive: #DC2626;
+  --destructive-foreground: #F8FAFC;
+  --border: #E2E8F0;
+  --input: #F8FAFC;
+  --ring: #2563EB;
+  --card: #FFFFFF;
+  --card-foreground: #1E293B;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1E293B;
+  --sidebar-primary: #2563EB;
+  --sidebar-primary-foreground: #F8FAFC;
+  --sidebar-border: #E2E8F0;
+  --radius: 0.75rem;
+  --shadow-xs: 0 1px 2px 0 rgba(30,41,59,0.04);
+  --shadow-sm: 0 1.5px 4px 0 rgba(30,41,59,0.08);
+  --shadow-md: 0 4px 12px 0 rgba(30,41,59,0.10);
+  --shadow-lg: 0 8px 24px 0 rgba(30,41,59,0.12);
+  --shadow-xl: 0 16px 32px 0 rgba(30,41,59,0.14);
+  --spacing: 1rem;
+}
+
+/* Override Tailwind colors with CSS variables */
+.bg-primary { background-color: var(--primary) !important; }
+.text-primary { color: var(--primary) !important; }
+.bg-secondary { background-color: var(--secondary) !important; }
+.text-secondary { color: var(--secondary) !important; }
+.bg-accent { background-color: var(--accent) !important; }
+.text-accent { color: var(--accent) !important; }
+.bg-destructive { background-color: var(--destructive) !important; }
+.text-destructive { color: var(--destructive) !important; }
+
+/* Menu Item Card Styles */
+.menu-item-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menu-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.menu-item-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background: var(--muted);
+}
+
+/* Button Styles */
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  opacity: 0.9;
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-accent:hover {
+  opacity: 0.9;
+}
+
+.btn-destructive {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-destructive:hover {
+  opacity: 0.9;
+}
+
+/* Status Badge Styles */
+.status-badge {
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-available {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.status-unavailable {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+/* Usage Badge */
+.usage-badge {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+}
