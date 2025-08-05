@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Download } from 'lucide-react';
+import { Download, Plus } from 'lucide-react';
 import { useOrders, useExportOrders } from '@/hooks/admin/useOrders';
 import { Order, OrderFilters as OrderFiltersType } from '@/types/admin';
 import AdminLayout from '@/components/admin/shared/AdminLayout';
@@ -90,30 +90,17 @@ export default function OrdersPage() {
       title="Order Management"
       description="Manage and track all customer orders"
     >
-      {/* Order Statistics */}
-      <OrderStats />
-
-      {/* Filters */}
-      <OrderFilters
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-        onApplyFilters={handleApplyFilters}
-        isLoading={isLoading}
-      />
-
-      {/* Action Bar */}
+      {/* Page Header with Buttons */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          {pagination && (
-            <p className="text-sm text-gray-700">
-              Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
-              {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
-              {pagination.total} orders
-            </p>
-          )}
+          <h1 className="text-3xl font-bold" style={{ color: 'var(--primary)' }}>
+            Order Management
+          </h1>
+          <p className="mt-1" style={{ color: 'var(--secondary)' }}>
+            Manage all customer orders and deliveries
+          </p>
         </div>
-        
-        <div className="flex items-center gap-3">
+        <div className="flex gap-3">
           <button
             onClick={handleExport}
             disabled={exportMutation.isPending || orders.length === 0}
@@ -137,8 +124,36 @@ export default function OrdersPage() {
             )}
             Export
           </button>
+          <button
+            className="btn-primary flex items-center gap-2"
+            style={{
+              background: 'var(--primary)',
+              color: 'var(--primary-foreground)',
+              borderRadius: '0.5rem',
+              padding: '0.5rem 1rem',
+              fontWeight: '600',
+              transition: 'background 0.2s',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            <Plus size={16} />
+            New Order
+          </button>
         </div>
       </div>
+
+      {/* Order Statistics */}
+      <OrderStats />
+
+      {/* Filters */}
+      <OrderFilters
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
+        onApplyFilters={handleApplyFilters}
+        isLoading={isLoading}
+      />
+
 
       {/* Bulk Actions */}
       <BulkActions

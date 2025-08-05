@@ -25,13 +25,13 @@ class MyDocument extends Document {
         <Head>
           <link
             rel="shortcut icon"
-            href="favicon.ico"
+            href="/favicon.ico"
             id="fav-shortcut"
             type="image/x-icon"
           />
           <link
             rel="icon"
-            href="favicon.ico"
+            href="/favicon.ico"
             id="fav-icon"
             type="image/x-icon"
           />
@@ -102,9 +102,9 @@ class MyDocument extends Document {
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="favicon-16x16.png"
+            href="/favicon-16x16.png"
           />
-          <link rel="icon" href="favicon.ico" />
+          <link rel="icon" href="/favicon.ico" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="msapplication-TileColor" content="#ffffff" />
           <meta name="msapplication-TileImage" content="ms-icon-144x144.png" />

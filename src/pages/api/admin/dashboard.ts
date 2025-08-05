@@ -4,6 +4,29 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Helper function to handle BigInt serialization
+function serializeBigInt(obj: any): any {
+  if (obj === null || obj === undefined) return obj;
+  
+  if (typeof obj === 'bigint') {
+    return Number(obj);
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(serializeBigInt);
+  }
+  
+  if (typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key in obj) {
+      newObj[key] = serializeBigInt(obj[key]);
+    }
+    return newObj;
+  }
+  
+  return obj;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -142,7 +165,7 @@ export default async function handler(
       prisma.$queryRaw`
         SELECT 
           DATE_TRUNC('week', "createdAt") as week,
-          COUNT(*) as count,
+          CAST(COUNT(*) AS INTEGER) as count,
           status
         FROM "Subscription" 
         WHERE "createdAt" >= ${new Date(Date.now() - 8 * 7 * 24 * 60 * 60 * 1000)}
@@ -170,7 +193,7 @@ export default async function handler(
     // Transform recent orders for frontend
     const transformedRecentOrders = recentOrders.map(order => ({
       id: order.id,
-      totalPrice: order.totalPrice,
+      totalPrice: Number(order.totalPrice),
       status: order.status,
       deliveryDate: order.deliveryDate,
       createdAt: order.createdAt,
@@ -198,9 +221,9 @@ export default async function handler(
         subscriptionGrowthRate: 0, // Would need historical data
       },
       revenue: {
-        monthly: monthlyRevenue._sum.totalPrice || 0,
-        weekly: weeklyRevenue._sum.totalPrice || 0,
-        daily: dailyRevenue._sum.totalPrice || 0,
+        monthly: Number(monthlyRevenue._sum.totalPrice || 0),
+        weekly: Number(weeklyRevenue._sum.totalPrice || 0),
+        daily: Number(dailyRevenue._sum.totalPrice || 0),
         monthlyGrowthRate: 0, // Would need historical comparison
         weeklyGrowthRate: 0, // Would need historical comparison
       },
@@ -208,7 +231,7 @@ export default async function handler(
         byStatus: ordersByStatus.reduce((acc, item) => {
           acc[item.status] = {
             count: item._count.status,
-            revenue: item._sum.totalPrice || 0
+            revenue: Number(item._sum.totalPrice || 0)
           };
           return acc;
         }, {} as Record<string, { count: number; revenue: number }>),
@@ -227,7 +250,7 @@ export default async function handler(
       },
       analytics: {
         averageOrderValue: totalOrders > 0 
-          ? (monthlyRevenue._sum.totalPrice || 0) / totalOrders 
+          ? Number(monthlyRevenue._sum.totalPrice || 0) / totalOrders 
           : 0,
         subscriptionConversionRate: totalUsers > 0 
           ? (totalActiveSubscriptions / totalUsers) * 100 
@@ -235,7 +258,7 @@ export default async function handler(
       }
     };
 
-    res.status(200).json(dashboardData);
+    res.status(200).json(serializeBigInt(dashboardData));
   } catch (error) {
     console.error('Admin dashboard API error:', error);
     

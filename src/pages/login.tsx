@@ -23,7 +23,16 @@ const LoginPage: NextPage = () => {
     if (result?.error) {
       setError(result.error);
     } else {
-      router.push('/profile');
+      // Fetch the session to get user role
+      const response = await fetch('/api/auth/session');
+      const session = await response.json();
+      
+      // Redirect based on user role
+      if (session?.user?.role === 'ADMIN') {
+        router.push('/admin/dashboard');
+      } else {
+        router.push('/profile');
+      }
     }
   };
 

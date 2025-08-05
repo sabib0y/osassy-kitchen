@@ -1,7 +1,7 @@
 import React from 'react';
-import { Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Edit2, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 import { MenuItem } from '../../../types/admin';
-import StatusBadge from '../shared/StatusBadge';
+import styles from '@/styles/components/admin/menu.module.scss';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -10,6 +10,17 @@ interface MenuItemCardProps {
   onToggleAvailability: () => void;
 }
 
+// Sample image URLs for demonstration
+const foodImages: Record<string, string> = {
+  'jollof-rice': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=200&fit=crop',
+  'egusi-soup': 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&h=200&fit=crop',
+  'grilled-chicken': 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=200&fit=crop',
+  'pounded-yam': 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=400&h=200&fit=crop',
+  'nkwobi': 'https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?w=400&h=200&fit=crop',
+  'chapman': 'https://images.unsplash.com/photo-1609951651556-5334e2706168?w=400&h=200&fit=crop',
+  'default': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=200&fit=crop'
+};
+
 export default function MenuItemCard({
   item,
   onEdit,
@@ -17,148 +28,79 @@ export default function MenuItemCard({
   onToggleAvailability
 }: MenuItemCardProps) {
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: 'NGN',
-      minimumFractionDigits: 0,
-    }).format(price);
+    return `₦${price.toLocaleString()}`;
   };
 
-  const getCategoryLabel = (category: string) => {
-    const categoryMap: Record<string, string> = {
-      'main-dishes': 'Main Dishes',
-      'soups': 'Soups',
-      'rice-dishes': 'Rice Dishes',
-      'grilled': 'Grilled Items',
-      'beverages': 'Beverages',
-      'appetizers': 'Appetizers',
-      'desserts': 'Desserts',
-      'sides': 'Sides'
-    };
-    return categoryMap[category] || category;
+  // Get image URL based on item name or use default
+  const getImageUrl = (name: string) => {
+    const key = name.toLowerCase().replace(/\s+/g, '-');
+    return foodImages[key] || foodImages.default;
   };
 
   return (
-    <div className="menu-item-card" style={{
-      background: 'var(--card)',
-      borderRadius: 'var(--radius)',
-      boxShadow: 'var(--shadow-xs)',
-      overflow: 'hidden',
-      transition: 'box-shadow 0.2s'
-    }}>
+    <div className={styles.menuItemCard}>
       {/* Image */}
-      <div className="relative w-full h-48 bg-gray-200">
-        {item.imageUrl ? (
-          <img
-            src={item.imageUrl}
-            alt={item.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-        )}
-        
-        {/* Availability Badge */}
-        <div className="absolute top-2 right-2">
-          <StatusBadge 
-            status={item.available ? 'available' : 'unavailable'} 
-          />
-        </div>
+      <div className={styles.imageContainer}>
+        <img
+          src={item.imageUrl || getImageUrl(item.name)}
+          alt={item.name}
+        />
+        {/* Availability Badge - Overlay on image */}
+        <span className={`${styles.availabilityBadge} ${item.available ? styles.available : styles.unavailable}`}>
+          {item.available ? 'Available' : 'Unavailable'}
+        </span>
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold truncate" style={{ color: 'var(--foreground)' }}>
-            {item.name}
-          </h3>
-          <span className="text-xs px-2 py-1 rounded-full ml-2 whitespace-nowrap" style={{ 
-            color: 'var(--muted-foreground)', 
-            background: 'var(--muted)',
-            borderRadius: '1rem',
-            fontSize: '0.7rem'
-          }}>
-            {getCategoryLabel(item.category)}
-          </span>
+      <div className={styles.cardContent}>
+        {/* Title */}
+        <div className={styles.cardHeader}>
+          <h3>{item.name}</h3>
         </div>
 
         {/* Description */}
-        <p className="text-sm mb-3 line-clamp-2" style={{ color: 'var(--secondary)' }}>
+        <p className={styles.description}>
           {item.description}
         </p>
 
-        {/* Price and Details */}
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xl font-bold" style={{ color: 'var(--primary)' }}>
+        {/* Price and Usage */}
+        <div className={styles.priceRow}>
+          <span className={styles.price}>
             {formatPrice(item.price)}
           </span>
-          <span className="usage-badge">
+          <span className={styles.usageBadge}>
             Used in {Math.floor(Math.random() * 20 + 1)} subscriptions
           </span>
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
+        <div className={styles.actions}>
           <button
             onClick={onEdit}
-            className="btn-secondary flex-1 inline-flex items-center justify-center gap-1"
-            style={{
-              background: 'var(--secondary)',
-              color: 'var(--secondary-foreground)',
-              borderRadius: '0.5rem',
-              padding: '0.4rem 0.75rem',
-              fontWeight: '600',
-              transition: 'background 0.2s',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '0.75rem'
-            }}
+            className={styles.editBtn}
           >
-            <Edit2 className="w-3 h-3" />
+            <Edit2 size={14} />
             Edit
           </button>
           
           <button
             onClick={onToggleAvailability}
-            className="btn-accent inline-flex items-center justify-center"
-            style={{
-              background: 'var(--accent)',
-              color: 'var(--accent-foreground)',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              border: 'none',
-              padding: '0.4rem',
-              fontSize: '0.75rem'
-            }}
+            className={styles.toggleBtn}
             title={item.available ? 'Make Unavailable' : 'Make Available'}
           >
             {item.available ? (
-              <Eye className="w-3 h-3" />
+              <ToggleRight size={16} />
             ) : (
-              <EyeOff className="w-3 h-3" />
+              <ToggleLeft size={16} />
             )}
           </button>
           
           <button
             onClick={onDelete}
-            className="btn-destructive inline-flex items-center justify-center"
-            style={{
-              background: 'var(--destructive)',
-              color: 'var(--destructive-foreground)',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              border: 'none',
-              padding: '0.4rem',
-              fontSize: '0.75rem'
-            }}
+            className={styles.deleteBtn}
             title="Delete Item"
           >
-            <Trash2 className="w-3 h-3" />
+            <Trash2 size={16} />
           </button>
         </div>
       </div>

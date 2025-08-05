@@ -3,21 +3,22 @@ import { Utensils, CheckCircle, Grid3X3, DollarSign } from 'lucide-react';
 import { useMenuStats } from '@/hooks/admin/useMenu';
 import StatsCard from '@/components/admin/shared/StatsCard';
 import { PageLoading } from '@/components/admin/shared/LoadingSpinner';
+import styles from '@/styles/components/admin/menu.module.scss';
 
 export default function MenuStats() {
   const { data: stats, isLoading, error } = useMenuStats();
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className={styles.statsLoadingGrid}>
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="animate-pulse bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                <div className="h-8 bg-gray-200 rounded w-16"></div>
+          <div key={i} className={styles.statsSkeletonCard}>
+            <div className={styles.statsSkeletonContent}>
+              <div className={styles.statsSkeletonText}>
+                <div className={styles.statsSkeletonTitle}></div>
+                <div className={styles.statsSkeletonValue}></div>
               </div>
-              <div className="w-8 h-8 bg-gray-200 rounded"></div>
+              <div className={styles.statsSkeletonIcon}></div>
             </div>
           </div>
         ))}
@@ -27,9 +28,9 @@ export default function MenuStats() {
 
   if (error || !stats) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="col-span-full bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-          <p className="text-red-600">Failed to load menu statistics</p>
+      <div className={styles.statsErrorContainer}>
+        <div className={styles.statsErrorMessage}>
+          <p>Failed to load menu statistics</p>
         </div>
       </div>
     );
@@ -67,7 +68,7 @@ export default function MenuStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div className={styles.statsGrid}>
       {statsData.map((stat, index) => (
         <StatsCard
           key={index}
