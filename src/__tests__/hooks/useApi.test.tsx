@@ -31,15 +31,26 @@ import {
 import { createMockApiResponse, createMockMenuItem, createMockOrder, createMockUser } from '../test-utils'
 
 // Mock the apiClient
-jest.mock('@/lib/api-client')
+jest.mock('@/lib/api-client', () => ({
+  apiClient: {
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+  },
+}))
 const mockApiClient = apiClient as jest.Mocked<typeof apiClient>
 
 // Mock next-auth
-jest.mock('next-auth/react')
+jest.mock('next-auth/react', () => ({
+  useSession: jest.fn(),
+}))
 const mockUseSession = useSession as jest.MockedFunction<typeof useSession>
 
 // Mock next/router
-jest.mock('next/router')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}))
 const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>
 
 const createWrapper = (queryClient: QueryClient) => {

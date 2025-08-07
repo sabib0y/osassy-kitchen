@@ -11,7 +11,9 @@ jest.mock('next-auth/react')
 const mockUseSession = useSession as jest.MockedFunction<typeof useSession>
 
 // Mock next/router
-jest.mock('next/router')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}))
 const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>
 
 // Mock next/link

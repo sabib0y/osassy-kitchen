@@ -13,7 +13,9 @@ const mockUseSession = useSession as jest.MockedFunction<typeof useSession>
 const mockSignOut = signOut as jest.MockedFunction<typeof signOut>
 
 // Mock next/router
-jest.mock('next/router')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}))
 const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>
 
 // Mock next/link

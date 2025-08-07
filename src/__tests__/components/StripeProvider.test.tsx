@@ -13,9 +13,17 @@ const mockGetStripeConfig = getStripeConfig as jest.MockedFunction<typeof getStr
 
 // Mock window.location.reload
 const mockReload = jest.fn()
-Object.defineProperty(window, 'location', {
-  value: { reload: mockReload },
-  writable: true,
+
+// Set up the mock at the top level
+beforeAll(() => {
+  Object.defineProperty(window, 'location', {
+    value: {
+      reload: mockReload,
+      href: 'http://localhost:3000',
+      origin: 'http://localhost:3000',
+    },
+    writable: true,
+  })
 })
 
 describe('StripeProvider', () => {

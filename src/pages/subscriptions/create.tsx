@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -20,12 +20,17 @@ import {
   Zap,
   PlusCircle,
   AlertCircle,
-  Loader2
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
 import styles from '@/styles/components/subscription-create.module.css';
 import dashboardStyles from '@/styles/components/user/dashboard.module.scss';
 import { Cart, CartItem, FilterState } from '@/types/user';
 import { MenuItem } from '@/types/admin';
+import { useMenuItems } from '@/hooks/useMenuItems';
+import MenuItemSkeleton, { SkeletonStyles } from '@/components/MenuItemSkeleton';
+import MenuErrorBoundary from '@/components/MenuErrorBoundary';
+import { createCheckoutSession, redirectToCheckout } from '@/lib/stripe-client';
 
 // Map categories from database to UI display format
 const categoryMapping: { [key: string]: string } = {
@@ -47,9 +52,6 @@ const CreateSubscriptionPage: React.FC = () => {
   const router = useRouter();
 
   // State management
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [isLoadingMenu, setIsLoadingMenu] = useState(true);
-  const [menuError, setMenuError] = useState<string | null>(null);
   const [cart, setCart] = useState<Cart>({});
   const [filters, setFilters] = useState<FilterState>({
     category: 'all',
@@ -61,6 +63,24 @@ const CreateSubscriptionPage: React.FC = () => {
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
+  // Use React Query hook to fetch menu items
+  const {
+    data: menuItems = [],
+    isLoading: isLoadingMenu,
+    error: menuQueryError,
+    refetch: refetchMenuItems,
+    isRefetching
+  } = useMenuItems({
+    enabled: !!session, // Only fetch when user is authenticated
+    staleTime: 1000 * 60 * 10, // Consider data fresh for 10 minutes
+    onError: (error) => {
+      console.error('Failed to fetch menu items:', error);
+    }
+  });
+
+  // Convert query error to string for display
+  const menuError = menuQueryError ? menuQueryError.message : null;
+
   // Redirect to login if not authenticated
   useEffect(() => {
     if (status === 'loading') return; // Still loading
@@ -68,35 +88,6 @@ const CreateSubscriptionPage: React.FC = () => {
       router.push('/login');
     }
   }, [session, status, router]);
-
-  // Fetch menu items from API
-  useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        setIsLoadingMenu(true);
-        setMenuError(null);
-        
-        const response = await fetch('/api/menu-items');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch menu items');
-        }
-        
-        const data = await response.json();
-        setMenuItems(data.menuItems || []);
-      } catch (error) {
-        console.error('Error fetching menu items:', error);
-        setMenuError('Failed to load menu items. Please try again later.');
-      } finally {
-        setIsLoadingMenu(false);
-      }
-    };
-
-    // Only fetch if user is authenticated
-    if (session) {
-      fetchMenuItems();
-    }
-  }, [session]);
 
   // Filter menu items based on search and category
   const filteredMenuItems = useMemo(() => {
@@ -120,7 +111,7 @@ const CreateSubscriptionPage: React.FC = () => {
   }, [cart]);
 
   // Handle quantity changes
-  const changeQuantity = (itemId: string, change: number) => {
+  const changeQuantity = useCallback((itemId: string, change: number) => {
     const menuItem = menuItems.find(item => item.id === itemId);
     if (!menuItem) return;
 
@@ -145,20 +136,20 @@ const CreateSubscriptionPage: React.FC = () => {
         };
       }
     });
-  };
+  }, [menuItems]);
 
   // Toggle dish in cart
-  const toggleDish = (itemId: string) => {
+  const toggleDish = useCallback((itemId: string) => {
     const currentQuantity = cart[itemId]?.quantity || 0;
     if (currentQuantity === 0) {
       changeQuantity(itemId, 1);
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
     }
-  };
+  }, [cart, changeQuantity]);
 
   // Toggle like/heart
-  const toggleLike = (itemId: string) => {
+  const toggleLike = useCallback((itemId: string) => {
     setLikedItems(prev => {
       const newSet = new Set(prev);
       if (newSet.has(itemId)) {
@@ -168,16 +159,16 @@ const CreateSubscriptionPage: React.FC = () => {
       }
       return newSet;
     });
-  };
+  }, []);
 
   // Handle filter changes
-  const handleCategoryFilter = (category: FilterState['category']) => {
+  const handleCategoryFilter = useCallback((category: FilterState['category']) => {
     setFilters(prev => ({ ...prev, category }));
-  };
+  }, []);
 
-  const handleSearch = (searchTerm: string) => {
+  const handleSearch = useCallback((searchTerm: string) => {
     setFilters(prev => ({ ...prev, searchTerm }));
-  };
+  }, []);
 
   // Handle checkout
   const handleCheckout = async () => {
@@ -203,68 +194,31 @@ const CreateSubscriptionPage: React.FC = () => {
         ? 'price_1RtHViQcnp5UiDwRGeiN3oy0' // Weekly subscription price
         : 'price_1RtHViQcnp5UiDwRQ8S4gxgG'; // Monthly subscription price
 
-      // Call the subscribe API endpoint
-      const response = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          priceId,
-          items,
-        }),
+      // Create Stripe checkout session using the utility function
+      const { sessionId } = await createCheckoutSession({
+        priceId,
+        items,
+        successUrl: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${window.location.origin}/cancel`
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create checkout session');
-      }
-
-      const { sessionId } = await response.json();
-
       // Redirect to Stripe Checkout
-      // We need to load Stripe.js first
-      const stripe = await loadStripe();
-      
-      if (!stripe) {
-        throw new Error('Failed to load Stripe');
-      }
-
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-
-      if (error) {
-        throw new Error(error.message || 'Failed to redirect to checkout');
-      }
+      await redirectToCheckout(sessionId);
     } catch (error) {
       console.error('Checkout error:', error);
       setCheckoutError(error instanceof Error ? error.message : 'An error occurred during checkout');
-    } finally {
       setIsProcessingCheckout(false);
     }
   };
 
-  // Helper function to load Stripe
-  const loadStripe = async () => {
-    // Dynamically import Stripe.js
-    const { loadStripe: loadStripeJs } = await import('@stripe/stripe-js');
-    const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-    
-    if (!publishableKey) {
-      console.error('Stripe publishable key not found');
-      return null;
-    }
-    
-    return loadStripeJs(publishableKey);
-  };
-
-  // Show loading state
-  if (status === 'loading' || isLoadingMenu) {
+  // Show loading state only for authentication
+  if (status === 'loading') {
     return (
       <Layout pageTitle="Create Your Nigerian Meal Subscription - Osassy Kitchen">
         <div className={dashboardStyles.dashboard}>
           <div className={dashboardStyles.loadingContainer}>
             <div className={dashboardStyles.spinner}></div>
-            <p>{status === 'loading' ? 'Loading your subscription builder...' : 'Loading menu items...'}</p>
+            <p>Loading your subscription builder...</p>
           </div>
         </div>
       </Layout>
@@ -278,6 +232,7 @@ const CreateSubscriptionPage: React.FC = () => {
 
   return (
     <Layout pageTitle="Create Your Nigerian Meal Subscription - Osassy Kitchen">
+      <SkeletonStyles />
       <div className={dashboardStyles.dashboard}>
         <div className={dashboardStyles.container}>
           {/* Sidebar */}
@@ -399,6 +354,7 @@ const CreateSubscriptionPage: React.FC = () => {
           </div>
 
           {/* Dishes and Summary Layout */}
+          <MenuErrorBoundary onRetry={() => refetchMenuItems()}>
           <div className={styles.contentLayout}>
             {/* Dishes Grid */}
             <div className={styles.dishesSection}>
@@ -408,16 +364,32 @@ const CreateSubscriptionPage: React.FC = () => {
                   <AlertCircle className="w-5 h-5" />
                   <span>{menuError}</span>
                   <button 
-                    onClick={() => window.location.reload()} 
+                    onClick={() => refetchMenuItems()} 
                     className={styles.retryButton}
+                    disabled={isRefetching}
                   >
-                    Retry
+                    {isRefetching ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Retrying...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="w-4 h-4" />
+                        Retry
+                      </>
+                    )}
                   </button>
                 </div>
               )}
 
+              {/* Loading Skeleton */}
+              {isLoadingMenu && !menuError && (
+                <MenuItemSkeleton count={6} />
+              )}
+
               {/* Dishes Grid */}
-              {!menuError && (
+              {!isLoadingMenu && !menuError && (
               <div className={styles.dishesGrid}>
                 {filteredMenuItems.map((item) => (
                   <div
@@ -502,11 +474,30 @@ const CreateSubscriptionPage: React.FC = () => {
               )}
               
               {/* Empty State */}
-              {!menuError && filteredMenuItems.length === 0 && (
+              {!isLoadingMenu && !menuError && filteredMenuItems.length === 0 && (
                 <div className={styles.emptyState}>
                   <Search className="w-16 h-16 text-gray-300 mb-4" />
                   <h3>No dishes found</h3>
                   <p>Try adjusting your search or filter criteria</p>
+                  {filters.searchTerm || filters.category !== 'all' ? (
+                    <button
+                      onClick={() => setFilters({ category: 'all', searchTerm: '' })}
+                      className={styles.resetFiltersBtn}
+                      style={{
+                        marginTop: '16px',
+                        padding: '8px 16px',
+                        backgroundColor: '#8B4513',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '500'
+                      }}
+                    >
+                      Clear Filters
+                    </button>
+                  ) : null}
                 </div>
               )}
             </div>
@@ -640,6 +631,7 @@ const CreateSubscriptionPage: React.FC = () => {
               </div>
             </div>
           </div>
+          </MenuErrorBoundary>
             {/* Success Toast */}
             {showSuccessToast && (
               <div className={styles.successToast}>

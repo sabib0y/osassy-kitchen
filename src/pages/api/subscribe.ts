@@ -11,6 +11,8 @@ interface SubscribeRequestBody {
     menuItemId: string;
     quantity: number;
   }>;
+  successUrl?: string;
+  cancelUrl?: string;
 }
 
 export default async function handler(
@@ -29,7 +31,7 @@ export default async function handler(
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { priceId, items }: SubscribeRequestBody = req.body;
+    const { priceId, items, successUrl, cancelUrl }: SubscribeRequestBody = req.body;
 
     if (!priceId || !items || items.length === 0) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -95,12 +97,27 @@ export default async function handler(
         quantity: 1 
       }],
       mode: 'subscription',
-      success_url: `${process.env.NEXTAUTH_URL}/profile?status=success`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/subscribe?status=cancelled`,
+      success_url: successUrl || `${process.env.NEXTAUTH_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl || `${process.env.NEXTAUTH_URL}/cancel`,
       // Store user choices in metadata for the webhook
       metadata: {
         userId: user.id,
         items: JSON.stringify(items), // [{ menuItemId, quantity }]
+        priceId: priceId,
+        billingInterval: priceId.includes('GeiN3oy0') ? 'WEEKLY' : 'MONTHLY'
+      },
+      // Add subscription data to prefill customer email
+      customer_email: !stripeCustomerId ? user.email || undefined : undefined,
+      // Allow promotion codes
+      allow_promotion_codes: true,
+      // Collect billing address
+      billing_address_collection: 'required',
+      // Configure subscription
+      subscription_data: {
+        metadata: {
+          userId: user.id,
+          items: JSON.stringify(items)
+        }
       }
     });
 
