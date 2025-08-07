@@ -18,88 +18,38 @@ import {
   User, 
   CreditCard,
   Zap,
-  PlusCircle
+  PlusCircle,
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import styles from '@/styles/components/subscription-create.module.css';
 import dashboardStyles from '@/styles/components/user/dashboard.module.scss';
 import { Cart, CartItem, FilterState } from '@/types/user';
+import { MenuItem } from '@/types/admin';
 
-// Mock data for menu items - this will be replaced with API call later
-const MOCK_MENU_ITEMS = [
-  {
-    id: 'jollof',
-    name: 'Jollof Rice',
-    description: 'The king of Nigerian rice dishes with tomatoes, peppers & spices',
-    price: 2500,
-    category: 'rice',
-    imageUrl: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=300&h=200&fit=crop&crop=center',
-    tags: ['Popular']
-  },
-  {
-    id: 'egusi',
-    name: 'Egusi Soup',
-    description: 'Rich melon seed soup with leafy greens and your choice of protein',
-    price: 3200,
-    category: 'soup',
-    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop&crop=center'
-  },
-  {
-    id: 'pounded-yam',
-    name: 'Pounded Yam',
-    description: 'Smooth, stretchy yam perfect for dipping in soups',
-    price: 2000,
-    category: 'protein',
-    imageUrl: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=300&h=200&fit=crop&crop=center'
-  },
-  {
-    id: 'suya',
-    name: 'Suya',
-    description: 'Spicy grilled beef skewers with traditional yaji spice blend',
-    price: 3500,
-    category: 'protein',
-    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=300&h=200&fit=crop&crop=center',
-    tags: ['Spicy']
-  },
-  {
-    id: 'coconut-rice',
-    name: 'Coconut Rice',
-    description: 'Fragrant rice cooked in rich coconut milk with vegetables',
-    price: 2800,
-    category: 'rice',
-    imageUrl: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&h=200&fit=crop&crop=center'
-  },
-  {
-    id: 'pepper-soup',
-    name: 'Pepper Soup',
-    description: 'Aromatic spicy soup with fish or meat and traditional herbs',
-    price: 2200,
-    category: 'soup',
-    imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=300&h=200&fit=crop&crop=center',
-    tags: ['Spicy']
-  },
-  {
-    id: 'plantain',
-    name: 'Dodo (Plantain)',
-    description: 'Sweet fried plantain slices, perfectly caramelised',
-    price: 1500,
-    category: 'protein',
-    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop&crop=center'
-  },
-  {
-    id: 'amala',
-    name: 'Amala',
-    description: 'Dark, smooth yam flour swallow perfect with ewedu or gbegiri',
-    price: 1800,
-    category: 'protein',
-    imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop&crop=center'
-  }
-];
+// Map categories from database to UI display format
+const categoryMapping: { [key: string]: string } = {
+  'rice-dishes': 'rice',
+  'soups': 'soup',
+  'grilled': 'protein',
+  'main-dishes': 'protein',
+  'sides': 'protein',
+  'appetizers': 'protein'
+};
+
+// Helper function to map database category to UI category
+const mapCategory = (dbCategory: string): string => {
+  return categoryMapping[dbCategory] || 'protein';
+};
 
 const CreateSubscriptionPage: React.FC = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   // State management
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoadingMenu, setIsLoadingMenu] = useState(true);
+  const [menuError, setMenuError] = useState<string | null>(null);
   const [cart, setCart] = useState<Cart>({});
   const [filters, setFilters] = useState<FilterState>({
     category: 'all',
@@ -108,6 +58,8 @@ const CreateSubscriptionPage: React.FC = () => {
   const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [billingInterval, setBillingInterval] = useState<'WEEKLY' | 'MONTHLY'>('WEEKLY');
+  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -117,15 +69,45 @@ const CreateSubscriptionPage: React.FC = () => {
     }
   }, [session, status, router]);
 
+  // Fetch menu items from API
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        setIsLoadingMenu(true);
+        setMenuError(null);
+        
+        const response = await fetch('/api/menu-items');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch menu items');
+        }
+        
+        const data = await response.json();
+        setMenuItems(data.menuItems || []);
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+        setMenuError('Failed to load menu items. Please try again later.');
+      } finally {
+        setIsLoadingMenu(false);
+      }
+    };
+
+    // Only fetch if user is authenticated
+    if (session) {
+      fetchMenuItems();
+    }
+  }, [session]);
+
   // Filter menu items based on search and category
   const filteredMenuItems = useMemo(() => {
-    return MOCK_MENU_ITEMS.filter(item => {
-      const matchesCategory = filters.category === 'all' || item.category === filters.category;
+    return menuItems.filter(item => {
+      const uiCategory = mapCategory(item.category);
+      const matchesCategory = filters.category === 'all' || uiCategory === filters.category;
       const matchesSearch = item.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
                           item.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [filters]);
+  }, [menuItems, filters]);
 
   // Calculate totals
   const { subtotal, total, itemCount } = useMemo(() => {
@@ -139,7 +121,7 @@ const CreateSubscriptionPage: React.FC = () => {
 
   // Handle quantity changes
   const changeQuantity = (itemId: string, change: number) => {
-    const menuItem = MOCK_MENU_ITEMS.find(item => item.id === itemId);
+    const menuItem = menuItems.find(item => item.id === itemId);
     if (!menuItem) return;
 
     setCart(prev => {
@@ -156,9 +138,9 @@ const CreateSubscriptionPage: React.FC = () => {
             id: menuItem.id,
             name: menuItem.name,
             price: menuItem.price,
-            category: menuItem.category,
+            category: mapCategory(menuItem.category),
             quantity: newQuantity,
-            imageUrl: menuItem.imageUrl
+            imageUrl: menuItem.imageUrl || undefined
           }
         };
       }
@@ -198,20 +180,91 @@ const CreateSubscriptionPage: React.FC = () => {
   };
 
   // Handle checkout
-  const handleCheckout = () => {
-    // For now, just redirect to a success page or next step
-    console.log('Proceeding to checkout with:', { cart, billingInterval });
-    // router.push('/subscriptions/schedule');
+  const handleCheckout = async () => {
+    // Validate cart
+    if (Object.keys(cart).length === 0) {
+      setCheckoutError('Please add at least one item to your subscription');
+      return;
+    }
+
+    setIsProcessingCheckout(true);
+    setCheckoutError(null);
+
+    try {
+      // Prepare items for the API
+      const items = Object.values(cart).map(item => ({
+        menuItemId: item.id,
+        quantity: item.quantity
+      }));
+
+      // Determine the Stripe price ID based on billing interval
+      // These price IDs are created via scripts/setup-stripe-prices.js
+      const priceId = billingInterval === 'WEEKLY' 
+        ? 'price_1RtHViQcnp5UiDwRGeiN3oy0' // Weekly subscription price
+        : 'price_1RtHViQcnp5UiDwRQ8S4gxgG'; // Monthly subscription price
+
+      // Call the subscribe API endpoint
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId,
+          items,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create checkout session');
+      }
+
+      const { sessionId } = await response.json();
+
+      // Redirect to Stripe Checkout
+      // We need to load Stripe.js first
+      const stripe = await loadStripe();
+      
+      if (!stripe) {
+        throw new Error('Failed to load Stripe');
+      }
+
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to redirect to checkout');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      setCheckoutError(error instanceof Error ? error.message : 'An error occurred during checkout');
+    } finally {
+      setIsProcessingCheckout(false);
+    }
+  };
+
+  // Helper function to load Stripe
+  const loadStripe = async () => {
+    // Dynamically import Stripe.js
+    const { loadStripe: loadStripeJs } = await import('@stripe/stripe-js');
+    const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    
+    if (!publishableKey) {
+      console.error('Stripe publishable key not found');
+      return null;
+    }
+    
+    return loadStripeJs(publishableKey);
   };
 
   // Show loading state
-  if (status === 'loading') {
+  if (status === 'loading' || isLoadingMenu) {
     return (
       <Layout pageTitle="Create Your Nigerian Meal Subscription - Osassy Kitchen">
         <div className={dashboardStyles.dashboard}>
           <div className={dashboardStyles.loadingContainer}>
             <div className={dashboardStyles.spinner}></div>
-            <p>Loading your subscription builder...</p>
+            <p>{status === 'loading' ? 'Loading your subscription builder...' : 'Loading menu items...'}</p>
           </div>
         </div>
       </Layout>
@@ -349,6 +402,22 @@ const CreateSubscriptionPage: React.FC = () => {
           <div className={styles.contentLayout}>
             {/* Dishes Grid */}
             <div className={styles.dishesSection}>
+              {/* Error Message */}
+              {menuError && (
+                <div className={styles.errorMessage}>
+                  <AlertCircle className="w-5 h-5" />
+                  <span>{menuError}</span>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className={styles.retryButton}
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {/* Dishes Grid */}
+              {!menuError && (
               <div className={styles.dishesGrid}>
                 {filteredMenuItems.map((item) => (
                   <div
@@ -359,7 +428,7 @@ const CreateSubscriptionPage: React.FC = () => {
                   >
                     <div className={styles.dishCardImageContainer}>
                       <img
-                        src={item.imageUrl}
+                        src={item.imageUrl || 'https://images.unsplash.com/photo-1633237308525-a7fa7d67e41f?w=300&h=200&fit=crop&crop=center'}
                         alt={item.name}
                         className={styles.dishImage}
                         loading="lazy"
@@ -373,20 +442,18 @@ const CreateSubscriptionPage: React.FC = () => {
                       >
                         <Heart className="w-4 h-4" />
                       </button>
-                      {item.tags && (
+                      {/* Add tags based on category */}
+                      {(item.category === 'grilled' || item.category === 'soups') && (
                         <div className={styles.dishTags}>
-                          {item.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className={`${styles.dishTag} ${
-                                tag === 'Popular'
-                                  ? styles.dishTagPopular
-                                  : styles.dishTagSpicy
-                              }`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                          <span
+                            className={`${styles.dishTag} ${
+                              item.category === 'grilled'
+                                ? styles.dishTagSpicy
+                                : styles.dishTagPopular
+                            }`}
+                          >
+                            {item.category === 'grilled' ? 'Grilled' : 'Popular'}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -432,9 +499,10 @@ const CreateSubscriptionPage: React.FC = () => {
                   </div>
                 ))}
               </div>
+              )}
               
               {/* Empty State */}
-              {filteredMenuItems.length === 0 && (
+              {!menuError && filteredMenuItems.length === 0 && (
                 <div className={styles.emptyState}>
                   <Search className="w-16 h-16 text-gray-300 mb-4" />
                   <h3>No dishes found</h3>
@@ -497,6 +565,31 @@ const CreateSubscriptionPage: React.FC = () => {
 
                 {Object.keys(cart).length > 0 && (
                   <>
+                    {/* Billing Interval Selector */}
+                    <div className={styles.billingIntervalSection}>
+                      <h4 className={styles.billingTitle}>Delivery Frequency</h4>
+                      <div className={styles.billingOptions}>
+                        <button
+                          className={`${styles.billingOption} ${billingInterval === 'WEEKLY' ? styles.billingOptionActive : ''}`}
+                          onClick={() => setBillingInterval('WEEKLY')}
+                        >
+                          <div className={styles.billingOptionContent}>
+                            <span className={styles.billingOptionLabel}>Weekly</span>
+                            <span className={styles.billingOptionPrice}>₦150 base fee</span>
+                          </div>
+                        </button>
+                        <button
+                          className={`${styles.billingOption} ${billingInterval === 'MONTHLY' ? styles.billingOptionActive : ''}`}
+                          onClick={() => setBillingInterval('MONTHLY')}
+                        >
+                          <div className={styles.billingOptionContent}>
+                            <span className={styles.billingOptionLabel}>Monthly</span>
+                            <span className={styles.billingOptionPrice}>₦500 base fee</span>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+
                     <div className={styles.summaryTotals}>
                       <div className={styles.summaryTotalRow}>
                         <span>Subtotal:</span>
@@ -512,12 +605,30 @@ const CreateSubscriptionPage: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Checkout Error */}
+                    {checkoutError && (
+                      <div className={styles.errorAlert}>
+                        <AlertCircle className="w-4 h-4" />
+                        <span>{checkoutError}</span>
+                      </div>
+                    )}
+
                     <button
                       className={styles.checkoutBtn}
                       onClick={handleCheckout}
+                      disabled={isProcessingCheckout}
                     >
-                      <span>Continue to Schedule</span>
-                      <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                      {isProcessingCheckout ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Proceed to Checkout</span>
+                          <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                        </>
+                      )}
                     </button>
                   </>
                 )}
