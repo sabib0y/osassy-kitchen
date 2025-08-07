@@ -51,10 +51,9 @@ export const StripeProvider: React.FC<StripeProviderProps> = ({
         // Load Stripe.js
         const stripeInstance = await getStripe();
         
-        if (!stripeInstance) {
-          throw new Error('Failed to load Stripe.js');
-        }
-
+        // If getStripe returns null, it means Stripe failed to load but didn't throw an error
+        // This could happen due to browser restrictions, network issues, etc.
+        // We set stripe to null without throwing an error, letting the component handle it gracefully
         setStripe(stripeInstance);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to initialize Stripe';

@@ -75,12 +75,12 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return `₦${amount.toLocaleString('en-NG')}`;
+    return `£${amount.toLocaleString('en-GB')}`;
   };
 
   // Format date
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-NG', {
+    return new Intl.DateTimeFormat('en-GB', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',

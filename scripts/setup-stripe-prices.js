@@ -105,7 +105,7 @@ async function createStripePrices(productId) {
         const price = await stripe.prices.create({
           product: productId,
           nickname: config.nickname,
-          currency: 'ngn', // Nigerian Naira
+          currency: 'gbp', // British Pounds
           unit_amount: config.unit_amount,
           recurring: config.recurring,
           metadata: config.metadata,

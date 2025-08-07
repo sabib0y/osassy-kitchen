@@ -36,7 +36,7 @@ export default function OrderModal({ order, isOpen, onClose }: OrderModalProps) 
   };
 
   const formatCurrency = (amount: number) => {
-    return `₦${amount.toLocaleString()}`;
+    return `£${amount.toLocaleString()}`;
   };
 
   const getNextStatusOptions = (currentStatus: Order['status']) => {

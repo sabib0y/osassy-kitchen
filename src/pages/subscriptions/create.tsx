@@ -434,7 +434,7 @@ const CreateSubscriptionPage: React.FC = () => {
                       <p className={styles.dishDescription}>{item.description}</p>
                       <div className={styles.dishPriceSection}>
                         <span className={styles.dishPrice}>
-                          ₦{item.price.toLocaleString()}
+                          £{item.price.toLocaleString()}
                         </span>
                         <div className={styles.quantityControls}>
                           <button
@@ -529,7 +529,7 @@ const CreateSubscriptionPage: React.FC = () => {
                         <div className={styles.summaryItemDetails}>
                           <h4 className={styles.summaryItemName}>{item.name}</h4>
                           <p className={styles.summaryItemPrice}>
-                            ₦{item.price.toLocaleString()} × {item.quantity}
+                            £{item.price.toLocaleString()} × {item.quantity}
                           </p>
                           <div className={styles.summaryItemControls}>
                             <button
@@ -566,7 +566,7 @@ const CreateSubscriptionPage: React.FC = () => {
                         >
                           <div className={styles.billingOptionContent}>
                             <span className={styles.billingOptionLabel}>Weekly</span>
-                            <span className={styles.billingOptionPrice}>₦150 base fee</span>
+                            <span className={styles.billingOptionPrice}>£150 base fee</span>
                           </div>
                         </button>
                         <button
@@ -575,7 +575,7 @@ const CreateSubscriptionPage: React.FC = () => {
                         >
                           <div className={styles.billingOptionContent}>
                             <span className={styles.billingOptionLabel}>Monthly</span>
-                            <span className={styles.billingOptionPrice}>₦500 base fee</span>
+                            <span className={styles.billingOptionPrice}>£500 base fee</span>
                           </div>
                         </button>
                       </div>
@@ -584,15 +584,15 @@ const CreateSubscriptionPage: React.FC = () => {
                     <div className={styles.summaryTotals}>
                       <div className={styles.summaryTotalRow}>
                         <span>Subtotal:</span>
-                        <span>₦{subtotal.toLocaleString()}</span>
+                        <span>£{subtotal.toLocaleString()}</span>
                       </div>
                       <div className={styles.summaryTotalRow}>
                         <span>Delivery:</span>
-                        <span>₦500</span>
+                        <span>£500</span>
                       </div>
                       <div className={styles.summaryGrandTotal}>
                         <span>Total:</span>
-                        <span>₦{total.toLocaleString()}</span>
+                        <span>£{total.toLocaleString()}</span>
                       </div>
                     </div>
 
@@ -626,7 +626,7 @@ const CreateSubscriptionPage: React.FC = () => {
 
                 <div className={styles.deliveryNote}>
                   <Zap className="w-4 h-4 text-yellow-500" />
-                  <span>Free delivery on orders over ₦5,000</span>
+                  <span>Free delivery on orders over £50</span>
                 </div>
               </div>
             </div>

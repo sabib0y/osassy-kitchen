@@ -41,7 +41,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({
     {
       id: 3,
       title: 'Payment Processed',
-      message: 'Your payment of ₦15,000 was processed successfully',
+      message: 'Your payment of £15.00 was processed successfully',
       time: '3 days ago',
       type: 'success',
       read: true,

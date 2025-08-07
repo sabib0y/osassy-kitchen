@@ -20,8 +20,8 @@ const headerData = {
     },
     {
       id: 4,
-      href: "/subscribe",
-      name: "Subscribe",
+      href: "/subscriptions",
+      name: "Subscription",
     },
     {
       id: 5,

@@ -37,10 +37,10 @@ export default function MenuStats() {
   }
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-NG', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'currency',
-      currency: 'NGN',
-      minimumFractionDigits: 0,
+      currency: 'GBP',
+      minimumFractionDigits: 2,
     }).format(price);
   };
 

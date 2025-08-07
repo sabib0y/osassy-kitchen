@@ -28,7 +28,7 @@ export default function MenuItemCard({
   onToggleAvailability
 }: MenuItemCardProps) {
   const formatPrice = (price: number) => {
-    return `₦${price.toLocaleString()}`;
+    return `£${price.toLocaleString()}`;
   };
 
   // Get image URL based on item name or use default

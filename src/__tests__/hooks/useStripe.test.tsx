@@ -22,6 +22,7 @@ const mockRedirectToCheckout = redirectToCheckout as jest.MockedFunction<typeof 
 const mockCreatePaymentIntent = createPaymentIntent as jest.MockedFunction<typeof createPaymentIntent>
 const mockIsStripeError = isStripeError as jest.MockedFunction<typeof isStripeError>
 const mockGetStripeErrorMessage = getStripeErrorMessage as jest.MockedFunction<typeof getStripeErrorMessage>
+const mockToStripeAmount = toStripeAmount as jest.MockedFunction<typeof toStripeAmount>
 
 describe('Stripe Hooks', () => {
   let mockStripe: any
@@ -45,6 +46,9 @@ describe('Stripe Hooks', () => {
         isTestMode: true,
       },
     })
+
+    // Mock toStripeAmount to convert amounts to kobo/cents
+    mockToStripeAmount.mockImplementation((amount: number) => Math.round(amount * 100))
   })
 
   describe('useStripeCheckout', () => {
@@ -237,14 +241,14 @@ describe('Stripe Hooks', () => {
       await act(async () => {
         clientSecret = await result.current.createPayment({
           amount: 50.00,
-          currency: 'ngn',
+          currency: 'gbp',
           metadata: { orderId: 'order_123' },
         })
       })
 
       expect(mockCreatePaymentIntent).toHaveBeenCalledWith({
         amount: 5000, // Converted to kobo
-        currency: 'ngn',
+        currency: 'gbp',
         metadata: { orderId: 'order_123' },
       })
       expect(clientSecret).toBe('pi_test_123_secret')
@@ -262,7 +266,7 @@ describe('Stripe Hooks', () => {
 
       expect(mockCreatePaymentIntent).toHaveBeenCalledWith({
         amount: 2550,
-        currency: 'ngn',
+        currency: 'gbp',
         metadata: undefined,
       })
     })

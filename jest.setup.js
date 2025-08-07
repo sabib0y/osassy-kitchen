@@ -48,6 +48,26 @@ process.env.NEXTAUTH_SECRET = 'test-secret'
 // Global fetch mock
 global.fetch = jest.fn()
 
+// Mock window.location methods
+if (!window.location.reload) {
+  Object.defineProperty(window.location, 'reload', {
+    configurable: true,
+    value: jest.fn()
+  })
+}
+if (!window.location.assign) {
+  Object.defineProperty(window.location, 'assign', {
+    configurable: true,
+    value: jest.fn()
+  })
+}
+if (!window.location.replace) {
+  Object.defineProperty(window.location, 'replace', {
+    configurable: true, 
+    value: jest.fn()
+  })
+}
+
 // Mock console methods for cleaner test output
 const originalError = console.error
 const originalWarn = console.warn

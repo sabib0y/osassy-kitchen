@@ -56,7 +56,7 @@ export default function OrderStats() {
       
       <StatsCard
         title="Revenue Today"
-        value={`₦${stats.revenueToday.toLocaleString()}`}
+        value={`£${stats.revenueToday.toLocaleString()}`}
         icon={DollarSign}
       />
     </div>

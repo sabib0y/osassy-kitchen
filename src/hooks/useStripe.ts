@@ -141,7 +141,7 @@ export const useStripePaymentIntent = (options: UseStripePaymentIntentOptions = 
     try {
       const { clientSecret } = await createPaymentIntent({
         amount: toStripeAmount(params.amount), // Convert to kobo/cents
-        currency: params.currency || 'ngn',
+        currency: params.currency || 'gbp',
         metadata: params.metadata,
       });
 
@@ -218,7 +218,7 @@ export const useStripe = () => {
 
   const utils = useMemo(() => ({
     // Format currency amounts
-    formatAmount: (amount: number, currency = 'ngn') => formatStripeAmount(amount, currency),
+    formatAmount: (amount: number, currency = 'gbp') => formatStripeAmount(amount, currency),
     
     // Convert to Stripe amount format
     toStripeAmount: (amount: number) => toStripeAmount(amount),

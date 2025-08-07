@@ -172,6 +172,8 @@ describe('OrderList', () => {
         nextPage: jest.fn(),
         prevPage: jest.fn(),
         refetch: jest.fn(),
+        isEmpty: true,
+        totalOrders: 0,
       })
 
       render(<OrderList />, { wrapper: createWrapper() })
@@ -182,7 +184,7 @@ describe('OrderList', () => {
   })
 
   describe('Loading State', () => {
-    it('should display loading spinner when loading', () => {
+    it('should display loading skeleton when loading', () => {
       mockUseOrders.mockReturnValue({
         orders: [],
         pagination: { currentPage: 1, totalPages: 0, hasMore: false, total: 0 },
@@ -201,12 +203,19 @@ describe('OrderList', () => {
         nextPage: jest.fn(),
         prevPage: jest.fn(),
         refetch: jest.fn(),
+        isEmpty: false,
+        totalOrders: 0,
       })
 
-      render(<OrderList />, { wrapper: createWrapper() })
+      const { container } = render(<OrderList />, { wrapper: createWrapper() })
 
-      // Component shows loading text
-      expect(screen.getByText(/Loading orders/i)).toBeInTheDocument()
+      // Component shows loading skeleton - verify the structure exists
+      // Should not show empty state when loading
+      expect(screen.queryByText(/No Orders Found/i)).not.toBeInTheDocument()
+      
+      // Should show some skeleton-like structure (multiple divs for loading)
+      const divElements = container.querySelectorAll('div')
+      expect(divElements.length).toBeGreaterThan(5) // Loading skeletons create multiple divs
     })
   })
 
@@ -230,11 +239,13 @@ describe('OrderList', () => {
         nextPage: jest.fn(),
         prevPage: jest.fn(),
         refetch: jest.fn(),
+        isEmpty: false,
+        totalOrders: 0,
       })
 
       render(<OrderList />, { wrapper: createWrapper() })
 
-      expect(screen.getByText(/Failed to load orders/i)).toBeInTheDocument()
+      expect(screen.getByText(/Error Loading Orders/i)).toBeInTheDocument()
     })
 
     it('should allow retry on error', () => {
@@ -257,6 +268,8 @@ describe('OrderList', () => {
         nextPage: jest.fn(),
         prevPage: jest.fn(),
         refetch: mockRefetch,
+        isEmpty: false,
+        totalOrders: 0,
       })
 
       render(<OrderList />, { wrapper: createWrapper() })

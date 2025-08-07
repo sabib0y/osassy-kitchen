@@ -150,7 +150,7 @@ const AdminDashboard: NextPage = () => {
   ];
 
   const formatCurrency = (amount: number) => {
-    return `₦${amount.toLocaleString()}`;
+    return `£${amount.toLocaleString()}`;
   };
 
   const getStatusClass = (status: string) => {

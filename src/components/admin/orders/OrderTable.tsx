@@ -59,7 +59,7 @@ export default function OrderTable({
   };
 
   const formatCurrency = (amount: number) => {
-    return `₦${amount.toLocaleString()}`;
+    return `£${amount.toLocaleString()}`;
   };
 
   const isAllSelected = orders.length > 0 && selectedOrderIds.length === orders.length;

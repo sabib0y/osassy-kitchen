@@ -1,6 +1,6 @@
 import { loadStripe, Stripe, StripeError } from '@stripe/stripe-js';
 
-let stripePromise: Promise<Stripe | null>;
+let stripePromise: Promise<Stripe | null> | undefined;
 
 /**
  * Get or create a singleton instance of Stripe.js
@@ -12,7 +12,8 @@ export const getStripe = (): Promise<Stripe | null> => {
     
     if (!publishableKey) {
       console.error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined');
-      throw new Error('Stripe publishable key is not configured');
+      // Return a rejected promise instead of throwing synchronously
+      return Promise.reject(new Error('Stripe publishable key is not configured'));
     }
 
     // Load Stripe.js asynchronously
@@ -20,6 +21,13 @@ export const getStripe = (): Promise<Stripe | null> => {
   }
 
   return stripePromise;
+};
+
+// Reset the singleton for testing purposes
+export const resetStripePromise = () => {
+  if (process.env.NODE_ENV === 'test') {
+    stripePromise = undefined;
+  }
 };
 
 /**
@@ -87,7 +95,7 @@ export const createPaymentIntent = async (params: {
     },
     body: JSON.stringify({
       amount: params.amount,
-      currency: params.currency || 'ngn',
+      currency: params.currency || 'gbp',
       metadata: params.metadata || {},
     }),
   });
@@ -104,7 +112,7 @@ export const createPaymentIntent = async (params: {
  * Type guards and error handling utilities
  */
 export const isStripeError = (error: any): error is StripeError => {
-  return error && typeof error === 'object' && 'type' in error;
+  return Boolean(error && typeof error === 'object' && 'type' in error);
 };
 
 export const getStripeErrorMessage = (error: StripeError): string => {
@@ -139,10 +147,17 @@ export const getStripeConfig = () => {
 };
 
 /**
- * Format amount for Stripe (convert from kobo/cents to naira/dollars)
+ * Format amount for Stripe (convert from pence to pounds)
  */
-export const formatStripeAmount = (amount: number, currency = 'ngn'): string => {
-  const divisor = currency.toLowerCase() === 'ngn' ? 100 : 100;
+export const formatStripeAmount = (amount: number, currency = 'gbp'): string => {
+  const divisor = 100; // GBP uses 100 pence per pound
+  const normalizedCurrency = currency.toLowerCase();
+  
+  if (normalizedCurrency === 'gbp') {
+    return `£${(amount / divisor).toFixed(2)}`;
+  }
+  
+  // Fallback to Intl formatter for other currencies
   const formatter = new Intl.NumberFormat('en-NG', {
     style: 'currency',
     currency: currency.toUpperCase(),
@@ -153,7 +168,7 @@ export const formatStripeAmount = (amount: number, currency = 'ngn'): string => 
 };
 
 /**
- * Convert amount to Stripe format (kobo/cents)
+ * Convert amount to Stripe format (pence)
  */
 export const toStripeAmount = (amount: number): number => {
   return Math.round(amount * 100);

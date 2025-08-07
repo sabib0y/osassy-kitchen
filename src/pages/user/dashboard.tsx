@@ -195,7 +195,7 @@ const UserDashboard: React.FC = () => {
   };
 
   const formatCurrency = (amount: number): string => {
-    return `₦${amount.toLocaleString()}`;
+    return `£${amount.toLocaleString()}`;
   };
 
   if (status === 'loading' || loading) {
