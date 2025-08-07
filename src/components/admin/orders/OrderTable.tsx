@@ -217,7 +217,7 @@ export default function OrderTable({
                 <td style={{ padding: '0.75rem 1rem', textAlign: 'left' }}>
                   <div className="text-sm">
                     <div>{order.deliveryDate ? new Date(order.deliveryDate).toLocaleDateString() : 'TBD'}</div>
-                    <div style={{ color: 'var(--secondary)' }}>{order.deliveryAddress?.city || 'Lagos'}</div>
+                    <div style={{ color: 'var(--secondary)' }}>Lagos</div>
                   </div>
                 </td>
                 <td style={{ padding: '0.75rem 1rem', textAlign: 'left' }}>

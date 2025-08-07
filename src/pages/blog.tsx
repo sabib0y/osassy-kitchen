@@ -10,7 +10,7 @@ const Blog: NextPage = () => {
   return (
     <Layout pageTitle="Blog Page">
       <InnerBanner title="Blog Posts" page="Blog Page" />
-      <BlogOne noTitle className="blog-one__blog-page">
+      <BlogOne noTitle className="blog-one__blog-page" totalBlogs={0}>
         <BlogPostPagination />
       </BlogOne>
       <CtaOne />

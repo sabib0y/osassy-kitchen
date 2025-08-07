@@ -4,6 +4,16 @@
 ## Executive Summary
 This document outlines the parallel execution strategy for completing the remaining 15% of Phase 4, decomposed into atomic, PR-ready chunks that can be developed simultaneously by specialized sub-agents.
 
+## ⚠️ CRITICAL REQUIREMENT: Testing Gates
+**Every wave MUST complete comprehensive testing with 80% minimum code coverage before proceeding to the next wave.** This includes:
+- Writing Jest test suites for all components
+- Achieving 80%+ code coverage
+- Running and passing all tests
+- Documenting test results
+- Getting explicit approval before continuing
+
+This requirement ensures quality, prevents regression, and maintains code reliability throughout the implementation.
+
 ---
 
 ## 1. Task Decomposition & Dependency Matrix
@@ -342,42 +352,120 @@ agent: testing-automation-engineer
 | **dashboard-analytics-specialist** | 013 | 4 hours | LOW |
 | **testing-automation-engineer** | 015 | 8 hours | MEDIUM |
 
-### Parallel Execution Timeline
+### Parallel Execution Timeline with Testing Gates
 
 ```
-Day 1-2 (Parallel Work):
+WAVE 1 - Foundation (Day 1-2):
 ├── api-endpoint-builder: Chunk-001 (3h)
 ├── stripe-integration-specialist: Chunk-003 (3h)
 ├── scss-styling-expert: Chunk-005 (4h)
 └── testing-automation-engineer: Setup test infrastructure
 
-Day 2-3 (Dependencies Resolved):
+🧪 WAVE 1 TESTING GATE (Day 2):
+├── Write Jest tests for all Wave 1 components
+├── Achieve minimum 80% code coverage
+├── Run integration tests
+├── Fix any failing tests
+└── Get approval before proceeding to Wave 2
+
+WAVE 2 - Dependencies (Day 3-4):
 ├── api-endpoint-builder: Chunk-002 (4h)
 ├── stripe-integration-specialist: Chunk-004 (6h)
 ├── react-frontend-expert: Chunk-006 (5h)
-└── scss-styling-expert: Continue Chunk-005
+└── scss-styling-expert: Continue refinements
 
-Day 4-5 (Feature Development):
+🧪 WAVE 2 TESTING GATE (Day 4):
+├── Write tests for new components
+├── Maintain 80% coverage threshold
+├── Verify integration with Wave 1
+└── Get approval before proceeding
+
+WAVE 3 - Features (Day 5-6):
 ├── react-frontend-expert: Chunk-007 (4h), Chunk-009 (6h)
 ├── api-endpoint-builder: Chunk-010 (4h)
 ├── stripe-integration-specialist: Chunk-008 (5h)
-└── testing-automation-engineer: Begin Chunk-015
+└── testing-automation-engineer: Update test suites
 
-Day 6-7 (Integration & Polish):
+🧪 WAVE 3 TESTING GATE (Day 6):
+├── Test all new features
+├── Update integration tests
+├── Coverage report review
+└── Get approval before proceeding
+
+WAVE 4 - Integration (Day 7-8):
 ├── api-endpoint-builder: Chunk-012 (4h)
 ├── react-frontend-expert: Chunk-011 (3h)
 ├── dashboard-analytics-specialist: Chunk-013 (4h)
 └── scss-styling-expert: Chunk-014 (6h)
 
-Day 8-9 (Testing & Refinement):
-├── testing-automation-engineer: Complete Chunk-015 (8h)
-├── All agents: Bug fixes and integration testing
-└── Quality control and documentation
+🧪 WAVE 4 TESTING GATE (Day 8):
+├── Comprehensive integration testing
+├── End-to-end test scenarios
+├── Performance testing
+└── Get approval before final phase
+
+WAVE 5 - Final Testing & Polish (Day 9):
+├── testing-automation-engineer: Complete E2E tests (Chunk-015)
+├── All agents: Bug fixes from test results
+├── Final coverage report (target: 85%+)
+└── Production readiness verification
 ```
 
 ---
 
-## 4. Quality Control Checklist
+## 4. Testing Requirements Per Wave
+
+### 🧪 Wave Testing Protocol
+
+**MANDATORY: Each wave must complete testing before proceeding to the next wave.**
+
+#### Wave Testing Checklist:
+```yaml
+wave_testing_requirements:
+  before_next_wave:
+    - Jest test suites: Written for all new components
+    - Code coverage: Minimum 80% per component
+    - Integration tests: Cross-component functionality verified
+    - Test execution: All tests passing (npm test)
+    - Coverage report: Generated and reviewed
+    - Documentation: Test files and results documented
+    - Approval: Explicit user sign-off required
+
+  test_deliverables:
+    - Test files in src/__tests__/
+    - Coverage report (npm test -- --coverage)
+    - Test summary document
+    - Any failing tests fixed
+    - Mock data and utilities created
+
+  coverage_targets:
+    - Statements: 80%+
+    - Branches: 80%+
+    - Functions: 80%+
+    - Lines: 80%+
+```
+
+#### Testing Commands:
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- [filename]
+
+# Watch mode for development
+npm test -- --watch
+
+# Generate coverage report
+npm test -- --coverage --coverageReporters=html
+```
+
+---
+
+## 5. Quality Control Checklist
 
 ### Pre-PR Requirements for Each Chunk
 
@@ -395,16 +483,19 @@ mandatory_checks:
     - Coverage: Minimum 80%
     - Integration tests: Where applicable
     - Manual testing: Documented
+    - Test results: Saved in testing/ folder
   
   documentation:
     - JSDoc comments: All public functions
     - README updates: If needed
     - Acceptance criteria: Met
+    - Test documentation: Created
   
   performance:
     - Bundle size: Within limits
     - Lighthouse score: >90
     - No memory leaks
+    - Tests run in < 30 seconds
 ```
 
 ---
