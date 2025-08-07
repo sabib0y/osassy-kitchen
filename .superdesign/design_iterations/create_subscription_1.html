@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Nigerian Meal Subscription - Osassy Kitchen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #C44536;
+            --primary-hover: #A63827;
+            --secondary: #F1C40F;
+            --background: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border-light: #E0E0E0;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-hover: 0 4px 12px rgba(0,0,0,0.15);
+            --radius: 10px;
+            --radius-small: 6px;
+        }
+
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+            background-color: var(--background) !important;
+            color: var(--text-primary) !important;
+            line-height: 1.6;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-light);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-item {
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            border-radius: var(--radius-small);
+            margin: 4px 12px;
+            transition: all 200ms ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Card Styles */
+        .dish-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: all 300ms ease;
+            border: 2px solid transparent;
+            overflow: hidden;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .dish-card.selected {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .dish-image {
+            transition: all 300ms ease;
+            border-radius: var(--radius-small);
+        }
+
+        .dish-card:hover .dish-image {
+            transform: scale(1.02);
+        }
+
+        /* Button Styles */
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            transition: all 200ms ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .add-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-small);
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 200ms ease;
+        }
+
+        .add-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .add-button:active {
+            transform: translateY(0);
+        }
+
+        /* Summary Panel */
+        .summary-panel {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-item {
+            animation: itemSlideIn 300ms ease-out;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        @keyframes itemSlideIn {
+            from {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .checkout-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-small);
+            padding: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 200ms ease;
+            width: 100%;
+        }
+
+        .checkout-btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .checkout-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Filter and Search */
+        .filter-tab {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border-light);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 200ms ease;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .filter-tab:hover:not(.active) {
+            background: #f8f9fa;
+            border-color: #ccc;
+        }
+
+        .search-input {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-small);
+            padding: 12px 16px 12px 44px;
+            background: var(--card-bg);
+            transition: all 200ms ease;
+            width: 100%;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(196, 69, 54, 0.1);
+        }
+
+        /* Toast */
+        .success-toast {
+            background: #10b981;
+            color: white;
+            border-radius: var(--radius-small);
+            box-shadow: var(--shadow-hover);
+            animation: successSlide 300ms ease;
+        }
+
+        @keyframes successSlide {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Heart Like */
+        .heart-like {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 50%;
+            padding: 8px;
+            transition: all 200ms ease;
+        }
+
+        .heart-like:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .heart-like.liked {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        /* Progress Steps */
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .progress-step.active .progress-step-number {
+            background: var(--primary);
+            color: white;
+        }
+
+        .progress-step.inactive .progress-step-number {
+            background: var(--card-bg);
+            border: 2px solid var(--border-light);
+            color: var(--text-muted);
+        }
+
+        .progress-line {
+            height: 2px;
+            width: 60px;
+            background: var(--border-light);
+        }
+
+        .progress-line.active {
+            background: var(--primary);
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-small);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .stat-icon.coral { background: var(--primary); }
+        .stat-icon.yellow { background: var(--secondary); }
+        .stat-icon.orange { background: #ff8c00; }
+    </style>
+</head>
+
+<body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 min-h-screen fixed left-0 top-0 z-40">
+        <!-- User Profile Section -->
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                    JD
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800">John Doe</h3>
+                    <p class="text-sm text-gray-500">john.doe@email.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="py-4">
+            <a href="#" class="nav-item">
+                <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                <span>Overview</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i data-lucide="package" class="w-5 h-5"></i>
+                <span>Subscriptions</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                <span>Orders</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="user" class="w-5 h-5"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="credit-card" class="w-5 h-5"></i>
+                <span>Payments</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-64 bg-gray-50">
+        <!-- Top Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-800">Create Subscription</h1>
+                    <p class="text-gray-600 mt-1">Build your personalised Nigerian meal plan</p>
+                </div>
+                <button class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                    <i data-lucide="arrow-left" class="w-5 h-5 mr-2 inline"></i>
+                    Back
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-6">
+            <!-- Progress Steps -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="flex items-center justify-center space-x-8">
+                    <div class="progress-step active">
+                        <div class="progress-step-number">1</div>
+                        <span class="font-medium text-gray-700">Select Dishes</span>
+                    </div>
+                    <div class="progress-line active"></div>
+                    <div class="progress-step inactive">
+                        <div class="progress-step-number">2</div>
+                        <span class="font-medium text-gray-400">Schedule</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step inactive">
+                        <div class="progress-step-number">3</div>
+                        <span class="font-medium text-gray-400">Payment</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Title Section -->
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-3">Build Your Nigerian Feast</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Select your favourite authentic Nigerian dishes for your weekly subscription</p>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div class="flex flex-col lg:flex-row gap-6 items-center justify-between">
+                    <div class="relative flex-1 max-w-md">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input 
+                            type="text" 
+                            placeholder="Search dishes..." 
+                            class="search-input"
+                            id="searchInput"
+                        >
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="filter-tab active" data-category="all">All</button>
+                        <button class="filter-tab" data-category="rice">Rice</button>
+                        <button class="filter-tab" data-category="soup">Soups</button>
+                        <button class="filter-tab" data-category="protein">Proteins</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dishes and Summary Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Dishes Grid -->
+                <div class="lg:col-span-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="dishesGrid">
+                        <!-- Jollof Rice -->
+                        <div class="dish-card p-6" data-dish="jollof" data-category="rice">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Jollof Rice" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="jollof">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-medium">Popular</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Jollof Rice</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">The king of Nigerian rice dishes with tomatoes, peppers & spices</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦2,500</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('jollof', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="jollof">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('jollof', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('jollof')">
+                                Add to Box
+                            </button>
+                        </div>
+
+                        <!-- Egusi Soup -->
+                        <div class="dish-card p-6" data-dish="egusi" data-category="soup">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Egusi Soup" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="egusi">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Egusi Soup</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Rich melon seed soup with leafy greens and your choice of protein</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦3,200</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('egusi', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="egusi">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('egusi', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('egusi')">
+                                Add to Box
+                            </button>
+                        </div>
+
+                        <!-- Pounded Yam -->
+                        <div class="dish-card p-6" data-dish="pounded-yam" data-category="protein">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Pounded Yam" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="pounded-yam">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Pounded Yam</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Smooth, stretchy yam perfect for dipping in soups</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦2,000</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('pounded-yam', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="pounded-yam">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('pounded-yam', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('pounded-yam')">
+                                Add to Box
+                            </button>
+                        </div>
+
+                        <!-- Suya -->
+                        <div class="dish-card p-6" data-dish="suya" data-category="protein">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Suya" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="suya">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-medium">Spicy</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Suya</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Spicy grilled beef skewers with traditional yaji spice blend</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦3,500</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('suya', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="suya">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('suya', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('suya')">
+                                Add to Box
+                            </button>
+                        </div>
+
+                        <!-- Coconut Rice -->
+                        <div class="dish-card p-6" data-dish="coconut-rice" data-category="rice">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Coconut Rice" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="coconut-rice">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Coconut Rice</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Fragrant rice cooked in rich coconut milk with vegetables</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦2,800</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('coconut-rice', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="coconut-rice">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('coconut-rice', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('coconut-rice')">
+                                Add to Box
+                            </button>
+                        </div>
+
+                        <!-- Pepper Soup -->
+                        <div class="dish-card p-6" data-dish="pepper-soup" data-category="soup">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Pepper Soup" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="pepper-soup">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-medium">Spicy</span>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Pepper Soup</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Aromatic spicy soup with fish or meat and traditional herbs</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦2,200</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('pepper-soup', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="pepper-soup">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('pepper-soup', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('pepper-soup')">
+                                Add to Box
+                            </button>
+                        </div>
+
+                        <!-- Plantain -->
+                        <div class="dish-card p-6" data-dish="plantain" data-category="protein">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Fried Plantain" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="plantain">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Dodo (Plantain)</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Sweet fried plantain slices, perfectly caramelised</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦1,500</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('plantain', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="plantain">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('plantain', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('plantain')">
+                                Add to Box
+                            </button>
+                        </div>
+
+                        <!-- Amala -->
+                        <div class="dish-card p-6" data-dish="amala" data-category="protein">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop&crop=center" 
+                                     alt="Amala" 
+                                     class="dish-image w-full h-48 object-cover">
+                                <button class="heart-like absolute top-3 right-3" data-dish="amala">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Amala</h3>
+                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">Dark, smooth yam flour swallow perfect with ewedu or gbegiri</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xl font-semibold text-gray-800">₦1,800</span>
+                                <div class="flex items-center gap-3">
+                                    <button class="quantity-btn" onclick="changeQuantity('amala', -1)">-</button>
+                                    <span class="quantity-display w-8 text-center font-medium" data-dish="amala">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('amala', 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="add-button w-full" onclick="toggleDish('amala')">
+                                Add to Box
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Panel -->
+                <div class="lg:col-span-1">
+                    <div class="summary-panel">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i data-lucide="shopping-bag" class="mr-3 w-5 h-5"></i>
+                            Your Box
+                        </h3>
+                        
+                        <div id="selectedItems" class="space-y-3 mb-6">
+                            <!-- Selected items will appear here -->
+                            <div class="text-gray-500 text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                                <i data-lucide="plus-circle" class="mx-auto mb-3 w-8 h-8 text-gray-400"></i>
+                                <p class="text-sm">Add dishes to see your selection</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-4 space-y-3">
+                            <div class="flex justify-between text-gray-600">
+                                <span>Subtotal:</span>
+                                <span class="font-medium" id="subtotal">₦0</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600">
+                                <span>Delivery:</span>
+                                <span class="font-medium">₦500</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-semibold text-gray-800 border-t border-gray-200 pt-3">
+                                <span>Total:</span>
+                                <span id="total">₦500</span>
+                            </div>
+                        </div>
+
+                        <button class="checkout-btn mt-6" id="checkoutBtn" disabled>
+                            Continue to Schedule
+                        </button>
+
+                        <div class="text-center mt-4 text-sm text-gray-500">
+                            <p class="flex items-center justify-center gap-2">
+                                <i data-lucide="zap" class="w-4 h-4 text-yellow-500"></i>
+                                Free delivery on orders over ₦5,000
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!-- Success Toast -->
+    <div id="successToast" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg hidden success-toast z-50">
+        <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            <span class="font-medium">Added to your box!</span>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Dish data
+        const dishes = {
+            'jollof': { name: 'Jollof Rice', price: 2500, category: 'rice' },
+            'egusi': { name: 'Egusi Soup', price: 3200, category: 'soup' },
+            'pounded-yam': { name: 'Pounded Yam', price: 2000, category: 'protein' },
+            'suya': { name: 'Suya', price: 3500, category: 'protein' },
+            'coconut-rice': { name: 'Coconut Rice', price: 2800, category: 'rice' },
+            'pepper-soup': { name: 'Pepper Soup', price: 2200, category: 'soup' },
+            'plantain': { name: 'Dodo (Plantain)', price: 1500, category: 'protein' },
+            'amala': { name: 'Amala', price: 1800, category: 'protein' }
+        };
+
+        // Cart state
+        let cart = {};
+
+        // Change quantity function
+        function changeQuantity(dishId, change) {
+            const currentQuantity = cart[dishId] ? cart[dishId].quantity : 0;
+            const newQuantity = Math.max(0, currentQuantity + change);
+            
+            const quantityDisplay = document.querySelector(`[data-dish="${dishId}"].quantity-display`);
+            quantityDisplay.classList.add('quantity-change');
+            
+            setTimeout(() => {
+                quantityDisplay.classList.remove('quantity-change');
+            }, 250);
+
+            if (newQuantity === 0 && cart[dishId]) {
+                delete cart[dishId];
+                const dishCard = document.querySelector(`[data-dish="${dishId}"].dish-card`);
+                dishCard.classList.remove('selected');
+                const addButton = dishCard.querySelector('.add-button');
+                addButton.textContent = 'ADD TO BOX';
+            } else if (newQuantity > 0) {
+                cart[dishId] = {
+                    ...dishes[dishId],
+                    quantity: newQuantity
+                };
+                const dishCard = document.querySelector(`[data-dish="${dishId}"].dish-card`);
+                dishCard.classList.add('selected');
+                const addButton = dishCard.querySelector('.add-button');
+                addButton.textContent = 'IN BOX';
+            }
+
+            quantityDisplay.textContent = newQuantity;
+            updateSummary();
+        }
+
+        // Toggle dish function
+        function toggleDish(dishId) {
+            const currentQuantity = cart[dishId] ? cart[dishId].quantity : 0;
+            if (currentQuantity === 0) {
+                changeQuantity(dishId, 1);
+                showSuccessToast();
+            }
+        }
+
+        // Show success toast
+        function showSuccessToast() {
+            const toast = document.getElementById('successToast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Update summary panel
+        function updateSummary() {
+            const selectedItems = document.getElementById('selectedItems');
+            const subtotalEl = document.getElementById('subtotal');
+            const totalEl = document.getElementById('total');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            if (Object.keys(cart).length === 0) {
+                selectedItems.innerHTML = `
+                    <div class="text-gray-500 text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                        <i data-lucide="plus-circle" class="mx-auto mb-3 w-8 h-8 text-gray-400"></i>
+                        <p class="text-sm">Add dishes to see your selection</p>
+                    </div>
+                `;
+                checkoutBtn.disabled = true;
+                checkoutBtn.classList.add('opacity-50');
+            } else {
+                selectedItems.innerHTML = Object.entries(cart).map(([dishId, item]) => `
+                    <div class="summary-item flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-800">${item.name}</p>
+                            <p class="text-sm text-gray-500">₦${item.price.toLocaleString()} × ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeQuantity('${dishId}', -1)" class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-sm hover:bg-gray-100 transition-colors">-</button>
+                            <span class="w-8 text-center text-sm font-medium">${item.quantity}</span>
+                            <button onclick="changeQuantity('${dishId}', 1)" class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-sm hover:bg-gray-100 transition-colors">+</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                checkoutBtn.disabled = false;
+                checkoutBtn.classList.remove('opacity-50');
+            }
+
+            const subtotal = Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = subtotal + (subtotal > 0 ? 500 : 0);
+
+            subtotalEl.textContent = `₦${subtotal.toLocaleString()}`;
+            totalEl.textContent = `₦${total.toLocaleString()}`;
+
+            // Re-initialize Lucide icons
+            lucide.createIcons();
+        }
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const dishCards = document.querySelectorAll('.dish-card');
+
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    
+                    // Update active tab
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Filter dishes
+                    dishCards.forEach(card => {
+                        if (category === 'all' || card.dataset.category === category) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                dishCards.forEach(card => {
+                    const dishName = card.querySelector('h3').textContent.toLowerCase();
+                    const dishDesc = card.querySelector('p').textContent.toLowerCase();
+                    
+                    if (dishName.includes(searchTerm) || dishDesc.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Heart like functionality
+            document.querySelectorAll('.heart-like').forEach(heart => {
+                heart.addEventListener('click', function() {
+                    this.classList.toggle('liked');
+                });
+            });
+
+            // Initialize Lucide icons
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

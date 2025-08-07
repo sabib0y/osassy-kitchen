@@ -41,8 +41,10 @@
     "zod": "^4.0.14"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
+    "@types/react-scroll": "^1.8.10",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.5",
     "typescript": "^5.8.3"
