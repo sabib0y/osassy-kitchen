@@ -89,7 +89,7 @@ describe('AddressManager', () => {
     const addButton = screen.getByText('Add New Address');
     await user.click(addButton);
 
-    expect(screen.getByText('Add New Address')).toBeInTheDocument();
+    expect(screen.getByText('Add Address')).toBeInTheDocument();
     expect(screen.getByLabelText('Address Type *')).toBeInTheDocument();
   });
 
@@ -280,10 +280,16 @@ describe('AddressManager', () => {
     const addButton = screen.getByText('Add New Address');
     await user.click(addButton);
 
+    // Verify modal is open by checking for modal-specific content
+    expect(screen.getByText('Add Address')).toBeInTheDocument();
+    expect(screen.getByLabelText('Address Type *')).toBeInTheDocument();
+
     const cancelButton = screen.getByText('Cancel');
     await user.click(cancelButton);
 
-    expect(screen.queryByText('Add New Address')).not.toBeInTheDocument();
+    // Check that modal-specific content is no longer present
+    expect(screen.queryByText('Add Address')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Address Type *')).not.toBeInTheDocument();
   });
 
   it('renders loading state correctly', () => {

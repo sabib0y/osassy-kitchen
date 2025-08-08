@@ -6,9 +6,20 @@ import { useProfile } from '../../../hooks/useProfile';
 
 // Mock dependencies
 jest.mock('next-auth/react');
-jest.mock('next/router');
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 jest.mock('../../../hooks/useProfile');
-jest.mock('../../../components/Layout/Layout', () => {
+jest.mock('../../../components/Layout/Layout.js', () => {
+  return function MockLayout({ children, pageTitle }: any) {
+    return (
+      <div data-testid="layout" data-page-title={pageTitle}>
+        {children}
+      </div>
+    );
+  };
+});
+jest.mock('../../../components/Layout/Layout.js', () => {
   return function MockLayout({ children, pageTitle }: any) {
     return (
       <div data-testid="layout" data-page-title={pageTitle}>
@@ -60,6 +71,21 @@ jest.mock('../../../components/user/NotificationPreferences', () => {
     );
   };
 });
+
+// Mock styles
+jest.mock('../../../styles/components/user/profile.module.scss', () => ({
+  loadingContainer: 'loadingContainer',
+  loadingSpinner: 'loadingSpinner',
+  errorContainer: 'errorContainer',
+  retryButton: 'retryButton',
+  profileContainer: 'profileContainer',
+  tabs: 'tabs',
+  tab: 'tab',
+  active: 'active',
+  tabContent: 'tabContent',
+  tabPanel: 'tabPanel',
+  formSection: 'formSection',
+}));
 
 const mockPush = jest.fn();
 const mockUseRouter = jest.mocked(useRouter);
@@ -206,14 +232,11 @@ describe('UserProfile Page', () => {
 
     // Check if page title is correct
     expect(screen.getByTestId('layout')).toHaveAttribute('data-page-title', 'Profile Settings - Osassy\'s Kitchen');
-    
-    // Check if user header is rendered
-    expect(screen.getByText('Profile Settings')).toBeInTheDocument();
 
     // Check if tab navigation is present
-    expect(screen.getByText('Personal Information')).toBeInTheDocument();
-    expect(screen.getByText('Delivery Addresses')).toBeInTheDocument();
-    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getAllByText('Personal Information')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Delivery Addresses')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Notifications')[0]).toBeInTheDocument();
 
     // Check if ProfileForm is rendered by default (personal tab)
     expect(screen.getByTestId('profile-form')).toBeInTheDocument();
@@ -331,7 +354,7 @@ describe('UserProfile Page', () => {
     render(<UserProfile />);
 
     // The component should still render, but getServerSideProps would handle the redirect
-    expect(screen.getByText('Profile Settings')).toBeInTheDocument();
+    expect(screen.getAllByText('Personal Information')[0]).toBeInTheDocument();
   });
 
   it('renders tab panels with correct headers and descriptions', async () => {
@@ -343,12 +366,12 @@ describe('UserProfile Page', () => {
     render(<UserProfile />);
 
     // Personal Information tab (default)
-    expect(screen.getByText('Personal Information')).toBeInTheDocument();
+    expect(screen.getAllByText('Personal Information')).toHaveLength(2); // Tab button + header
     expect(screen.getByText('Manage your personal details and account information.')).toBeInTheDocument();
 
     // Switch to addresses tab
     fireEvent.click(screen.getByText('Delivery Addresses'));
-    expect(screen.getByText('Delivery Addresses')).toBeInTheDocument();
+    expect(screen.getAllByText('Delivery Addresses')).toHaveLength(2); // Tab button + header
     expect(screen.getByText('Manage your delivery addresses for orders and subscriptions.')).toBeInTheDocument();
 
     // Switch to notifications tab

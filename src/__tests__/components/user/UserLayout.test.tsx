@@ -11,7 +11,9 @@ jest.mock('next-auth/react')
 const mockUseSession = useSession as jest.MockedFunction<typeof useSession>
 
 // Mock next/router
-jest.mock('next/router')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}))
 const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>
 
 // Mock next/head
@@ -155,7 +157,9 @@ describe('UserLayout', () => {
         </UserLayout>
       )
 
-      expect(container.firstChild).toBeNull()
+      // Should not render main content, only Head components are rendered
+      expect(container.firstChild?.tagName).toBe('META')
+      expect(container.querySelector('[data-testid="test-content"]')).not.toBeInTheDocument()
     })
 
     it('should render layout when authenticated', () => {
@@ -215,8 +219,9 @@ describe('UserLayout', () => {
         </UserLayout>
       )
 
-      // Check that the title is passed to Layout component
-      expect(screen.getByTestId('page-title')).toHaveTextContent(customTitle)
+      // Check that the title is set in the Head component
+      const titleElement = document.querySelector('title')
+      expect(titleElement).toHaveTextContent(customTitle)
     })
 
     it('should use default page title when not provided', () => {
@@ -226,7 +231,9 @@ describe('UserLayout', () => {
         </UserLayout>
       )
 
-      expect(screen.getByTestId('page-title')).toHaveTextContent("User Dashboard - Osassy's Kitchen")
+      // Check that the default title is set in the Head component
+      const titleElement = document.querySelector('title')
+      expect(titleElement).toHaveTextContent("User Dashboard - Osassy's Kitchen")
     })
   })
 
@@ -312,7 +319,7 @@ describe('UserLayout', () => {
       expect(screen.getByTestId('sidebar-open')).toHaveTextContent('open')
     })
 
-    it('should close sidebar on route change', () => {
+    it('should close sidebar on route change', async () => {
       render(
         <UserLayout>
           <div>Content</div>
@@ -329,9 +336,12 @@ describe('UserLayout', () => {
       )?.[1]
       
       expect(routeChangeHandler).toBeDefined()
-      routeChangeHandler()
       
-      expect(screen.getByTestId('sidebar-open')).toHaveTextContent('closed')
+      // Call the handler and wait for state update
+      routeChangeHandler()
+      await waitFor(() => {
+        expect(screen.getByTestId('sidebar-open')).toHaveTextContent('closed')
+      })
     })
 
     it('should register and unregister router event listeners', () => {

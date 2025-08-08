@@ -32,8 +32,18 @@ const config = {
   
   // Test match patterns
   testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/src/**/__tests__/**/*.(test|spec).{js,jsx,ts,tsx}',
     '<rootDir>/src/**/*.(test|spec).{js,jsx,ts,tsx}'
+  ],
+  
+  // Ignore utility files that aren't tests
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/src/__tests__/setup/',
+    '/src/__tests__/__mocks__/',
+    '/src/__tests__/test-utils.tsx',
+    '/src/__tests__/setup-fixes.ts',
+    '/src/__tests__/integration-test.tsx'
   ],
   
   // Coverage configuration

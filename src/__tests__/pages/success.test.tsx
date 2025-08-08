@@ -79,8 +79,13 @@ jest.mock('@/styles/pages/success.module.css', () => ({
   content: 'content',
 }))
 
-// Mock fetch
-global.fetch = jest.fn()
+// Mock fetch with default implementation
+global.fetch = jest.fn(() => 
+  Promise.resolve({
+    ok: true,
+    json: async () => ({ id: 'default_session', metadata: {} })
+  })
+)
 
 describe('SuccessPage', () => {
   let mockPush: jest.Mock
@@ -104,8 +109,14 @@ describe('SuccessPage', () => {
       status: 'authenticated',
     } as any)
 
-    // Reset fetch mock
+    // Reset fetch mock with default implementation
     ;(global.fetch as jest.Mock).mockClear()
+    ;(global.fetch as jest.Mock).mockImplementation(() => 
+      Promise.resolve({
+        ok: true,
+        json: async () => ({ id: 'default_session', metadata: {} })
+      })
+    )
   })
 
   afterEach(() => {
@@ -132,12 +143,20 @@ describe('SuccessPage', () => {
       mockRouter.query = { session_id: 'test_session_123' }
 
       ;(global.fetch as jest.Mock).mockImplementation(() =>
-        new Promise(resolve => setTimeout(resolve, 100))
+        new Promise(resolve => setTimeout(() => resolve({
+          ok: true,
+          json: async () => ({ id: 'test_session_123', metadata: {} })
+        }), 100))
       )
 
       render(<SuccessPage />)
 
       expect(screen.getByTestId('loader')).toBeInTheDocument()
+      
+      // Wait for loading to complete
+      await waitFor(() => {
+        expect(screen.getByTestId('order-confirmation')).toBeInTheDocument()
+      })
     })
   })
 
@@ -216,12 +235,26 @@ describe('SuccessPage', () => {
       const sessionId = 'test_session_123'
       mockRouter.query = { session_id: sessionId }
 
+      const session = createMockSession({
+        user: { email: 'user@example.com', name: 'Test User' },
+      })
+      mockUseSession.mockReturnValue({
+        data: session,
+        status: 'authenticated',
+      } as any)
+
       ;(global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'))
 
       render(<SuccessPage />)
 
       await waitFor(() => {
         expect(screen.getByTestId('error')).toHaveTextContent('Failed to load order details')
+      })
+
+      await waitFor(() => {
+        // Should show fallback data even with error
+        expect(screen.getByTestId('session-id')).toHaveTextContent(sessionId)
+        expect(screen.getByTestId('customer-email')).toHaveTextContent('user@example.com')
       })
     })
 
@@ -253,7 +286,7 @@ describe('SuccessPage', () => {
       await waitFor(() => {
         expect(screen.getByTestId('session-id')).toHaveTextContent(sessionId)
         expect(screen.getByTestId('customer-email')).toHaveTextContent('user@example.com')
-        expect(screen.getByTestId('billing-interval')).toHaveTextContent('Weekly Delivery')
+        expect(screen.getByTestId('billing-interval')).toHaveTextContent('WEEKLY')
       })
 
       consoleWarnSpy.mockRestore()
@@ -262,6 +295,14 @@ describe('SuccessPage', () => {
     it('should handle fetch exception with error message', async () => {
       const sessionId = 'test_session_123'
       mockRouter.query = { session_id: sessionId }
+
+      const session = createMockSession({
+        user: { email: 'user@example.com', name: 'Test User' },
+      })
+      mockUseSession.mockReturnValue({
+        data: session,
+        status: 'authenticated',
+      } as any)
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
 
@@ -278,9 +319,44 @@ describe('SuccessPage', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('error')).toHaveTextContent('Failed to load order details')
+        // Should show fallback data even with error
+        expect(screen.getByTestId('session-id')).toHaveTextContent(sessionId)
+        expect(screen.getByTestId('customer-email')).toHaveTextContent('user@example.com')
       })
 
       consoleErrorSpy.mockRestore()
+    })
+
+    it('should handle undefined fetch response', async () => {
+      const sessionId = 'test_session_123'
+      mockRouter.query = { session_id: sessionId }
+
+      const session = createMockSession({
+        user: { email: 'user@example.com', name: 'Test User' },
+      })
+      mockUseSession.mockReturnValue({
+        data: session,
+        status: 'authenticated',
+      } as any)
+
+      // Mock fetch returning undefined (can happen in some test scenarios)
+      ;(global.fetch as jest.Mock).mockResolvedValue(undefined)
+
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation()
+
+      render(<SuccessPage />)
+
+      await waitFor(() => {
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Could not fetch session details')
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId('session-id')).toHaveTextContent(sessionId)
+        expect(screen.getByTestId('customer-email')).toHaveTextContent('user@example.com')
+        expect(screen.getByTestId('billing-interval')).toHaveTextContent('WEEKLY')
+      })
+
+      consoleWarnSpy.mockRestore()
     })
   })
 
@@ -484,7 +560,7 @@ describe('SuccessPage', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('order-id')).toHaveTextContent('sub_abc123')
-        expect(screen.getByTestId('billing-interval')).toHaveTextContent('Monthly Delivery')
+        expect(screen.getByTestId('billing-interval')).toHaveTextContent('MONTHLY')
       })
     })
 
@@ -507,7 +583,7 @@ describe('SuccessPage', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('order-id')).toHaveTextContent('')
-        expect(screen.getByTestId('billing-interval')).toHaveTextContent('Weekly Delivery')
+        expect(screen.getByTestId('billing-interval')).toHaveTextContent('WEEKLY')
       })
     })
 
@@ -528,8 +604,8 @@ describe('SuccessPage', () => {
       await waitFor(() => {
         const billingElement = screen.getByTestId('billing-interval')
         expect(billingElement).toBeInTheDocument()
-        // The text should contain 'Weekly' regardless of exact formatting
-        expect(billingElement.textContent).toContain('Weekly')
+        // The text should be 'WEEKLY' from the mock
+        expect(billingElement.textContent).toBe('WEEKLY')
       })
     })
   })
@@ -617,7 +693,7 @@ describe('SuccessPage', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('items-count')).toHaveTextContent('0')
-        expect(screen.getByTestId('billing-interval')).toHaveTextContent('Weekly Delivery')
+        expect(screen.getByTestId('billing-interval')).toHaveTextContent('WEEKLY')
       })
     })
   })

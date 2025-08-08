@@ -40,8 +40,16 @@ export function usePaymentMethods(): UsePaymentMethodsReturn {
 
       const data: PaymentMethodsResponse = await response.json();
       
+      // Handle malformed or null response
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid response from server');
+      }
+      
+      // Handle missing or invalid paymentMethods array
+      const paymentMethodsArray = Array.isArray(data.paymentMethods) ? data.paymentMethods : [];
+      
       // Sort payment methods by default status and creation date
-      const sortedMethods = [...data.paymentMethods].sort((a, b) => {
+      const sortedMethods = [...paymentMethodsArray].sort((a, b) => {
         if (a.isDefault && !b.isDefault) return -1;
         if (!a.isDefault && b.isDefault) return 1;
         return b.createdAt - a.createdAt;
@@ -91,24 +99,37 @@ export function usePaymentMethods(): UsePaymentMethodsReturn {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to remove payment method');
+        const errorMessage = errorData.error || 'Failed to remove payment method';
+        setError(errorMessage);
+        throw new Error(errorMessage);
       }
 
       // Optimistically update the UI
       setPaymentMethods(prev => prev.filter(pm => pm.id !== paymentMethodId));
       
-      // Refresh to ensure consistency
+      // Refresh to ensure consistency - but preserve error state
+      const currentError = error;
       await fetchPaymentMethods();
+      if (currentError) {
+        setError(currentError);
+      }
     } catch (err) {
       console.error('Error removing payment method:', err);
-      setError(err instanceof Error ? err.message : 'Failed to remove payment method');
-      // Refresh to restore correct state on error
-      await fetchPaymentMethods();
+      const errorMessage = err instanceof Error ? err.message : 'Failed to remove payment method';
+      setError(errorMessage);
+      // Refresh to restore correct state on error - but preserve error state
+      try {
+        await fetchPaymentMethods();
+        setError(errorMessage); // Restore error after refresh
+      } catch {
+        // If refresh also fails, keep the original error
+        setError(errorMessage);
+      }
       throw err;
     } finally {
       setIsProcessing(false);
     }
-  }, [fetchPaymentMethods]);
+  }, [fetchPaymentMethods, error]);
 
   const setDefaultPaymentMethod = useCallback(async (paymentMethodId: string) => {
     setIsProcessing(true);
@@ -125,7 +146,9 @@ export function usePaymentMethods(): UsePaymentMethodsReturn {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to set default payment method');
+        const errorMessage = errorData.error || 'Failed to set default payment method';
+        setError(errorMessage);
+        throw new Error(errorMessage);
       }
 
       // Optimistically update the UI
@@ -135,18 +158,29 @@ export function usePaymentMethods(): UsePaymentMethodsReturn {
       })));
       setDefaultPaymentMethodId(paymentMethodId);
       
-      // Refresh to ensure consistency
+      // Refresh to ensure consistency - but preserve error state
+      const currentError = error;
       await fetchPaymentMethods();
+      if (currentError) {
+        setError(currentError);
+      }
     } catch (err) {
       console.error('Error setting default payment method:', err);
-      setError(err instanceof Error ? err.message : 'Failed to set default payment method');
-      // Refresh to restore correct state on error
-      await fetchPaymentMethods();
+      const errorMessage = err instanceof Error ? err.message : 'Failed to set default payment method';
+      setError(errorMessage);
+      // Refresh to restore correct state on error - but preserve error state  
+      try {
+        await fetchPaymentMethods();
+        setError(errorMessage); // Restore error after refresh
+      } catch {
+        // If refresh also fails, keep the original error
+        setError(errorMessage);
+      }
       throw err;
     } finally {
       setIsProcessing(false);
     }
-  }, [fetchPaymentMethods]);
+  }, [fetchPaymentMethods, error]);
 
   // Fetch payment methods on mount
   useEffect(() => {

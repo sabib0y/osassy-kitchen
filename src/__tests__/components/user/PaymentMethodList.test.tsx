@@ -31,8 +31,8 @@ describe('PaymentMethodList', () => {
       card: {
         brand: 'mastercard',
         last4: '5555',
-        expMonth: 6,
-        expYear: 2024,
+        expMonth: 12,
+        expYear: 2026,
         funding: 'debit',
       },
       billingDetails: {
@@ -119,7 +119,7 @@ describe('PaymentMethodList', () => {
     render(<PaymentMethodList {...defaultProps} />);
 
     expect(screen.getByText('Expires 12/25')).toBeInTheDocument();
-    expect(screen.getByText('Expires 06/24')).toBeInTheDocument();
+    expect(screen.getByText('Expires 12/26')).toBeInTheDocument();
     expect(screen.getByText('Expires 01/23')).toBeInTheDocument();
   });
 

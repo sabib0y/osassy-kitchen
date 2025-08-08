@@ -24,19 +24,24 @@ const AddressModal: React.FC<AddressModalProps> = ({ address, isOpen, onClose, o
     handleSubmit,
     reset,
     formState: { errors }
-  } = useForm<AddressFormData>({
-    defaultValues: {
-      type: address?.type || 'HOME',
-      label: address?.label || '',
-      street: address?.street || '',
-      city: address?.city || '',
-      state: address?.state || '',
-      postalCode: address?.postalCode || '',
-      country: address?.country || 'United Kingdom',
-      isDefault: address?.isDefault || false,
-      deliveryInstructions: address?.deliveryInstructions || ''
+  } = useForm<AddressFormData>({});
+
+  // Reset form when address or modal state changes
+  React.useEffect(() => {
+    if (isOpen) {
+      reset({
+        type: address?.type || 'HOME',
+        label: address?.label || '',
+        street: address?.street || '',
+        city: address?.city || '',
+        state: address?.state || '',
+        postalCode: address?.postalCode || '',
+        country: address?.country || 'United Kingdom',
+        isDefault: address?.isDefault || false,
+        deliveryInstructions: address?.deliveryInstructions || ''
+      });
     }
-  });
+  }, [address, isOpen, reset]);
 
   const onSubmit = async (data: AddressFormData) => {
     setIsSubmitting(true);
@@ -44,8 +49,7 @@ const AddressModal: React.FC<AddressModalProps> = ({ address, isOpen, onClose, o
 
     try {
       await onSave(data);
-      reset();
-      onClose();
+      handleClose();
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to save address');
     } finally {
@@ -53,17 +57,24 @@ const AddressModal: React.FC<AddressModalProps> = ({ address, isOpen, onClose, o
     }
   };
 
+  const handleClose = () => {
+    reset();
+    setError(null);
+    setIsSubmitting(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={handleClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h3>
             <i className="fas fa-map-marker-alt"></i>
-            {address ? 'Edit Address' : 'Add New Address'}
+            {address ? 'Edit Address' : 'Add Address'}
           </h3>
-          <button className={styles.closeButton} onClick={onClose}>
+          <button className={styles.closeButton} onClick={handleClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -269,7 +280,7 @@ const AddressModal: React.FC<AddressModalProps> = ({ address, isOpen, onClose, o
               <button
                 type="button"
                 className={styles.secondaryButton}
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={isSubmitting}
               >
                 Cancel

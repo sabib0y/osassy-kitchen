@@ -111,12 +111,11 @@ export const useProfile = (): UseProfileReturn => {
 
       const responseData = await response.json();
       
-      // Update local profile state
+      // Update local profile state with the updated fields from the response
       setProfile(prev => prev ? {
         ...prev,
-        name: responseData.profile.name,
-        phone: responseData.profile.phone,
-        updatedAt: responseData.profile.updatedAt
+        ...data, // Apply the form data that was sent
+        updatedAt: responseData.profile?.updatedAt || new Date().toISOString()
       } : null);
 
     } catch (err) {

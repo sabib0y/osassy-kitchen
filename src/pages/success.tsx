@@ -88,7 +88,7 @@ const SuccessPage: React.FC = () => {
         // Call an API endpoint to retrieve session details
         const response = await fetch(`/api/checkout/session/${session_id}`);
         
-        if (!response.ok) {
+        if (!response || !response.ok) {
           // If session not found or error, we can still show a generic success message
           console.warn('Could not fetch session details');
           setSessionData({
@@ -111,6 +111,15 @@ const SuccessPage: React.FC = () => {
       } catch (err) {
         console.error('Error fetching session details:', err);
         setError('Failed to load order details');
+        // Set fallback data even on error
+        setSessionData({
+          id: session_id,
+          customer_email: session?.user?.email || '',
+          metadata: {
+            billingInterval: 'WEEKLY',
+            items: []
+          }
+        } as CheckoutSessionData);
       } finally {
         setIsLoading(false);
       }
@@ -138,14 +147,14 @@ const SuccessPage: React.FC = () => {
   const itemsSubtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = 500;
   
-  // Use Stripe amounts when no items, otherwise calculate from items
-  const subtotal = orderItems.length > 0 
-    ? itemsSubtotal 
-    : (sessionData?.amount_subtotal ? sessionData.amount_subtotal / 100 : 0);
+  // Use Stripe amounts when available, otherwise calculate from items
+  const subtotal = sessionData?.amount_subtotal 
+    ? sessionData.amount_subtotal / 100
+    : itemsSubtotal;
   
-  const total = orderItems.length > 0
-    ? itemsSubtotal + deliveryFee
-    : (sessionData?.amount_total ? sessionData.amount_total / 100 : 0);
+  const total = sessionData?.amount_total
+    ? sessionData.amount_total / 100
+    : itemsSubtotal + deliveryFee;
 
   return (
     <Layout pageTitle="Order Successful - Osassy Kitchen">

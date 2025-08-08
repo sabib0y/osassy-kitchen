@@ -74,8 +74,8 @@ describe('SubscriptionDetails', () => {
 
     expect(screen.getByText('Weekly Nigerian Feast')).toBeInTheDocument();
     expect(screen.getByText('ACTIVE')).toBeInTheDocument();
-    expect(screen.getByText('£25.00')).toBeInTheDocument();
-    expect(screen.getByText('WEEKLY delivery')).toBeInTheDocument();
+    expect(screen.getAllByText('£25.00')).toHaveLength(2); // Header + price card
+    expect(screen.getAllByText('WEEKLY delivery')).toHaveLength(2); // Header + summary card
   });
 
   describe('Overview Tab', () => {
@@ -86,7 +86,7 @@ describe('SubscriptionDetails', () => {
       expect(screen.getByText('Weekly Nigerian Feast')).toBeInTheDocument();
       expect(screen.getByText('Price')).toBeInTheDocument();
       expect(screen.getByText('Per weekly')).toBeInTheDocument();
-      expect(screen.getByText('Items')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Items' })).toBeInTheDocument();
       expect(screen.getByText('3')).toBeInTheDocument(); // Total quantity: 2 + 1
       expect(screen.getByText('Started')).toBeInTheDocument();
     });
@@ -125,20 +125,20 @@ describe('SubscriptionDetails', () => {
       expect(screen.getByText('Subscription Plan')).toBeInTheDocument();
 
       // Switch to items tab
-      fireEvent.click(screen.getByText('Items'));
+      fireEvent.click(screen.getByRole('button', { name: /Items/ }));
       expect(screen.getByText('Subscription Items')).toBeInTheDocument();
       expect(screen.getByText('Items included in each delivery')).toBeInTheDocument();
 
       // Switch to history tab
-      fireEvent.click(screen.getByText('History'));
+      fireEvent.click(screen.getAllByRole('button', { name: /History/ })[0]);
       expect(screen.getByText('Order History')).toBeInTheDocument();
 
       // Switch to billing tab
-      fireEvent.click(screen.getByText('Billing'));
+      fireEvent.click(screen.getAllByRole('button', { name: '💳 Billing' })[0]);
       expect(screen.getByText('Billing Information')).toBeInTheDocument();
 
       // Switch back to overview
-      fireEvent.click(screen.getByText('Overview'));
+      fireEvent.click(screen.getByRole('button', { name: /Overview/ }));
       expect(screen.getByText('Subscription Plan')).toBeInTheDocument();
     });
   });
@@ -146,7 +146,7 @@ describe('SubscriptionDetails', () => {
   describe('Items Tab', () => {
     beforeEach(() => {
       render(<SubscriptionDetails subscription={mockSubscription} />);
-      fireEvent.click(screen.getByText('Items'));
+      fireEvent.click(screen.getByRole('button', { name: /Items/ }));
     });
 
     it('should display all subscription items', () => {
@@ -160,33 +160,39 @@ describe('SubscriptionDetails', () => {
       expect(screen.getByText('Sweet fried plantain')).toBeInTheDocument();
       expect(screen.getByText('Side Dish')).toBeInTheDocument();
       expect(screen.getByText('1x')).toBeInTheDocument();
-      expect(screen.getByText('£5.00')).toBeInTheDocument();
+      expect(screen.getAllByText('£5.00')).toHaveLength(2); // Individual price + total for plantain
     });
 
     it('should show total per delivery', () => {
       expect(screen.getByText('Total per delivery:')).toBeInTheDocument();
-      expect(screen.getByText('£25.00')).toBeInTheDocument();
+      expect(screen.getAllByText('£25.00')).toHaveLength(2); // Header + total per delivery
     });
   });
 
   describe('History Tab', () => {
     beforeEach(() => {
       render(<SubscriptionDetails subscription={mockSubscription} />);
-      fireEvent.click(screen.getByText('History'));
+      fireEvent.click(screen.getAllByRole('button', { name: /History/ })[0]);
     });
 
     it('should display recent orders', () => {
       expect(screen.getByText('Order History')).toBeInTheDocument();
       expect(screen.getByText('Recent orders from this subscription')).toBeInTheDocument();
-      expect(screen.getByText('Order #order-1')).toBeInTheDocument();
+      expect(screen.getByText('Order #order-1')).toBeInTheDocument(); // Last 8 chars of 'order-1'
       expect(screen.getByText('DELIVERED')).toBeInTheDocument();
       expect(screen.getByText('2x Jollof Rice')).toBeInTheDocument();
     });
 
+  });
+
+  describe('History Tab - Empty State', () => {
     it('should show empty state when no orders exist', () => {
-      const subscriptionWithoutOrders = { ...mockSubscription, recentOrders: [] };
+      const subscriptionWithoutOrders = { 
+        ...mockSubscription, 
+        recentOrders: [] // Explicitly empty array
+      };
       render(<SubscriptionDetails subscription={subscriptionWithoutOrders} />);
-      fireEvent.click(screen.getByText('History'));
+      fireEvent.click(screen.getAllByRole('button', { name: /History/ })[0]);
 
       expect(screen.getByText('No Orders Yet')).toBeInTheDocument();
       expect(screen.getByText('Orders from this subscription will appear here once they\'re generated.')).toBeInTheDocument();
@@ -196,7 +202,7 @@ describe('SubscriptionDetails', () => {
   describe('Billing Tab', () => {
     beforeEach(() => {
       render(<SubscriptionDetails subscription={mockSubscription} />);
-      fireEvent.click(screen.getByText('Billing'));
+      fireEvent.click(screen.getAllByRole('button', { name: '💳 Billing' })[0]);
     });
 
     it('should display billing information', () => {
@@ -207,13 +213,13 @@ describe('SubscriptionDetails', () => {
       expect(screen.getByText('Billing cycle:')).toBeInTheDocument();
       expect(screen.getByText('WEEKLY')).toBeInTheDocument();
       expect(screen.getByText('Amount:')).toBeInTheDocument();
-      expect(screen.getByText('£25.00')).toBeInTheDocument();
+      expect(screen.getAllByText('£25.00')).toHaveLength(2); // Header + amount
     });
 
     it('should show Stripe information when available', () => {
       expect(screen.getByText('Payment Method')).toBeInTheDocument();
       expect(screen.getByText('Payment is processed securely through Stripe')).toBeInTheDocument();
-      expect(screen.getByText('ID: pe123')).toBeInTheDocument(); // Last 8 chars of stripe ID
+      expect(screen.getByText('ID: tripe123')).toBeInTheDocument(); // Last 8 chars of 'sub_stripe123'
     });
 
     it('should show next billing date for active subscriptions', () => {
@@ -221,10 +227,17 @@ describe('SubscriptionDetails', () => {
       expect(screen.getByText('8 Jan 2024')).toBeInTheDocument();
     });
 
+  });
+
+  describe('Billing Tab - Paused Subscription', () => {
     it('should not show next billing for non-active subscriptions', () => {
-      const pausedSubscription = { ...mockSubscription, status: 'PAUSED' as const };
+      const pausedSubscription = { 
+        ...mockSubscription, 
+        status: 'PAUSED' as const,
+        nextDeliveryDate: null // Explicitly set to null for paused subscriptions
+      };
       render(<SubscriptionDetails subscription={pausedSubscription} />);
-      fireEvent.click(screen.getByText('Billing'));
+      fireEvent.click(screen.getAllByRole('button', { name: '💳 Billing' })[0]);
 
       expect(screen.queryByText('Next billing:')).not.toBeInTheDocument();
     });
@@ -245,10 +258,14 @@ describe('SubscriptionDetails', () => {
   describe('Currency Formatting', () => {
     it('should format currency in British pounds', () => {
       render(<SubscriptionDetails subscription={mockSubscription} />);
+      
+      // Switch to Items tab to see individual prices
+      fireEvent.click(screen.getByRole('button', { name: /Items/ }));
 
-      expect(screen.getAllByText('£25.00')).toHaveLength(2); // Header + price card
-      expect(screen.getByText('£10.00')).toBeInTheDocument();
-      expect(screen.getByText('£5.00')).toBeInTheDocument();
+      expect(screen.getAllByText('£25.00')).toHaveLength(2); // Header + total per delivery
+      expect(screen.getByText('£10.00')).toBeInTheDocument(); // Individual item price
+      expect(screen.getByText('£20.00')).toBeInTheDocument(); // 2 * £10.00
+      expect(screen.getAllByText('£5.00')).toHaveLength(2); // Individual price + total for plantain
     });
   });
 

@@ -1,29 +1,61 @@
 /**
  * Wave 1 Integration Tests
- * Comprehensive testing of all Wave 1 components
+ * Comprehensive testing of all Wave 1 components with enhanced robustness
  */
 
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom'
+import {
+  setupWave1Tests,
+  cleanupWave1Tests,
+  WAVE1_TEST_TIMEOUT,
+  withTimeoutAndErrorHandling,
+  loadModuleWithRetry,
+} from './setup/wave1-setup'
+
+// Enhanced timeout for integration tests
+jest.setTimeout(WAVE1_TEST_TIMEOUT)
+
+// Global test setup and cleanup with Wave 1 specific enhancements
+beforeEach(() => {
+  setupWave1Tests()
+})
+
+afterEach(() => {
+  cleanupWave1Tests()
+  cleanup()
+})
 
 // Test Wave 1 Components exist and export properly
 describe('Wave 1 Components Integration', () => {
   describe('Chunk-001: API Integration', () => {
-    it('should export API client', () => {
+    it('should export API client with timeout handling', async () => {
       const apiClient = require('@/lib/api-client')
       expect(apiClient).toBeDefined()
       expect(apiClient.api).toBeDefined()
       expect(typeof apiClient.api.get).toBe('function')
       expect(typeof apiClient.api.post).toBe('function')
       expect(typeof apiClient.api.put).toBe('function')
+      expect(typeof apiClient.api.patch).toBe('function')
       expect(typeof apiClient.api.delete).toBe('function')
+      expect(typeof apiClient.api.upload).toBe('function')
+      
+      // Verify ApiClient class exists and can be instantiated
+      expect(apiClient.ApiClient).toBeDefined()
+      expect(typeof apiClient.ApiClient).toBe('function')
+      
+      const instance = new apiClient.ApiClient()
+      expect(instance).toBeDefined()
     })
 
-    it('should export API types', () => {
-      const apiTypes = require('@/lib/api-types')
-      expect(apiTypes).toBeDefined()
-      // Check that types are exported (they'll be undefined at runtime but module should load)
+    it('should export API types without errors', () => {
+      expect(() => {
+        const apiTypes = require('@/lib/api-types')
+        expect(apiTypes).toBeDefined()
+        // Check that types are exported (they'll be undefined at runtime but module should load)
+        // The fact that the require() doesn't throw means TypeScript types are properly exported
+      }).not.toThrow()
     })
 
     it('should export API hooks', () => {
@@ -131,7 +163,7 @@ describe('Wave 1 Components Integration', () => {
       expect(config).toHaveProperty('isTestMode')
       
       // Test utility functions
-      expect(formatStripeAmount(5000, 'ngn')).toBe('₦50.00')
+      expect(formatStripeAmount(5000, 'gbp')).toBe('£50.00')
       expect(toStripeAmount(50)).toBe(5000)
     })
   })
@@ -200,5 +232,52 @@ describe('Wave 1 Completion Verification', () => {
     expect(wave1Complete.userLayout).toBe(true)
     expect(wave1Complete.testsWritten).toBe(true)
     expect(wave1Complete.coverageTarget).toBe('80%')
+  })
+})
+
+// Additional robustness tests for edge cases
+describe('Wave 1 Robustness Tests', () => {
+  it('should handle module loading failures gracefully', async () => {
+    await withTimeoutAndErrorHandling(async () => {
+      const modules = [
+        '@/lib/api-client',
+        '@/lib/stripe-client', 
+        '@/hooks/useApi',
+        '@/hooks/useStripe',
+        '@/components/user/UserLayout',
+      ]
+
+      // Test each module can be loaded with retry logic
+      for (const modulePath of modules) {
+        const module = await loadModuleWithRetry(modulePath)
+        expect(module).toBeDefined()
+      }
+    }, 15000) // 15 second timeout for this comprehensive test
+  })
+
+  it('should handle async operations without memory leaks', async () => {
+    // Test multiple imports to ensure no memory leaks
+    for (let i = 0; i < 3; i++) {
+      const { api } = require('@/lib/api-client')
+      expect(api).toBeDefined()
+      
+      // Clear require cache for this iteration to test fresh loading
+      const modulePath = require.resolve('@/lib/api-client')
+      delete require.cache[modulePath]
+    }
+  })
+
+  it('should maintain consistent exports across multiple imports', async () => {
+    // Import the same modules multiple times to ensure consistency
+    const import1 = require('@/lib/api-client')
+    const import2 = require('@/lib/api-client')
+    const import3 = require('@/lib/stripe-client')
+    const import4 = require('@/lib/stripe-client')
+    
+    expect(import1.api).toBe(import2.api)
+    expect(import3.getStripeConfig).toBe(import4.getStripeConfig)
+    
+    // Test that functions work consistently
+    expect(import3.formatStripeAmount(5000, 'gbp')).toBe(import4.formatStripeAmount(5000, 'gbp'))
   })
 })

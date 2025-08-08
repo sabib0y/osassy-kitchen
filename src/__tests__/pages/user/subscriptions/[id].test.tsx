@@ -6,7 +6,9 @@ import SubscriptionManagementPage from '../../../../pages/user/subscriptions/[id
 import { useSubscription } from '../../../../hooks/useSubscription';
 
 // Mock dependencies
-jest.mock('next/router');
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 jest.mock('next-auth/react');
 jest.mock('../../../../hooks/useSubscription');
 jest.mock('../../../../components/user/UserLayout', () => {
@@ -40,7 +42,6 @@ jest.mock('../../../../components/user/SubscriptionEditor', () => {
   };
 });
 
-const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
 const mockUseSession = useSession as jest.MockedFunction<typeof useSession>;
 const mockUseSubscription = useSubscription as jest.MockedFunction<typeof useSubscription>;
 
@@ -75,7 +76,7 @@ const mockRouterBack = jest.fn();
 
 describe('SubscriptionManagementPage', () => {
   beforeEach(() => {
-    mockUseRouter.mockReturnValue({
+    (useRouter as jest.Mock).mockReturnValue({
       push: mockRouterPush,
       back: mockRouterBack,
       query: { id: 'test-subscription-id' },
@@ -231,7 +232,7 @@ describe('SubscriptionManagementPage', () => {
         fireEvent.click(screen.getByText('Pause'));
 
         await waitFor(() => {
-          expect(screen.getByText('Pause Subscription')).toBeInTheDocument();
+          expect(screen.getByRole('heading', { name: /pause subscription/i })).toBeInTheDocument();
         });
       });
 
@@ -241,8 +242,8 @@ describe('SubscriptionManagementPage', () => {
         fireEvent.click(screen.getByText('Cancel'));
 
         await waitFor(() => {
-          expect(screen.getByText('Cancel Subscription')).toBeInTheDocument();
-          expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
+          expect(screen.getByRole('heading', { name: /cancel subscription/i })).toBeInTheDocument();
+          expect(screen.getAllByText(/This action cannot be undone/)[0]).toBeInTheDocument();
         });
       });
 
@@ -265,10 +266,10 @@ describe('SubscriptionManagementPage', () => {
         fireEvent.click(screen.getByText('Pause'));
 
         await waitFor(() => {
-          expect(screen.getByText('Pause Subscription')).toBeInTheDocument();
+          expect(screen.getByRole('heading', { name: /pause subscription/i })).toBeInTheDocument();
         });
 
-        fireEvent.click(screen.getByText('Pause Subscription'));
+        fireEvent.click(screen.getByRole('button', { name: /pause subscription/i }));
 
         await waitFor(() => {
           expect(mockPauseSubscription).toHaveBeenCalled();

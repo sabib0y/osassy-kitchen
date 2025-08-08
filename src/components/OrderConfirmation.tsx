@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { 
   CheckCircle, 
   Package, 
@@ -11,7 +12,9 @@ import {
   ChevronRight,
   Home,
   ShoppingBag,
-  Receipt
+  Receipt,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import styles from '@/styles/components/order-confirmation.module.css';
 
@@ -53,7 +56,7 @@ interface OrderConfirmationProps {
 const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
   sessionId,
   orderId,
-  customerName = 'Customer',
+  customerName,
   customerEmail,
   items = [],
   subtotal = 0,
@@ -66,6 +69,7 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
   isLoading = false,
   error
 }) => {
+  const router = useRouter();
   // Calculate next delivery date if not provided
   const estimatedDelivery = nextDeliveryDate || (() => {
     const date = new Date();
@@ -75,13 +79,15 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return `£${amount.toLocaleString('en-GB')}`;
+    return `₦${amount.toLocaleString('en-NG', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
   };
 
   // Format date
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-GB', {
-      weekday: 'long',
+    return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -91,21 +97,25 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
   if (isLoading) {
     return (
       <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner}></div>
-        <p>Loading your order details...</p>
+        <Loader2 className={styles.loadingSpinner} />
+        <p>Processing your order...</p>
       </div>
     );
   }
 
   if (error) {
+    const handleRetry = () => {
+      router.push('/subscriptions/create');
+    };
+
     return (
       <div className={styles.errorContainer}>
-        <div className={styles.errorIcon}>⚠️</div>
+        <AlertCircle className={styles.errorIcon} />
         <h2>Something went wrong</h2>
         <p>{error}</p>
-        <Link href="/subscriptions/create" className={styles.retryButton}>
+        <button onClick={handleRetry} className={styles.retryButton}>
           Try Again
-        </Link>
+        </button>
       </div>
     );
   }
@@ -119,7 +129,7 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
         </div>
         <h1 className={styles.successTitle}>Order Confirmed!</h1>
         <p className={styles.successSubtitle}>
-          Thank you for subscribing to Osassy Kitchen
+          {customerName ? `Thank you, ${customerName}!` : 'Thank you for your order!'}
         </p>
         {orderId && (
           <p className={styles.orderNumber} data-testid="order-id">
@@ -134,9 +144,9 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
           <Home className="w-4 h-4" />
           <span>Go to Dashboard</span>
         </Link>
-        <Link href="/user/subscriptions" className={styles.actionButton}>
+        <Link href="/user/orders" className={styles.actionButton}>
           <Package className="w-4 h-4" />
-          <span>View Subscription</span>
+          <span>View My Orders</span>
         </Link>
         <Link href="/subscriptions/create" className={styles.actionButtonSecondary}>
           <ShoppingBag className="w-4 h-4" />
@@ -167,7 +177,7 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
               <span className={styles.infoLabel}>Subscription:</span>
               <span className={styles.infoValue}>
                 <span className={styles.badge} data-testid="billing-interval">
-                  {billingInterval === 'WEEKLY' ? 'Weekly' : 'Monthly'} Delivery
+                  {billingInterval === 'WEEKLY' ? 'Weekly Subscription' : 'Monthly Subscription'}
                 </span>
               </span>
             </div>
@@ -191,69 +201,78 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
                 Every {billingInterval === 'WEEKLY' ? 'week' : 'month'}
               </span>
             </div>
-            {deliveryAddress && (
-              <div className={styles.addressSection}>
-                <span className={styles.infoLabel}>
-                  <MapPin className="w-4 h-4 inline mr-1" />
-                  Delivery Address:
-                </span>
-                <div className={styles.addressBlock}>
-                  {deliveryAddress.line1 && <p>{deliveryAddress.line1}</p>}
-                  {deliveryAddress.line2 && <p>{deliveryAddress.line2}</p>}
-                  {(deliveryAddress.city || deliveryAddress.state) && (
-                    <p>
-                      {deliveryAddress.city}
-                      {deliveryAddress.city && deliveryAddress.state && ', '}
-                      {deliveryAddress.state} {deliveryAddress.postal_code}
-                    </p>
-                  )}
-                  {deliveryAddress.country && <p>{deliveryAddress.country}</p>}
-                </div>
+            <div className={styles.addressSection}>
+              <span className={styles.infoLabel}>
+                <MapPin className="w-4 h-4 inline mr-1" />
+                Delivery Address:
+              </span>
+              <div className={styles.addressBlock}>
+                {deliveryAddress ? (
+                  <>
+                    {deliveryAddress.line1 && <p>{deliveryAddress.line1}</p>}
+                    {deliveryAddress.line2 && <p>{deliveryAddress.line2}</p>}
+                    {(deliveryAddress.city || deliveryAddress.state) && (
+                      <p>
+                        {deliveryAddress.city}
+                        {deliveryAddress.city && deliveryAddress.state && ', '}
+                        {deliveryAddress.state} {deliveryAddress.postal_code}
+                      </p>
+                    )}
+                    {deliveryAddress.country && <p>{deliveryAddress.country}</p>}
+                  </>
+                ) : (
+                  <p>Address will be confirmed</p>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
 
         {/* Payment Information */}
-        {paymentMethod && (
-          <div className={styles.detailsCard}>
-            <h3 className={styles.cardTitle}>
+        <div className={styles.detailsCard}>
+          <h3 className={styles.cardTitle}>
+            <CreditCard className="w-5 h-5" />
+            Payment Method
+          </h3>
+          <div className={styles.cardContent}>
+            <div className={styles.paymentMethod}>
               <CreditCard className="w-5 h-5" />
-              Payment Method
-            </h3>
-            <div className={styles.cardContent}>
-              <div className={styles.paymentMethod}>
-                <CreditCard className="w-5 h-5" />
-                <span>
-                  {paymentMethod.brand || 'Card'} ending in {paymentMethod.last4 || '****'}
-                </span>
-              </div>
-              <p className={styles.paymentNote}>
-                You will be charged {billingInterval === 'WEEKLY' ? 'weekly' : 'monthly'} on this card
-              </p>
+              <span>
+                {paymentMethod ? 
+                  `${paymentMethod.brand || 'Visa'} ending in ${paymentMethod.last4 || '4242'}` : 
+                  'Card payment'
+                }
+              </span>
             </div>
+            <p className={styles.paymentNote}>
+              You will be charged {billingInterval === 'WEEKLY' ? 'weekly' : 'monthly'} on this card
+            </p>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Order Items */}
       <div className={styles.itemsSection}>
+        <h3 className={styles.sectionTitle}>Order Items</h3>
         {items.length > 0 && (
           <>
-            <h3 className={styles.sectionTitle}>Your Selected Dishes</h3>
             <div className={styles.itemsList}>
               {items.map((item) => (
                 <div key={item.id} className={styles.orderItem}>
-                  {item.imageUrl && (
+                  {item.imageUrl ? (
                     <img 
                       src={item.imageUrl} 
                       alt={item.name}
                       className={styles.itemImage}
                     />
+                  ) : (
+                    <div className={styles.itemImage}>
+                      <Package className="w-8 h-8" data-testid="item-placeholder" />
+                    </div>
                   )}
                   <div className={styles.itemDetails}>
                     <h4 className={styles.itemName}>{item.name}</h4>
-                    <p className={styles.itemQuantity}>Quantity: {item.quantity}</p>
+                    <p className={styles.itemQuantity}>Qty: {item.quantity}</p>
                   </div>
                   <div className={styles.itemPrice}>
                     {formatCurrency(item.price * item.quantity)}
@@ -265,6 +284,7 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
         )}
 
         {/* Order Summary - Always show */}
+        <h3 className={styles.sectionTitle}>Order Summary</h3>
         <div className={styles.orderSummary}>
           <div className={styles.summaryRow}>
             <span>Subtotal:</span>

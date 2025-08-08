@@ -45,8 +45,29 @@ process.env.STRIPE_SECRET_KEY = 'sk_test_123'
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 process.env.NEXTAUTH_SECRET = 'test-secret'
 
-// Global fetch mock
-global.fetch = jest.fn()
+// Global fetch mock with better defaults
+global.fetch = jest.fn(() => 
+  Promise.resolve({
+    ok: true,
+    status: 200,
+    json: async () => ({ 
+      id: 'default_session', 
+      metadata: { 
+        billingInterval: 'WEEKLY',
+        items: [] 
+      } 
+    }),
+    text: async () => '{"id":"default_session","metadata":{"billingInterval":"WEEKLY","items":[]}}',
+    headers: new Headers(),
+    redirected: false,
+    statusText: 'OK',
+    type: 'basic',
+    url: '',
+    clone: function() { return this; },
+    body: null,
+    bodyUsed: false
+  })
+)
 
 // Mock window.location methods
 if (!window.location.reload) {

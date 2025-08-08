@@ -27,7 +27,7 @@ jest.mock('next/link', () => {
     children: React.ReactNode
     href: string
   }) {
-    return <div data-href={href}>{children}</div>
+    return React.cloneElement(children as React.ReactElement, { 'data-href': href })
   }
 })
 
@@ -104,9 +104,12 @@ describe('UserHeader', () => {
 
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      expect(screen.getByText('My Subscriptions')).toBeInTheDocument()
-      expect(screen.getAllByText('Dashboard')).toHaveLength(1) // One in breadcrumb
-      expect(screen.getByText('My Subscriptions')).toBeInTheDocument() // One in breadcrumb
+      // Should find h1 with "My Subscriptions"
+      expect(screen.getByRole('heading', { name: 'My Subscriptions' })).toBeInTheDocument()
+      // Should find breadcrumb link to Dashboard
+      expect(screen.getByText('Dashboard')).toBeInTheDocument()
+      // Should have "My Subscriptions" in both h1 and breadcrumb
+      expect(screen.getAllByText('My Subscriptions')).toHaveLength(2)
     })
 
     it('should display correct title for orders route', () => {
@@ -120,7 +123,7 @@ describe('UserHeader', () => {
 
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      expect(screen.getByText('Order History')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Order History' })).toBeInTheDocument()
     })
 
     it('should display correct title for profile route', () => {
@@ -134,7 +137,7 @@ describe('UserHeader', () => {
 
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      expect(screen.getByText('My Profile')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'My Profile' })).toBeInTheDocument()
     })
 
     it('should display correct title for payments route', () => {
@@ -148,7 +151,7 @@ describe('UserHeader', () => {
 
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      expect(screen.getByText('Payment Methods')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Payment Methods' })).toBeInTheDocument()
     })
 
     it('should display default title for unknown routes', () => {
@@ -162,7 +165,7 @@ describe('UserHeader', () => {
 
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      expect(screen.getByText('Dashboard')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument()
     })
 
     it('should not show breadcrumb separator on dashboard page', () => {

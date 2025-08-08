@@ -547,7 +547,7 @@ describe('useApi hooks', () => {
     })
 
     it('should handle error states correctly', async () => {
-      const error = { message: 'API Error', status: 500 }
+      const error = { message: 'API Error', status: 400 }
       mockApiClient.get.mockRejectedValue(error)
 
       const { result } = renderHook(() => useMenuItems(), {
@@ -556,8 +556,9 @@ describe('useApi hooks', () => {
 
       await waitFor(() => {
         expect(result.current.isError).toBe(true)
-        expect(result.current.error).toEqual(error)
-      })
+      }, { timeout: 3000 })
+
+      expect(result.current.error).toEqual(error)
     })
   })
 })

@@ -118,7 +118,7 @@ describe('UserPayments', () => {
         brand: 'mastercard',
         last4: '5555',
         expMonth: 6,
-        expYear: 2024,
+        expYear: 2026,
         funding: 'debit',
       },
       billingDetails: {
@@ -360,7 +360,7 @@ describe('UserPayments', () => {
     render(<UserPayments />);
 
     await waitFor(() => {
-      expect(screen.getByText('Failed to load payment methods')).toBeInTheDocument();
+      expect(screen.getByText('Network error')).toBeInTheDocument();
     });
   });
 });

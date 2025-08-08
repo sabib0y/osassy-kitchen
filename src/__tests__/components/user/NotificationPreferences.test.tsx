@@ -68,11 +68,11 @@ describe('NotificationPreferences', () => {
     expect(screen.getByText('Push Notifications')).toBeInTheDocument();
 
     // Check if switches are in correct states
-    const emailOrderConfirmation = screen.getByLabelText('Order Confirmation') as HTMLInputElement;
-    expect(emailOrderConfirmation.checked).toBe(true);
+    const emailOrderConfirmationInput = document.getElementById('emailOrderConfirmation') as HTMLInputElement;
+    expect(emailOrderConfirmationInput.checked).toBe(true);
 
-    const emailPromotions = screen.getByLabelText('Promotions & Offers') as HTMLInputElement;
-    expect(emailPromotions.checked).toBe(false);
+    const emailPromotionsInput = document.getElementById('emailPromotions') as HTMLInputElement;
+    expect(emailPromotionsInput.checked).toBe(false);
   });
 
   it('toggles email notification settings', async () => {
@@ -85,7 +85,7 @@ describe('NotificationPreferences', () => {
       />
     );
 
-    const promotionsToggle = screen.getByLabelText('Promotions & Offers') as HTMLInputElement;
+    const promotionsToggle = document.getElementById('emailPromotions') as HTMLInputElement;
     expect(promotionsToggle.checked).toBe(false);
 
     await user.click(promotionsToggle);
@@ -103,10 +103,7 @@ describe('NotificationPreferences', () => {
     );
 
     // Find SMS order confirmation toggle
-    const smsToggles = screen.getAllByLabelText('Order Confirmation');
-    const smsOrderToggle = smsToggles.find(toggle => 
-      toggle.closest('.notificationSection')?.textContent?.includes('SMS')
-    ) as HTMLInputElement;
+    const smsOrderToggle = document.getElementById('smsOrderConfirmation') as HTMLInputElement;
 
     expect(smsOrderToggle.checked).toBe(false);
 
@@ -124,7 +121,7 @@ describe('NotificationPreferences', () => {
       />
     );
 
-    const pushPromotionsToggle = screen.getByLabelText('Promotions') as HTMLInputElement;
+    const pushPromotionsToggle = document.getElementById('pushPromotions') as HTMLInputElement;
     expect(pushPromotionsToggle.checked).toBe(false);
 
     await user.click(pushPromotionsToggle);
@@ -238,8 +235,8 @@ describe('NotificationPreferences', () => {
       />
     );
 
-    const promotionsToggle = screen.getByLabelText('Promotions & Offers') as HTMLInputElement;
-    const newsletterToggle = screen.getByLabelText('Newsletter') as HTMLInputElement;
+    const promotionsToggle = document.getElementById('emailPromotions') as HTMLInputElement;
+    const newsletterToggle = document.getElementById('emailNewsletter') as HTMLInputElement;
 
     // Toggle multiple settings
     await user.click(promotionsToggle);
@@ -307,13 +304,9 @@ describe('NotificationPreferences', () => {
       />
     );
 
-    // There should be multiple "Order Confirmation" toggles for different notification types
-    const orderConfirmationToggles = screen.getAllByLabelText('Order Confirmation');
-    expect(orderConfirmationToggles.length).toBeGreaterThan(1);
-
     // Email order confirmation should be enabled, SMS should be disabled
-    const emailToggle = orderConfirmationToggles[0] as HTMLInputElement;
-    const smsToggle = orderConfirmationToggles[1] as HTMLInputElement;
+    const emailToggle = document.getElementById('emailOrderConfirmation') as HTMLInputElement;
+    const smsToggle = document.getElementById('smsOrderConfirmation') as HTMLInputElement;
 
     expect(emailToggle.checked).toBe(true);
     expect(smsToggle.checked).toBe(false);

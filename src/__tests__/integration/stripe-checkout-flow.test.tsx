@@ -5,7 +5,16 @@ import { setupSuccessfulStripeLoad, setupRedirectToCheckoutSuccess } from '../__
 import { StripeProvider } from '@/components/StripeProvider'
 
 // Mock the stripe client
-jest.mock('@/lib/stripe-client')
+jest.mock('@/lib/stripe-client', () => ({
+  getStripe: jest.fn(),
+  createCheckoutSession: jest.fn(),
+  redirectToCheckout: jest.fn(),
+  getStripeConfig: jest.fn(() => ({
+    publishableKey: 'pk_test_integration123',
+    isProduction: false,
+    isTestMode: true,
+  }))
+}))
 import * as stripeClient from '@/lib/stripe-client'
 
 // Mock a simple checkout button component for testing
@@ -28,13 +37,6 @@ const MockCheckoutButton: React.FC<{ sessionId: string }> = ({ sessionId }) => {
 describe('Stripe Checkout Integration', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    
-    // Mock getStripeConfig
-    ;(stripeClient.getStripeConfig as jest.Mock).mockReturnValue({
-      publishableKey: 'pk_test_integration123',
-      isProduction: false,
-      isTestMode: true,
-    })
   })
 
   it('should complete end-to-end checkout flow', async () => {
@@ -42,6 +44,9 @@ describe('Stripe Checkout Integration', () => {
     
     // Set up successful Stripe loading and checkout
     const mockStripe = setupRedirectToCheckoutSuccess()
+    
+    // Mock getStripe to return our mock stripe instance
+    ;(stripeClient.getStripe as jest.Mock).mockResolvedValue(mockStripe)
     
     // Mock createCheckoutSession
     ;(stripeClient.createCheckoutSession as jest.Mock).mockResolvedValue({
@@ -57,9 +62,9 @@ describe('Stripe Checkout Integration', () => {
       </StripeProvider>
     )
 
-    // Wait for Stripe to initialize
+    // Wait for Stripe to initialize (no loading text in this simple test)
     await waitFor(() => {
-      expect(screen.queryByText('Loading payment system...')).not.toBeInTheDocument()
+      expect(screen.getByTestId('checkout-button')).toBeInTheDocument()
     })
 
     // Find and click checkout button
@@ -71,14 +76,15 @@ describe('Stripe Checkout Integration', () => {
 
     // Verify Stripe redirect was called correctly
     await waitFor(() => {
-      expect(mockStripe.redirectToCheckout).toHaveBeenCalledWith({
-        sessionId: 'cs_test_integration123'
-      })
+      expect(stripeClient.redirectToCheckout).toHaveBeenCalledWith('cs_test_integration123')
     })
   })
 
   it('should handle checkout session creation and redirect', async () => {
     const mockStripe = setupSuccessfulStripeLoad()
+    
+    // Mock getStripe to return our mock stripe instance
+    ;(stripeClient.getStripe as jest.Mock).mockResolvedValue(mockStripe)
     
     // Mock createCheckoutSession
     ;(stripeClient.createCheckoutSession as jest.Mock).mockResolvedValue({
@@ -114,9 +120,9 @@ describe('Stripe Checkout Integration', () => {
       </StripeProvider>
     )
 
-    // Wait for Stripe to load
+    // Wait for component to render
     await waitFor(() => {
-      expect(screen.queryByText('Loading payment system...')).not.toBeInTheDocument()
+      expect(screen.getByTestId('full-checkout')).toBeInTheDocument()
     })
 
     const checkoutButton = screen.getByTestId('full-checkout')
@@ -135,7 +141,10 @@ describe('Stripe Checkout Integration', () => {
   })
 
   it('should handle error states in checkout flow', async () => {
-    setupSuccessfulStripeLoad()
+    const mockStripe = setupSuccessfulStripeLoad()
+    
+    // Mock getStripe to return our mock stripe instance
+    ;(stripeClient.getStripe as jest.Mock).mockResolvedValue(mockStripe)
     
     // Mock createCheckoutSession to fail
     ;(stripeClient.createCheckoutSession as jest.Mock).mockRejectedValue(
@@ -173,7 +182,7 @@ describe('Stripe Checkout Integration', () => {
     )
 
     await waitFor(() => {
-      expect(screen.queryByText('Loading payment system...')).not.toBeInTheDocument()
+      expect(screen.getByTestId('error-checkout')).toBeInTheDocument()
     })
 
     const errorButton = screen.getByTestId('error-checkout')

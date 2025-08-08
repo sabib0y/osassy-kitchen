@@ -24,8 +24,8 @@ jest.mock('lucide-react', () => ({
   CheckCircle: ({ className }: any) => (
     <div data-testid="check-circle" className={className}>CheckCircle</div>
   ),
-  Package: ({ className }: any) => (
-    <div data-testid="package" className={className}>Package</div>
+  Package: ({ className, 'data-testid': dataTestId, ...props }: any) => (
+    <div data-testid={dataTestId || "package"} className={className} {...props}>Package</div>
   ),
   Calendar: ({ className }: any) => (
     <div data-testid="calendar" className={className}>Calendar</div>
@@ -194,18 +194,18 @@ describe('OrderConfirmation', () => {
 
       expect(screen.getByText('Jollof Rice')).toBeInTheDocument()
       expect(screen.getByText(/Qty: 2/)).toBeInTheDocument()
-      expect(screen.getByText('₦3,000.00')).toBeInTheDocument()
+      expect(screen.getAllByText('₦3,000.00').length).toBeGreaterThan(0)
     })
 
     it('should display order summary', () => {
       render(<OrderConfirmation {...defaultProps} />)
 
       expect(screen.getByText('Order Summary')).toBeInTheDocument()
-      expect(screen.getByText('Subtotal')).toBeInTheDocument()
+      expect(screen.getByText('Subtotal:')).toBeInTheDocument()
       expect(screen.getAllByText('₦3,000.00')[0]).toBeInTheDocument()
-      expect(screen.getByText('Delivery Fee')).toBeInTheDocument()
+      expect(screen.getByText('Delivery Fee:')).toBeInTheDocument()
       expect(screen.getByText('₦500.00')).toBeInTheDocument()
-      expect(screen.getByText('Total')).toBeInTheDocument()
+      expect(screen.getByText(/Total per/)).toBeInTheDocument()
       expect(screen.getByText('₦3,500.00')).toBeInTheDocument()
     })
 
@@ -213,7 +213,7 @@ describe('OrderConfirmation', () => {
       render(<OrderConfirmation {...defaultProps} />)
 
       expect(screen.getByText(/Next Delivery/)).toBeInTheDocument()
-      expect(screen.getByText(/February 1, 2024/)).toBeInTheDocument()
+      expect(screen.getAllByText(/February 1, 2024/).length).toBeGreaterThan(0)
     })
 
     it('should display payment method', () => {
@@ -226,7 +226,7 @@ describe('OrderConfirmation', () => {
     it('should display delivery address', () => {
       render(<OrderConfirmation {...defaultProps} />)
 
-      expect(screen.getByText('Delivery Address')).toBeInTheDocument()
+      expect(screen.getByText(/Delivery Address/)).toBeInTheDocument()
       expect(screen.getByText(/123 Main St/)).toBeInTheDocument()
       expect(screen.getByText(/Lagos, Lagos/)).toBeInTheDocument()
     })
@@ -308,7 +308,7 @@ describe('OrderConfirmation', () => {
     it('should handle missing delivery address', () => {
       render(<OrderConfirmation deliveryAddress={undefined} />)
 
-      expect(screen.getByText('Delivery Address')).toBeInTheDocument()
+      expect(screen.getByText(/Delivery Address/)).toBeInTheDocument()
       expect(screen.getByText('Address will be confirmed')).toBeInTheDocument()
     })
 
@@ -409,7 +409,7 @@ describe('OrderConfirmation', () => {
 
       render(<OrderConfirmation items={items} />)
 
-      expect(screen.getByTestId('package')).toBeInTheDocument()
+      expect(screen.getByTestId('item-placeholder')).toBeInTheDocument()
     })
   })
 

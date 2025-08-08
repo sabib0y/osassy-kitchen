@@ -207,8 +207,10 @@ describe('useProfile', () => {
       body: JSON.stringify(profileData)
     });
 
-    // Check that local profile state was updated
-    expect(result.current.profile?.name).toBe('Jane Doe');
+    // Wait for the profile state to be updated
+    await waitFor(() => {
+      expect(result.current.profile?.name).toBe('Jane Doe');
+    });
   });
 
   it('updateProfile throws error when API fails', async () => {

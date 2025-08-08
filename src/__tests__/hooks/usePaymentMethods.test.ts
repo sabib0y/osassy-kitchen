@@ -309,17 +309,25 @@ describe('usePaymentMethods', () => {
       }),
     });
 
-    const removePromise = act(async () => {
-      await result.current.removePaymentMethod('pm_2');
+    let removePromise: Promise<void>;
+    act(() => {
+      removePromise = result.current.removePaymentMethod('pm_2');
     });
 
-    // Check that isProcessing is set to true during operation
-    expect(result.current.isProcessing).toBe(true);
+    // Wait for isProcessing to become true
+    await waitFor(() => {
+      expect(result.current.isProcessing).toBe(true);
+    });
 
-    await removePromise;
+    // Wait for the operation to complete
+    await act(async () => {
+      await removePromise;
+    });
 
     // Check that isProcessing is reset after operation
-    expect(result.current.isProcessing).toBe(false);
+    await waitFor(() => {
+      expect(result.current.isProcessing).toBe(false);
+    });
   });
 
   it('handles empty response from API', async () => {
@@ -359,12 +367,18 @@ describe('usePaymentMethods', () => {
   });
 
   it('refreshes payment methods after error recovery', async () => {
-    const { result } = renderHook(() => usePaymentMethods());
-
-    // First call fails
+    // Clear the default mock and set up a failing one for the mount call
+    (global.fetch as jest.Mock).mockClear();
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
       json: async () => ({ error: 'Initial error' }),
+    });
+
+    const { result } = renderHook(() => usePaymentMethods());
+
+    // Wait for the initial fetch to fail
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
     });
 
     await waitFor(() => {

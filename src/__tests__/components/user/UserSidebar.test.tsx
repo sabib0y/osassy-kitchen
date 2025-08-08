@@ -14,7 +14,6 @@ const mockUseSession = useSession as jest.MockedFunction<typeof useSession>
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }))
-const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>
 
 // Mock next/link
 jest.mock('next/link', () => {
@@ -49,7 +48,7 @@ describe('UserSidebar', () => {
       status: 'authenticated',
     } as any)
 
-    mockUseRouter.mockReturnValue({
+    ;(useRouter as jest.Mock).mockReturnValue({
       pathname: '/user/dashboard',
       query: {},
       asPath: '/user/dashboard',
@@ -150,7 +149,7 @@ describe('UserSidebar', () => {
     })
 
     it('should detect active tab from current route - dashboard', () => {
-      mockUseRouter.mockReturnValue({
+      ;(useRouter as jest.Mock).mockReturnValue({
         pathname: '/user/dashboard',
         query: {},
         asPath: '/user/dashboard',
@@ -165,7 +164,7 @@ describe('UserSidebar', () => {
     })
 
     it('should detect active tab from current route - subscriptions', () => {
-      mockUseRouter.mockReturnValue({
+      ;(useRouter as jest.Mock).mockReturnValue({
         pathname: '/user/subscriptions',
         query: {},
         asPath: '/user/subscriptions',
@@ -180,7 +179,7 @@ describe('UserSidebar', () => {
     })
 
     it('should detect active tab from current route - orders', () => {
-      mockUseRouter.mockReturnValue({
+      ;(useRouter as jest.Mock).mockReturnValue({
         pathname: '/user/orders/123',
         query: {},
         asPath: '/user/orders/123',
@@ -195,7 +194,7 @@ describe('UserSidebar', () => {
     })
 
     it('should detect active tab from current route - profile', () => {
-      mockUseRouter.mockReturnValue({
+      ;(useRouter as jest.Mock).mockReturnValue({
         pathname: '/user/profile/edit',
         query: {},
         asPath: '/user/profile/edit',
@@ -210,7 +209,7 @@ describe('UserSidebar', () => {
     })
 
     it('should detect active tab from current route - payments', () => {
-      mockUseRouter.mockReturnValue({
+      ;(useRouter as jest.Mock).mockReturnValue({
         pathname: '/user/payments',
         query: {},
         asPath: '/user/payments',
@@ -225,7 +224,7 @@ describe('UserSidebar', () => {
     })
 
     it('should default to overview for unknown routes', () => {
-      mockUseRouter.mockReturnValue({
+      ;(useRouter as jest.Mock).mockReturnValue({
         pathname: '/unknown/route',
         query: {},
         asPath: '/unknown/route',
@@ -240,7 +239,7 @@ describe('UserSidebar', () => {
     })
 
     it('should prioritise activeTab prop over route detection', () => {
-      mockUseRouter.mockReturnValue({
+      ;(useRouter as jest.Mock).mockReturnValue({
         pathname: '/user/orders',
         query: {},
         asPath: '/user/orders',
@@ -401,7 +400,7 @@ describe('UserSidebar', () => {
     it('should handle mobile sidebar states correctly', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
-      const sidebar = screen.getByRole('navigation')
+      const sidebar = screen.getByRole('navigation', { name: /user dashboard navigation/i })
       expect(sidebar).toHaveClass('sidebar')
       expect(sidebar).not.toHaveClass('sidebarOpen')
     })
