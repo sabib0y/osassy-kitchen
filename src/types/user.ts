@@ -103,12 +103,58 @@ export interface OrdersResponse {
   };
 }
 
-// User Profile Types
+// Enhanced Address Types
+export interface Address {
+  id: string;
+  type: 'HOME' | 'WORK' | 'OTHER';
+  label: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  isDefault: boolean;
+  deliveryInstructions?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Notification Preferences Types
+export interface NotificationPreferences {
+  id: string;
+  userId: string;
+  emailNotifications: {
+    orderConfirmation: boolean;
+    orderStatusUpdates: boolean;
+    deliveryReminders: boolean;
+    subscriptionUpdates: boolean;
+    promotionsAndOffers: boolean;
+    newsletter: boolean;
+  };
+  smsNotifications: {
+    orderConfirmation: boolean;
+    deliveryReminders: boolean;
+    orderStatusUpdates: boolean;
+  };
+  pushNotifications: {
+    orderConfirmation: boolean;
+    orderStatusUpdates: boolean;
+    deliveryReminders: boolean;
+    promotions: boolean;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Enhanced User Profile Types
 export interface UserProfile {
   id: string;
   name: string | null;
   email: string;
   phone: string | null;
+  addresses: Address[];
+  notificationPreferences: NotificationPreferences;
+  // Backward compatibility with old address format
   address?: {
     street?: string;
     city?: string;
@@ -116,6 +162,75 @@ export interface UserProfile {
     postalCode?: string;
     country?: string;
   } | null;
+  createdAt?: string;
+  emailVerified?: boolean;
+}
+
+// Payment Method Types
+export interface PaymentMethod {
+  id: string;
+  type: 'card';
+  card: {
+    brand: string;
+    last4: string;
+    expMonth: number;
+    expYear: number;
+    funding?: string;
+  };
+  billingDetails?: {
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    address?: {
+      city?: string | null;
+      country?: string | null;
+      line1?: string | null;
+      line2?: string | null;
+      postalCode?: string | null;
+      state?: string | null;
+    } | null;
+  };
+  isDefault: boolean;
+  createdAt: number;
+}
+
+export interface PaymentMethodsResponse {
+  paymentMethods: PaymentMethod[];
+  defaultPaymentMethodId?: string | null;
+}
+
+// Form validation types
+export interface ProfileFormData {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface ProfileFormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface AddressFormData {
+  type: Address['type'];
+  label: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  isDefault: boolean;
+  deliveryInstructions: string;
+}
+
+export interface AddressFormErrors {
+  label?: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
 }
 
 // Subscription Creation Types

@@ -10,7 +10,7 @@ import { SessionProvider } from 'next-auth/react';
 // Test imports from Chunk-001
 import { api } from '../lib/api-client';
 import { useMenuItems, useOrders } from '../hooks/useApi';
-import type { MenuItem, Order, ApiResponse } from '../lib/api-types';
+import type { MenuItemResponse, OrderResponse, ApiResponse } from '../lib/api-types';
 
 // Test imports from Chunk-003
 import { StripeProvider } from '../components/StripeProvider';
@@ -68,6 +68,8 @@ export const IntegrationTest: React.FC = () => {
   
   const mockSession = {
     user: {
+      id: 'test-user-id',
+      role: 'USER',
       email: 'test@example.com',
       name: 'Test User',
     },

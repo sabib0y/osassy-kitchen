@@ -266,11 +266,19 @@ describe('StripeProvider', () => {
     const originalEnv = process.env.NODE_ENV
 
     afterEach(() => {
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true,
+        configurable: true
+      })
     })
 
     it('should render debug info in development', async () => {
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
       mockGetStripe.mockResolvedValue({ id: 'stripe' } as any)
 
       render(
@@ -289,7 +297,11 @@ describe('StripeProvider', () => {
     })
 
     it('should show loading status', () => {
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
       mockGetStripe.mockImplementation(() => new Promise(() => {}))
 
       render(
@@ -302,7 +314,11 @@ describe('StripeProvider', () => {
     })
 
     it('should show error status', async () => {
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
       mockGetStripe.mockRejectedValue(new Error('Test error'))
 
       render(
@@ -319,7 +335,11 @@ describe('StripeProvider', () => {
     })
 
     it('should show live mode', async () => {
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
       mockGetStripeConfig.mockReturnValue({
         publishableKey: 'pk_live_123',
         isProduction: true,
@@ -339,7 +359,11 @@ describe('StripeProvider', () => {
     })
 
     it('should show not set key', async () => {
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
       mockGetStripeConfig.mockReturnValue({
         publishableKey: undefined,
         isProduction: false,
@@ -358,7 +382,11 @@ describe('StripeProvider', () => {
     })
 
     it('should not render in production', () => {
-      process.env.NODE_ENV = 'production'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true
+      })
 
       const { container } = render(
         <StripeProvider>

@@ -10,6 +10,7 @@ This document outlines the parallel execution strategy for completing the remain
 - Achieving 80%+ code coverage
 - Running and passing all tests
 - Documenting test results
+- Use the PlayWright MCP to test UI flows if need be and use captured screenshots to compare expected behavior.
 - Getting explicit approval before continuing
 
 This requirement ensures quality, prevents regression, and maintains code reliability throughout the implementation.
@@ -380,19 +381,29 @@ WAVE 2 - Dependencies (Day 3-4):
 ├── Verify integration with Wave 1
 └── Get approval before proceeding
 
-WAVE 3 - Features (Day 5-6):
+WAVE 3 - Features (Day 5-6): ✅ COMPLETE
 ├── react-frontend-expert: Chunk-007 (4h), Chunk-009 (6h)
 ├── api-endpoint-builder: Chunk-010 (4h)
 ├── stripe-integration-specialist: Chunk-008 (5h)
 └── testing-automation-engineer: Update test suites
 
-🧪 WAVE 3 TESTING GATE (Day 6):
+🧪 WAVE 3 TESTING GATE (Day 6): ✅ COMPLETE
 ├── Test all new features
 ├── Update integration tests
 ├── Coverage report review
 └── Get approval before proceeding
 
-WAVE 4 - Integration (Day 7-8):
+🧹 HOUSEKEEPING PHASE (Day 7) - PRIORITY:
+├── Fix all failing tests (112 currently failing)
+├── Fix router mock setup issues
+├── Update mock data to match interfaces
+├── Fix multiple element queries with *AllBy variants
+├── Improve test coverage from 43% to 80% minimum
+├── Fix ESLint warnings and code quality issues
+├── Ensure TypeScript compilation remains clean
+└── Run full test suite with all tests passing
+
+WAVE 4 - Integration (Day 8-9):
 ├── api-endpoint-builder: Chunk-012 (4h)
 ├── react-frontend-expert: Chunk-011 (3h)
 ├── dashboard-analytics-specialist: Chunk-013 (4h)

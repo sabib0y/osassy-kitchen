@@ -1,0 +1,676 @@
+// Payment Methods Styles - Osassy's Kitchen Brand Colors
+// Primary: #C52D2F (deep red)
+// Secondary: #F1C40F (warm yellow)
+// Accent: #FF6F3C (bright orange)
+// Text Dark: #1E1E1E
+// Text Light: #FFFFFF
+
+.paymentsPage {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #fff5f5 0%, #fff9f5 100%);
+  
+  .pageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 24px 24px;
+    background: white;
+    border-bottom: 1px solid rgba(197, 45, 47, 0.1);
+    
+    .headerContent {
+      h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1E1E1E;
+        margin: 0 0 8px 0;
+      }
+      
+      p {
+        font-size: 16px;
+        color: #666;
+        margin: 0;
+      }
+    }
+    
+    .addButton {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #C52D2F 0%, #FF6F3C 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(197, 45, 47, 0.3);
+      }
+      
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
+      i {
+        font-size: 14px;
+      }
+    }
+  }
+  
+  .errorBanner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: #fee;
+    border-left: 4px solid #C52D2F;
+    color: #C52D2F;
+    
+    i {
+      font-size: 20px;
+    }
+    
+    span {
+      flex: 1;
+      font-size: 15px;
+    }
+    
+    .dismissBtn {
+      padding: 8px;
+      background: transparent;
+      border: none;
+      color: #C52D2F;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  
+  .pageContent {
+    padding: 32px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(197, 45, 47, 0.1);
+      border-top: 3px solid #C52D2F;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    p {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #666;
+    }
+  }
+  
+  .emptyStateContainer {
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+  }
+  
+  .emptyState {
+    text-align: center;
+    max-width: 400px;
+    
+    i {
+      font-size: 64px;
+      color: #ddd;
+      margin-bottom: 24px;
+    }
+    
+    h3 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1E1E1E;
+      margin: 0 0 12px 0;
+    }
+    
+    p {
+      font-size: 16px;
+      color: #666;
+      margin: 0 0 32px 0;
+    }
+    
+    .addButtonLarge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #C52D2F 0%, #FF6F3C 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(197, 45, 47, 0.3);
+      }
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+  
+  .addFormContainer {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .securityNote {
+    display: flex;
+    gap: 20px;
+    margin-top: 48px;
+    padding: 24px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 12px;
+    border: 1px solid #bfdbfe;
+    
+    i {
+      font-size: 24px;
+      color: #3b82f6;
+      flex-shrink: 0;
+    }
+    
+    div {
+      flex: 1;
+      
+      h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1E1E1E;
+        margin: 0 0 8px 0;
+      }
+      
+      p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Payment Method List Styles
+.paymentMethodList {
+  display: grid;
+  gap: 16px;
+  
+  .paymentMethodCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: rgba(197, 45, 47, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    &.default {
+      border-color: #C52D2F;
+      background: linear-gradient(135deg, #fff5f5 0%, #fff);
+    }
+    
+    &.expired {
+      opacity: 0.7;
+      background: #f9f9f9;
+      
+      .cardDetails {
+        .cardNumber {
+          color: #999;
+        }
+      }
+    }
+    
+    .cardInfo {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex: 1;
+      
+      .cardIcon {
+        font-size: 32px;
+        color: #666;
+        width: 50px;
+        text-align: center;
+        
+        .fa-cc-visa {
+          color: #1a1f71;
+        }
+        
+        .fa-cc-mastercard {
+          color: #eb001b;
+        }
+        
+        .fa-cc-amex {
+          color: #006fcf;
+        }
+        
+        .fa-cc-discover {
+          color: #ff6000;
+        }
+      }
+      
+      .cardDetails {
+        flex: 1;
+        
+        .cardNumber {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #1E1E1E;
+          margin-bottom: 8px;
+          
+          .brand {
+            font-weight: 500;
+          }
+          
+          .last4 {
+            color: #666;
+          }
+        }
+        
+        .cardMeta {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 14px;
+          color: #666;
+          
+          .expiry {
+            color: #666;
+          }
+          
+          .defaultBadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #C52D2F;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            
+            i {
+              font-size: 10px;
+            }
+          }
+          
+          .expiredBadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            
+            i {
+              font-size: 10px;
+            }
+          }
+        }
+        
+        .cardHolder {
+          margin-top: 4px;
+          font-size: 14px;
+          color: #999;
+        }
+      }
+    }
+    
+    .cardActions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        
+        i {
+          margin-right: 6px;
+          font-size: 12px;
+        }
+      }
+      
+      .setDefaultBtn {
+        background: #f3f4f6;
+        color: #666;
+        
+        &:hover:not(:disabled) {
+          background: #e5e7eb;
+          color: #1E1E1E;
+        }
+        
+        span {
+          @media (max-width: 640px) {
+            display: none;
+          }
+        }
+      }
+      
+      .removeBtn {
+        background: transparent;
+        color: #666;
+        
+        &:hover:not(:disabled) {
+          background: #fee;
+          color: #C52D2F;
+        }
+        
+        &.confirm {
+          background: #C52D2F;
+          color: white;
+        }
+        
+        .removeBtnText {
+          @media (max-width: 640px) {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Add Payment Method Form Styles
+.addPaymentForm {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  
+  .formHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #C52D2F 0%, #FF6F3C 100%);
+    color: white;
+    
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .closeBtn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+  
+  .formBody {
+    padding: 32px 24px;
+    
+    .formGroup {
+      margin-bottom: 24px;
+      
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1E1E1E;
+        margin-bottom: 8px;
+      }
+      
+      .textInput {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        
+        &:focus {
+          outline: none;
+          border-color: #C52D2F;
+          box-shadow: 0 0 0 3px rgba(197, 45, 47, 0.1);
+        }
+        
+        &:disabled {
+          background: #f9f9f9;
+          cursor: not-allowed;
+        }
+      }
+      
+      .cardElementWrapper {
+        padding: 12px 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: white;
+        transition: all 0.3s ease;
+        
+        &:focus-within {
+          border-color: #C52D2F;
+          box-shadow: 0 0 0 3px rgba(197, 45, 47, 0.1);
+        }
+      }
+      
+      .helpText {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+    
+    .errorMessage {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      background: #fee;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: #dc2626;
+      font-size: 14px;
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+  
+  .formFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    
+    button {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      
+      i {
+        font-size: 14px;
+      }
+    }
+    
+    .cancelBtn {
+      background: transparent;
+      color: #666;
+      border: 1px solid #e5e7eb;
+      
+      &:hover:not(:disabled) {
+        background: #f3f4f6;
+      }
+    }
+    
+    .submitBtn {
+      background: linear-gradient(135deg, #C52D2F 0%, #FF6F3C 100%);
+      color: white;
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(197, 45, 47, 0.3);
+      }
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .paymentsPage {
+    .pageHeader {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      
+      .addButton {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    .paymentMethodList {
+      .paymentMethodCard {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        
+        .cardInfo {
+          width: 100%;
+        }
+        
+        .cardActions {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .paymentsPage {
+    .pageHeader {
+      padding: 24px 16px;
+      
+      .headerContent {
+        h1 {
+          font-size: 24px;
+        }
+        
+        p {
+          font-size: 14px;
+        }
+      }
+    }
+    
+    .pageContent {
+      padding: 24px 16px;
+    }
+    
+    .addPaymentForm {
+      .formHeader {
+        padding: 16px;
+        
+        h3 {
+          font-size: 18px;
+        }
+      }
+      
+      .formBody {
+        padding: 24px 16px;
+      }
+      
+      .formFooter {
+        padding: 16px;
+        
+        button {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

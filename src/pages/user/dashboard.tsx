@@ -37,7 +37,33 @@ const UserDashboard: React.FC = () => {
     name: '',
     email: '',
     phone: '',
-    address: null
+    address: null,
+    addresses: [],
+    notificationPreferences: {
+      id: '',
+      userId: '',
+      emailNotifications: {
+        orderConfirmation: true,
+        orderStatusUpdates: true,
+        deliveryReminders: true,
+        subscriptionUpdates: true,
+        promotionsAndOffers: false,
+        newsletter: false
+      },
+      smsNotifications: {
+        orderConfirmation: false,
+        deliveryReminders: false,
+        orderStatusUpdates: false
+      },
+      pushNotifications: {
+        orderConfirmation: false,
+        orderStatusUpdates: false,
+        deliveryReminders: false,
+        promotions: false
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
   });
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileMessage, setProfileMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -48,13 +74,14 @@ const UserDashboard: React.FC = () => {
     } else if (status === 'authenticated' && session?.user) {
       fetchDashboardData();
       // Set initial profile data from session
-      setProfileData({
+      setProfileData(prev => ({
+        ...prev,
         id: session.user.id || '',
         name: session.user.name || '',
         email: session.user.email || '',
         phone: '',
         address: null
-      });
+      }));
     }
   }, [status, session, router]);
 

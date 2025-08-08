@@ -128,21 +128,18 @@ jest.mock('@/styles/components/user/orders.module.scss', () => ({
 describe('OrderCard', () => {
   const createMockOrder = (overrides: Partial<OrderResponse> = {}): OrderResponse => ({
     id: 'order123',
-    userId: 'user1',
     totalPrice: 5000,
     status: 'PENDING',
     deliveryDate: '2024-01-15T10:00:00Z',
     deliveryAddress: '123 Main St, Lagos',
     deliveryFee: 500,
     notes: null,
-    specialInstructions: null,
+    specialInstructions: undefined,
     createdAt: '2024-01-10T10:00:00Z',
     updatedAt: '2024-01-10T10:00:00Z',
     items: [
       {
         id: 'item1',
-        orderId: 'order123',
-        menuItemId: 'menu1',
         quantity: 2,
         price: 1500,
         menuItem: {
@@ -152,15 +149,10 @@ describe('OrderCard', () => {
           price: 1500,
           category: 'rice-dishes',
           imageUrl: 'https://example.com/jollof.jpg',
-          available: true,
-          createdAt: '2024-01-01T00:00:00Z',
-          updatedAt: '2024-01-01T00:00:00Z',
         },
       },
       {
         id: 'item2',
-        orderId: 'order123',
-        menuItemId: 'menu2',
         quantity: 1,
         price: 2000,
         menuItem: {
@@ -170,9 +162,6 @@ describe('OrderCard', () => {
           price: 2000,
           category: 'proteins',
           imageUrl: null,
-          available: true,
-          createdAt: '2024-01-01T00:00:00Z',
-          updatedAt: '2024-01-01T00:00:00Z',
         },
       },
     ],
@@ -181,10 +170,7 @@ describe('OrderCard', () => {
       id: 'user1',
       email: 'user@example.com',
       name: 'Test User',
-      role: 'USER',
       phone: '+1234567890',
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
     },
     ...overrides,
   })
@@ -346,16 +332,6 @@ describe('OrderCard', () => {
           id: 'sub123',
           planName: 'Weekly Plan',
           interval: 'WEEKLY',
-          price: 10000,
-          status: 'ACTIVE',
-          startDate: '2024-01-01T00:00:00Z',
-          endDate: null,
-          nextDeliveryDate: '2024-01-22T00:00:00Z',
-          stripeSubscriptionId: 'stripe_sub_123',
-          stripeCustomerId: 'stripe_cust_123',
-          userId: 'user1',
-          createdAt: '2024-01-01T00:00:00Z',
-          updatedAt: '2024-01-01T00:00:00Z',
         },
       })
 
@@ -493,8 +469,6 @@ describe('OrderCard', () => {
         totalPrice: 0,
         items: [{
           id: 'item1',
-          orderId: 'order123',
-          menuItemId: 'menu1',
           quantity: 1,
           price: 0,
           menuItem: {
@@ -504,9 +478,6 @@ describe('OrderCard', () => {
             price: 0,
             category: 'samples',
             imageUrl: null,
-            available: true,
-            createdAt: '2024-01-01T00:00:00Z',
-            updatedAt: '2024-01-01T00:00:00Z',
           },
         }],
       })
@@ -561,8 +532,6 @@ describe('OrderCard', () => {
     it('should handle many items', () => {
       const manyItems = Array.from({ length: 10 }, (_, i) => ({
         id: `item${i}`,
-        orderId: 'order123',
-        menuItemId: `menu${i}`,
         quantity: 1,
         price: 1000,
         menuItem: {
@@ -572,9 +541,6 @@ describe('OrderCard', () => {
           price: 1000,
           category: 'test',
           imageUrl: null,
-          available: true,
-          createdAt: '2024-01-01T00:00:00Z',
-          updatedAt: '2024-01-01T00:00:00Z',
         },
       }))
 

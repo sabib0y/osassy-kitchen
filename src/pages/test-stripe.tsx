@@ -193,7 +193,7 @@ const CheckoutTester: React.FC = () => {
  * Component to test payment intent creation
  */
 const PaymentIntentTester: React.FC = () => {
-  const { createIntent, confirmPayment, isProcessing, error } = useStripePaymentIntent();
+  const { createPayment, confirmPayment, isLoading, error } = useStripePaymentIntent();
   const [testResult, setTestResult] = useState<string>('');
 
   const handleTestPaymentIntent = async () => {
@@ -202,12 +202,12 @@ const PaymentIntentTester: React.FC = () => {
     try {
       // This will attempt to create a payment intent
       // It will fail without a backend endpoint, which is expected
-      const success = await createIntent(
-        10000, // ₦100.00
-        'ngn'
-      );
+      const clientSecret = await createPayment({
+        amount: 10000, // ₦100.00
+        currency: 'ngn'
+      });
       
-      if (success) {
+      if (clientSecret) {
         setTestResult('✅ Payment Intent created successfully');
       } else {
         setTestResult('⚠️ Payment Intent creation failed (expected without backend)');
@@ -227,10 +227,10 @@ const PaymentIntentTester: React.FC = () => {
         
         <button 
           onClick={handleTestPaymentIntent}
-          disabled={isProcessing}
+          disabled={isLoading}
           className={styles.testButton}
         >
-          {isProcessing ? 'Processing...' : 'Test Payment Intent'}
+          {isLoading ? 'Processing...' : 'Test Payment Intent'}
         </button>
 
         {error && (

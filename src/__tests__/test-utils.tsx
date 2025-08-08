@@ -122,7 +122,7 @@ export const createMockSubscription = (overrides = {}) => ({
   ...overrides,
 })
 
-export const createMockApiResponse = <T>(data: T, overrides = {}) => ({
+export const createMockApiResponse = <T,>(data: T, overrides = {}) => ({
   success: true,
   data,
   ...overrides,
@@ -141,7 +141,7 @@ export const createTestQueryClient = () => new QueryClient({
   defaultOptions: {
     queries: {
       retry: false,
-      cacheTime: Infinity,
+      gcTime: Infinity,
     },
     mutations: {
       retry: false,

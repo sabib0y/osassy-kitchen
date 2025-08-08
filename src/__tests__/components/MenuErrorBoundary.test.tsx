@@ -147,7 +147,11 @@ describe('MenuErrorBoundary', () => {
 
     it('should log error in development mode', () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
 
       render(
         <MenuErrorBoundary>
@@ -161,12 +165,20 @@ describe('MenuErrorBoundary', () => {
       )
       expect(errorCall).toBeDefined()
 
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true,
+        configurable: true
+      })
     })
 
     it('should show error details in development mode', () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
 
       render(
         <MenuErrorBoundary>
@@ -178,12 +190,20 @@ describe('MenuErrorBoundary', () => {
       expect(detailsElement).toBeInTheDocument()
       expect(screen.getByText(/Test error message/)).toBeInTheDocument()
 
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true,
+        configurable: true
+      })
     })
 
     it('should not show error details in production mode', () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'production'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true
+      })
 
       render(
         <MenuErrorBoundary>
@@ -193,7 +213,11 @@ describe('MenuErrorBoundary', () => {
 
       expect(screen.queryByText('Error Details (Development Only)')).not.toBeInTheDocument()
 
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true,
+        configurable: true
+      })
     })
   })
 
@@ -343,7 +367,11 @@ describe('MenuErrorBoundary', () => {
 
     it('should update error details when new error occurs', () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
 
       let errorMessage = 'First error'
       const ErrorComponent = () => {
@@ -373,7 +401,11 @@ describe('MenuErrorBoundary', () => {
 
       expect(screen.getByText(/Second error/)).toBeInTheDocument()
 
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true,
+        configurable: true
+      })
     })
   })
 
@@ -518,7 +550,11 @@ describe('MenuErrorBoundary', () => {
 
     it('should handle null error gracefully', () => {
       const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
 
       render(
         <MenuErrorBoundary>
@@ -529,7 +565,11 @@ describe('MenuErrorBoundary', () => {
       // Should render even if error details are somehow null
       expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument()
 
-      process.env.NODE_ENV = originalEnv
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: originalEnv,
+        writable: true,
+        configurable: true
+      })
     })
   })
 })

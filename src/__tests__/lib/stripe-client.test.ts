@@ -43,7 +43,11 @@ describe('stripe-client', () => {
     
     // Set test environment variables
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123456789'
-    process.env.NODE_ENV = 'test'
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'test',
+      writable: true,
+      configurable: true
+    })
   })
 
   afterEach(() => {
@@ -358,7 +362,11 @@ describe('stripe-client', () => {
 
   describe('getStripeConfig', () => {
     it('should return config with test mode in development', async () => {
-      process.env.NODE_ENV = 'development'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        writable: true,
+        configurable: true
+      })
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123'
 
       const { getStripeConfig } = await import('@/lib/stripe-client')
@@ -372,7 +380,11 @@ describe('stripe-client', () => {
     })
 
     it('should return config with production mode', async () => {
-      process.env.NODE_ENV = 'production'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true
+      })
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_live_123'
 
       const { getStripeConfig } = await import('@/lib/stripe-client')
@@ -386,7 +398,11 @@ describe('stripe-client', () => {
     })
 
     it('should detect test mode even in production with test key', async () => {
-      process.env.NODE_ENV = 'production'
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        writable: true,
+        configurable: true
+      })
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123'
 
       const { getStripeConfig } = await import('@/lib/stripe-client')

@@ -10,6 +10,7 @@ import {
   useMenuItemsByCategory,
 } from '@/hooks/useMenuItems'
 import { createMockApiResponse, createMockMenuItem } from '../test-utils'
+import type { ApiResponse } from '@/lib/api-types'
 
 // Mock the apiClient
 jest.mock('@/lib/api-client', () => ({
@@ -507,7 +508,7 @@ describe('useMenuItems hooks', () => {
   describe('Loading states', () => {
     it('should handle loading states correctly', async () => {
       let resolve: (value: any) => void
-      const promise = new Promise((res) => {
+      const promise = new Promise<ApiResponse<any>>((res) => {
         resolve = res
       })
       mockApiClient.get.mockReturnValue(promise)

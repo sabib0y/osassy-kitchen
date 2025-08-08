@@ -5,6 +5,7 @@ import { ReactNode } from 'react'
 import { api } from '@/lib/api-client'
 import useOrders, { getStatusColor, formatOrderStatus, formatOrderDate, formatCurrency } from '@/hooks/useOrders'
 import { createMockApiResponse, createMockOrder } from '../test-utils'
+import type { ApiResponse } from '@/lib/api-types'
 
 // Mock the api client
 jest.mock('@/lib/api-client', () => ({
@@ -605,7 +606,7 @@ describe('useOrders hook', () => {
     })
 
     it('should handle no data from server', async () => {
-      mockApi.get.mockResolvedValue({ data: null })
+      mockApi.get.mockResolvedValue({ success: true, data: null })
 
       const { result } = renderHook(() => useOrders({ retry: false }), {
         wrapper: createWrapper(queryClient),
@@ -648,7 +649,7 @@ describe('useOrders hook', () => {
   describe('Loading States', () => {
     it('should handle loading state correctly', async () => {
       let resolve: (value: any) => void
-      const promise = new Promise((res) => {
+      const promise = new Promise<ApiResponse<any>>((res) => {
         resolve = res
       })
       mockApi.get.mockReturnValue(promise)

@@ -29,6 +29,7 @@ import {
   queryKeys,
 } from '@/hooks/useApi'
 import { createMockApiResponse, createMockMenuItem, createMockOrder, createMockUser } from '../test-utils'
+import type { ApiResponse } from '@/lib/api-types'
 
 // Mock the apiClient
 jest.mock('@/lib/api-client', () => ({
@@ -196,7 +197,7 @@ describe('useApi hooks', () => {
           wrapper: createWrapper(queryClient),
         })
 
-        expect(result.current.isIdle).toBe(true)
+        expect(result.current.isPending).toBe(true)
         expect(mockApiClient.get).not.toHaveBeenCalled()
       })
     })
@@ -235,7 +236,7 @@ describe('useApi hooks', () => {
           wrapper: createWrapper(queryClient),
         })
 
-        expect(result.current.isIdle).toBe(true)
+        expect(result.current.isPending).toBe(true)
         expect(mockApiClient.get).not.toHaveBeenCalled()
       })
     })
@@ -272,7 +273,7 @@ describe('useApi hooks', () => {
           wrapper: createWrapper(queryClient),
         })
 
-        expect(result.current.isIdle).toBe(true)
+        expect(result.current.isPending).toBe(true)
         expect(mockApiClient.get).not.toHaveBeenCalled()
       })
     })
@@ -309,7 +310,7 @@ describe('useApi hooks', () => {
           wrapper: createWrapper(queryClient),
         })
 
-        expect(result.current.isIdle).toBe(true)
+        expect(result.current.isPending).toBe(true)
         expect(mockApiClient.get).not.toHaveBeenCalled()
       })
     })
@@ -348,7 +349,7 @@ describe('useApi hooks', () => {
           wrapper: createWrapper(queryClient),
         })
 
-        expect(result.current.isIdle).toBe(true)
+        expect(result.current.isPending).toBe(true)
         expect(mockApiClient.get).not.toHaveBeenCalled()
       })
     })
@@ -524,7 +525,7 @@ describe('useApi hooks', () => {
   describe('Loading and Error States', () => {
     it('should handle loading states correctly', async () => {
       let resolve: (value: any) => void
-      const promise = new Promise((res) => {
+      const promise = new Promise<ApiResponse<any>>((res) => {
         resolve = res
       })
       mockApiClient.get.mockReturnValue(promise)

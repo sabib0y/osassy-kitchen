@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { PrismaClient } from '@prisma/client';
 import { hash, compare } from 'bcryptjs';
+import { NotificationPreferences } from '../../../types/user';
 
 const prisma = new PrismaClient();
 
@@ -32,11 +33,44 @@ export default async function handler(
 
     // Handle GET request
     if (req.method === 'GET') {
+      // In a real implementation, you would fetch addresses and notification preferences from separate tables
+      // For now, we'll include mock data that matches our enhanced profile structure
+      const addresses: any[] = []; // This would come from a separate addresses table
+      
+      const defaultNotificationPreferences: NotificationPreferences = {
+        id: `notif_${user.id}`,
+        userId: user.id,
+        emailNotifications: {
+          orderConfirmation: true,
+          orderStatusUpdates: true,
+          deliveryReminders: true,
+          subscriptionUpdates: true,
+          promotionsAndOffers: false,
+          newsletter: false
+        },
+        smsNotifications: {
+          orderConfirmation: false,
+          deliveryReminders: false,
+          orderStatusUpdates: false
+        },
+        pushNotifications: {
+          orderConfirmation: true,
+          orderStatusUpdates: true,
+          deliveryReminders: true,
+          promotions: false
+        },
+        createdAt: user.createdAt?.toISOString() || new Date().toISOString(),
+        updatedAt: user.updatedAt?.toISOString() || new Date().toISOString()
+      };
+
       const userProfile = {
         id: user.id,
         name: user.name,
         email: user.email,
         phone: user.phone,
+        addresses,
+        notificationPreferences: defaultNotificationPreferences,
+        // Keep backward compatibility
         address: user.address,
         role: user.role,
         createdAt: user.createdAt,
