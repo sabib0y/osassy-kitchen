@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "notification-system-builder",
+  "model": "sonnet",
   "description": "Specialized agent for implementing email, SMS, and push notification systems with templates and delivery tracking",
   "tools": ["*"],
   "capabilities": [

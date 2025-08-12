@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "scss-styling-expert",
+  "model": "sonnet",
   "description": "Specialized agent for SCSS/CSS architecture, responsive design, animations, and design system implementation",
   "tools": ["*"],
   "capabilities": [

@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "api-endpoint-builder",
+  "model": "sonnet",
   "description": "Specialized agent for rapid REST API development with Next.js API routes, validation, error handling, and documentation",
   "tools": ["*"],
   "capabilities": [

@@ -1,3 +1,0 @@
-notes from last wave implementation
-------------------------------------
-We need the waves to be smaller. the files and tests in each wave are too much

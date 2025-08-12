@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "database-architect",
+  "model": "sonnet",
   "description": "Specialized agent for database design, Prisma ORM implementation, query optimization, and data management strategies",
   "tools": ["*"],
   "capabilities": [

@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "testing-automation-engineer",
+  "model": "sonnet",
   "description": "Specialized agent for implementing comprehensive testing strategies including unit, integration, and E2E tests",
   "tools": ["*"],
   "capabilities": [

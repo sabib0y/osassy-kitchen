@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "authentication-specialist",
+  "model": "sonnet",
   "description": "Specialized agent for implementing secure authentication systems with NextAuth.js, JWT handling, and role-based access control",
   "tools": ["*"],
   "capabilities": [

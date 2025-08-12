@@ -1,18 +1,67 @@
 # Phase 4 Completion Plan - Sub-Agent Workflow System
 **Osassy's Kitchen - Outstanding Tasks Implementation**
-**UPDATED: August 8, 2025 - 93% Complete**
+**UPDATED: August 12, 2025 - 93% Complete**
 
 ## Executive Summary
-This document outlines the parallel execution strategy for completing Phase 4. As of August 8, 2025, **93% of Phase 4 is complete** with 14 out of 15 chunks successfully implemented. Only the E2E test suite (Chunk-015) remains.
+This document outlines the **SIMULTANEOUS PARALLEL EXECUTION STRATEGY** for completing Phase 4. As of August 12, 2025, **93% of Phase 4 is complete** with 14 out of 15 chunks successfully implemented. Only the E2E test suite (Chunk-015) remains. **Playwright is configured and ready for implementation.**
 
-## ⚠️ CRITICAL REQUIREMENT: Testing Gates
+## 🚀 CRITICAL: Simultaneous Agent Execution Model
+**AGENTS MUST RUN SIMULTANEOUSLY** - Multiple agents work in parallel on independent tasks within each wave. This is NOT sequential work - it's concurrent execution across columns.
+
+### The Table Paradigm for Parallel Work
+```
+Column A    Column B    Column C    Column D
+[Task 1A]   [Task 1B]   [Task 1C]   [Task 1D]  ← ROW 1: All run SIMULTANEOUSLY
+    ↓           ↓           ↓           ↓
+[Task 2A]   [Task 2B]   [Task 2C]   [Task 2D]  ← ROW 2: All run SIMULTANEOUSLY
+```
+- **Rows execute in parallel** - All tasks in a row run simultaneously by different agents
+- **Columns have dependencies** - Tasks in a column may depend on earlier tasks in same column only
+- **No cross-column dependencies within a row** - Task 1A doesn't need Task 1B to complete
+- **Smaller waves** - Maximum 3-4 chunks per wave for better tracking and reduced errors
+
+## ⚠️ CRITICAL REQUIREMENTS: Smaller Waves, TDD & Iterative Review
+
+### 1. Smaller Wave Size Requirement
+**Each wave contains 3-4 chunks MAXIMUM** to improve tracking and reduce errors. Large waves are split into sub-waves.
+
+### 2. Test-Driven Development (TDD) Process
+**When necessary/possible, follow TDD methodology:**
+1. **Write test cases FIRST** (all red)
+2. **Implement component** until tests pass (red → green)
+3. **Send to review agent** for quality check
+4. **Iterate based on feedback** until approved
+
+### 3. Iterative Review Process with Opus Model
+**Every completed chunk undergoes iterative review:**
+1. **Coding Agent** (Sonnet model) completes the work
+2. **Review Agent** (Opus model - smartest) reviews for:
+   - Code quality and best practices
+   - Security vulnerabilities
+   - Performance optimizations
+   - Test coverage adequacy
+3. **Feedback** written to `/temp/review/chunk-XXX-feedback.md`
+4. **Coding Agent** implements improvements
+5. **Tests must still pass** after improvements
+6. **Repeat** until Review Agent approves
+7. **Parent Agent** notified of wave completion
+
+### 4. Model Assignment Strategy
+- **Most coding agents:** Use Sonnet model for implementation
+- **Architecture & Review agents:** Use Opus model for superior analysis
+  - nextjs-fullstack-architect (Opus) - Complex architectural decisions
+  - fullstack-code-reviewer (Opus) - Code quality review
+  - refactoring-specialist (Opus) - Code optimization
+- **Parent coordinator:** Manages overall flow and wave progression
+
+### 5. Testing Gates
 **Every wave MUST complete comprehensive testing with 80% minimum code coverage before proceeding to the next wave.** This includes:
-- Writing Jest test suites for all components
+- Writing Jest test suites for all components (TDD when possible)
 - Achieving 80%+ code coverage
 - Running and passing all tests
 - Documenting test results
-- Use the PlayWright MCP to test UI flows if need be and use captured screenshots to compare expected behavior.
-- Getting explicit approval before continuing
+- Use the PlayWright MCP to test UI flows if need be and use captured screenshots to compare expected behavior
+- Getting explicit approval after review iterations
 
 This requirement ensures quality, prevents regression, and maintains code reliability throughout the implementation.
 
@@ -20,7 +69,9 @@ This requirement ensures quality, prevents regression, and maintains code reliab
 
 ## 1. Task Decomposition & Dependency Matrix
 
-### Phase 4 Outstanding Tasks Matrix
+### Phase 4 Outstanding Tasks Matrix - SIMULTANEOUS EXECUTION
+
+**⚡ IMPORTANT: Each row represents tasks that run SIMULTANEOUSLY by different agents**
 
 | Phase | Column A (Independent) | Column B (Depends on A) | Column C (Independent) | Column D (Depends on B/C) |
 |-------|------------------------|-------------------------|------------------------|---------------------------|
@@ -29,6 +80,12 @@ This requirement ensures quality, prevents regression, and maintains code reliab
 | **4.3** | Image Upload Service | Menu Image Integration | Profile Settings Form | Subscription Management Page |
 | **4.4** | WebSocket Setup | Real-time Order Updates | Payment Methods UI | Full Integration Testing |
 | **4.5** | - | - | Visual Refinements | E2E Test Suite |
+
+**Execution Rules:**
+- Tasks in Columns A & C of same row: Run SIMULTANEOUSLY (no dependencies)
+- Tasks in Column B: Wait for Column A task in same row only
+- Tasks in Column D: Wait for Column B & C tasks in same row only
+- Different rows can overlap if dependencies are met
 
 ### Dependency Visualization
 ```mermaid
@@ -325,16 +382,19 @@ type: Testing
 phase: 4.5
 size: ~500 lines
 dependencies: [chunk-004, chunk-009]
+status: PENDING - Switching to Playwright
 files:
-  - cypress/e2e/subscription-flow.cy.ts
-  - cypress/e2e/user-dashboard.cy.ts
-  - cypress/e2e/admin-management.cy.ts
-  - cypress/support/commands.ts
+  - tests/e2e/subscription-flow.spec.ts
+  - tests/e2e/user-dashboard.spec.ts
+  - tests/e2e/admin-management.spec.ts
+  - tests/e2e/page-objects/*.ts
+  - tests/fixtures/*.ts
 acceptance_criteria:
   - Complete subscription flow test
   - User journey tests
   - Admin workflow tests
   - Payment flow validation
+  - Playwright configured and ready ✅
 review_time: 30 minutes
 agent: testing-automation-engineer
 ```
@@ -343,38 +403,53 @@ agent: testing-automation-engineer
 
 ## 3. Sub-Agent Assignment & Parallel Execution Plan
 
-### Agent Allocation
+### Agent Allocation for SIMULTANEOUS EXECUTION
 
-| Agent | Assigned Chunks | Estimated Hours | Priority |
-|-------|----------------|-----------------|----------|
-| **api-endpoint-builder** | 001, 002, 010, 012 | 16 hours | HIGH |
-| **stripe-integration-specialist** | 003, 004, 008 | 14 hours | CRITICAL |
-| **react-frontend-expert** | 006, 007, 009, 011 | 18 hours | HIGH |
-| **scss-styling-expert** | 005, 014 | 10 hours | MEDIUM |
-| **dashboard-analytics-specialist** | 013 | 4 hours | LOW |
-| **testing-automation-engineer** | 015 | 8 hours | MEDIUM |
+**⚡ CRITICAL: Agents work SIMULTANEOUSLY within each wave, not sequentially**
+
+| Agent (Sonnet Model) | Assigned Chunks | Estimated Hours | Priority | Execution |
+|---------------------|-----------------|-----------------|----------|-----------|
+| **api-endpoint-builder** | 001, 002, 010, 012 | 16 hours | HIGH | PARALLEL |
+| **stripe-integration-specialist** | 003, 004, 008 | 14 hours | CRITICAL | PARALLEL |
+| **react-frontend-expert** | 006, 007, 009, 011 | 18 hours | HIGH | PARALLEL |
+| **scss-styling-expert** | 005, 014 | 10 hours | MEDIUM | PARALLEL |
+| **dashboard-analytics-specialist** | 013 | 4 hours | LOW | PARALLEL |
+| **testing-automation-engineer** | 015 | 8 hours | MEDIUM | PARALLEL |
+
+| Review Agent (Opus Model) | Role | Priority |
+|--------------------------|------|----------|
+| **code-review-specialist** | Reviews ALL chunks iteratively | CRITICAL |
+
+### Wave Organization (3-4 chunks max per wave)
+Waves are kept small for better tracking and reduced errors:
 
 ### Parallel Execution Timeline with Testing Gates
 
+**🚀 SIMULTANEOUS EXECUTION: All agents in a wave work AT THE SAME TIME**
+
 ```
 WAVE 1 - Foundation (Day 1): ✅ COMPLETE
-├── api-endpoint-builder: Chunk-001 ✅
-├── stripe-integration-specialist: Chunk-003 ✅
-├── scss-styling-expert: Chunk-005 ✅
-└── All tests passing
+[SIMULTANEOUS EXECUTION - 3 CHUNKS]
+├── api-endpoint-builder: Chunk-001 ✅        }
+├── stripe-integration-specialist: Chunk-003 ✅ } ALL RUN SIMULTANEOUSLY
+├── scss-styling-expert: Chunk-005 ✅          }
+└── Tests → Review (Opus) → Improvements → Approval
 
 WAVE 2 - Dependencies (Day 1): ✅ COMPLETE
-├── api-endpoint-builder: Chunk-002 ✅
-├── stripe-integration-specialist: Chunk-004 ✅
-├── react-frontend-expert: Chunk-006 ✅
-└── All tests passing
+[SIMULTANEOUS EXECUTION - 3 CHUNKS]
+├── api-endpoint-builder: Chunk-002 ✅        }
+├── stripe-integration-specialist: Chunk-004 ✅ } ALL RUN SIMULTANEOUSLY
+├── react-frontend-expert: Chunk-006 ✅        }
+└── Tests → Review (Opus) → Improvements → Approval
 
 WAVE 3 - Features (Day 2): ✅ COMPLETE
-├── react-frontend-expert: Chunk-007 ✅, Chunk-009 ✅
-├── stripe-integration-specialist: Chunk-008 ✅
-└── All tests passing
+[SIMULTANEOUS EXECUTION - 3 CHUNKS]
+├── react-frontend-expert: Chunk-007 ✅        }
+├── stripe-integration-specialist: Chunk-008 ✅ } ALL RUN SIMULTANEOUSLY
+├── react-frontend-expert: Chunk-009 ✅        }
+└── Tests → Review (Opus) → Improvements → Approval
 
-🧹 HOUSEKEEPING PHASE (Day 3): ✅ COMPLETE
+🧹 HOUSEKEEPING PHASE (August 12, 2025): ✅ COMPLETE
 ├── Fixed all 112 failing tests ✅
 ├── Fixed router mock setup issues ✅
 ├── Updated mock data to match interfaces ✅
@@ -382,16 +457,19 @@ WAVE 3 - Features (Day 2): ✅ COMPLETE
 ├── Established roadmap to 80% coverage ✅
 ├── Fixed ESLint warnings ✅
 ├── TypeScript compilation clean ✅
-└── 659 tests passing (100% pass rate) ✅
+├── Added 141 new tests ✅
+└── 763 tests passing (99.87% pass rate, 1 skipped) ✅
 
 WAVE 4 - Integration (Day 3): ✅ COMPLETE
-├── nextjs-fullstack-architect: Chunk-010 (Image Upload) ✅
-├── react-frontend-expert: Chunk-011 (Menu Images) ✅
-├── nextjs-fullstack-architect: Chunk-012 (WebSocket) ✅
-├── nextjs-fullstack-architect: Chunk-013 (Real-time) ✅
-└── All features implemented and tested
+[SIMULTANEOUS EXECUTION - 4 CHUNKS]
+├── nextjs-fullstack-architect (Opus): Chunk-010 (Image Upload) ✅   }
+├── react-frontend-expert (Sonnet): Chunk-011 (Menu Images) ✅       } ALL RUN SIMULTANEOUSLY
+├── nextjs-fullstack-architect (Opus): Chunk-012 (WebSocket) ✅      }
+├── nextjs-fullstack-architect (Opus): Chunk-013 (Real-time) ✅      }
+└── Tests → Review (Opus) → Improvements → Approval
 
 WAVE 5 - Final Testing & Polish (Day 3): 🔄 IN PROGRESS
+[SIMULTANEOUS EXECUTION - 2 CHUNKS]
 ├── react-frontend-expert: Chunk-014 (Visual Refinements) ✅
 ├── testing-automation-engineer: Chunk-015 (E2E Tests) ⏳ PENDING
 └── Switching from Cypress to Playwright for E2E tests
@@ -401,21 +479,35 @@ WAVE 5 - Final Testing & Polish (Day 3): 🔄 IN PROGRESS
 
 ## 4. Testing Requirements Per Wave
 
-### 🧪 Wave Testing Protocol
+### 🧪 Wave Testing Protocol with TDD & Iterative Review
 
-**MANDATORY: Each wave must complete testing before proceeding to the next wave.**
+**MANDATORY: Each wave must complete testing and iterative review before proceeding to the next wave.**
 
-#### Wave Testing Checklist:
+#### Wave Testing & Review Checklist:
 ```yaml
 wave_testing_requirements:
+  tdd_process:
+    - Test cases: Written FIRST (before implementation when possible)
+    - Red phase: All tests failing initially
+    - Green phase: Implementation until tests pass
+    - Refactor: Code improvements while maintaining green tests
+  
+  iterative_review_process:
+    - Initial review: Opus model reviews all code
+    - Feedback file: /temp/review/chunk-XXX-feedback.md
+    - Iterations: Implement feedback → Re-test → Re-review
+    - Approval: Opus model signs off on quality
+    - Repeat: Continue until Review Agent satisfied
+  
   before_next_wave:
-    - Jest test suites: Written for all new components
+    - Jest test suites: Written for all new components (TDD preferred)
     - Code coverage: Minimum 80% per component
     - Integration tests: Cross-component functionality verified
     - Test execution: All tests passing (npm test)
     - Coverage report: Generated and reviewed
     - Documentation: Test files and results documented
-    - Approval: Explicit user sign-off required
+    - Review approval: Opus model approved all chunks
+    - User approval: Explicit sign-off required
 
   test_deliverables:
     - Test files in src/__tests__/
@@ -423,6 +515,7 @@ wave_testing_requirements:
     - Test summary document
     - Any failing tests fixed
     - Mock data and utilities created
+    - Review feedback files in /temp/review/
 
   coverage_targets:
     - Statements: 80%+
@@ -749,12 +842,12 @@ fi
 ## 12. Expected Outcomes
 
 ### By End of Implementation
-- **15 PR-ready chunks** merged
-- **~3,500 lines** of production code
-- **~1,500 lines** of test code
-- **85%+ test coverage**
-- **All Phase 4 tasks complete**
-- **Ready for Phase 5 launch**
+- **14 of 15 chunks** merged ✅
+- **~5,000+ lines** of production code added ✅
+- **~2,500+ lines** of test code added ✅
+- **763 tests passing** (up from 622) ✅
+- **1 remaining chunk:** E2E test suite with Playwright
+- **Ready for Phase 5** after E2E completion
 
 ### Timeline
 - **Start Date**: Immediate

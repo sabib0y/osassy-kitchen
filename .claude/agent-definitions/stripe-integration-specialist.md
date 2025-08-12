@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "stripe-integration-specialist",
+  "model": "sonnet",
   "description": "Specialized agent for implementing and managing Stripe payment integrations, subscriptions, and webhook handling",
   "tools": ["*"],
   "capabilities": [

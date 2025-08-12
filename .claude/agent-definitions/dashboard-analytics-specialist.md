@@ -4,6 +4,7 @@
 ```javascript
 {
   "name": "dashboard-analytics-specialist",
+  "model": "sonnet",
   "description": "Specialized agent for implementing data visualization, analytics dashboards, KPI tracking, and business intelligence features",
   "tools": ["*"],
   "capabilities": [
