@@ -4,6 +4,7 @@ import AdminLayout from '@/components/admin/shared/AdminLayout';
 import MenuStats from '@/components/admin/menu/MenuStats';
 import MenuFilters from '@/components/admin/menu/MenuFilters';
 import MenuGrid from '@/components/admin/menu/MenuGrid';
+import MenuItemModal from '@/components/admin/menu/MenuItemModal';
 import { useMenu } from '@/hooks/admin/useMenu';
 import { MenuItem, MenuItemFilters } from '@/types/admin';
 import styles from '@/styles/components/admin/menu.module.scss';
@@ -154,6 +155,15 @@ export default function MenuManagement() {
             </div>
           </div>
         )}
+
+        {/* Menu Item Modal */}
+        <MenuItemModal
+          item={selectedItem}
+          isOpen={isModalOpen}
+          mode={modalMode}
+          onClose={handleModalClose}
+          onSuccess={handleModalSuccess}
+        />
       </div>
     </AdminLayout>
   );

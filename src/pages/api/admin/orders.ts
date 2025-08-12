@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { PrismaClient } from '@prisma/client';
+import { broadcastOrderUpdate, getWebSocketServer } from '@/lib/websocket';
+import { EventType, EventCategory, OrderStatus } from '@/types/websocket';
 
 const prisma = new PrismaClient();
 
@@ -175,6 +177,16 @@ async function handleUpdateOrder(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ message: 'Order ID is required' });
   }
 
+  // Get the previous order state for comparison
+  const previousOrder = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { status: true }
+  });
+
+  if (!previousOrder) {
+    return res.status(404).json({ message: 'Order not found' });
+  }
+
   // Validate status if provided
   const validStatuses = ['PENDING', 'IN_PROGRESS', 'DELIVERED', 'CANCELLED'];
   if (status && !validStatuses.includes(status)) {
@@ -217,6 +229,76 @@ async function handleUpdateOrder(req: NextApiRequest, res: NextApiResponse) {
       }
     }
   });
+
+  // Broadcast order update via WebSocket
+  try {
+    const wsServer = getWebSocketServer({
+      jwtSecret: process.env.NEXTAUTH_SECRET || ''
+    });
+
+    // Determine event type based on status change
+    let eventType = EventType.ORDER_UPDATED;
+    if (status) {
+      switch (status) {
+        case 'DELIVERED':
+          eventType = EventType.ORDER_DELIVERED;
+          break;
+        case 'CANCELLED':
+          eventType = EventType.ORDER_CANCELLED;
+          break;
+        case 'IN_PROGRESS':
+          eventType = EventType.ORDER_STATUS_CHANGED;
+          break;
+      }
+    }
+
+    // Broadcast the update
+    broadcastOrderUpdate(orderId, {
+      orderId,
+      orderNumber: `#${orderId.slice(-6)}`,
+      data: {
+        status: updatedOrder.status as OrderStatus,
+        customerName: updatedOrder.user.name || 'Customer',
+        totalAmount: updatedOrder.totalPrice,
+        itemCount: updatedOrder.orderItems.length,
+        deliveryDate: updatedOrder.deliveryDate,
+        notes: updatedOrder.notes
+      },
+      previousStatus: previousOrder.status as OrderStatus,
+      timestamp: new Date().toISOString(),
+      timeline: [
+        {
+          id: `timeline-${Date.now()}`,
+          status: updatedOrder.status,
+          message: `Order ${status ? `status changed to ${status}` : 'updated'}`,
+          timestamp: new Date().toISOString(),
+          isCompleted: true
+        }
+      ]
+    });
+
+    // Send notification to the user
+    if (status && updatedOrder.user.id) {
+      wsServer.sendToUser(updatedOrder.user.id, {
+        id: `notification-${Date.now()}`,
+        type: EventType.NOTIFICATION_NEW,
+        category: EventCategory.NOTIFICATION,
+        payload: {
+          id: `notif-${Date.now()}`,
+          type: status === 'CANCELLED' ? 'error' : 'info',
+          title: 'Order Update',
+          message: `Your order #${orderId.slice(-6)} has been ${status.toLowerCase()}`,
+          actionUrl: `/orders/${orderId}`,
+          actionText: 'View Order',
+          timestamp: new Date().toISOString()
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('Failed to broadcast order update:', error);
+    // Continue even if WebSocket broadcast fails
+  }
 
   res.status(200).json({ 
     message: 'Order updated successfully',

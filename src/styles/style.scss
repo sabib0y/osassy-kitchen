@@ -1,34 +1,47 @@
 /***************************************************************************************************************
-||||||||||||||||||||||||||||            MASTER STYLESHEET FOR LUMS          ||||||||||||||||||||||||||||||||||||
+||||||||||||||||||||||||||||            MASTER STYLESHEET FOR OSASSY'S KITCHEN          ||||||||||||||||||||||||||||||||||||
 ****************************************************************************************************************
 ||||||||||||||||||||||||||||              TABLE OF CONTENT                  ||||||||||||||||||||||||||||||||||||
 ****************************************************************************************************************
 ****************************************************************************************************************
-* 1. imported styles
-* 2. common styles
-* 3. header styles
-* 4. banner styles
-* 5. blog styles
-* 6. cta styles
-* 7. footer styles
-* 8. inner-banner styles
-* 9. sidebar styles
-* 10. funfact styles
-* 11. brand styles
-* 12. testimonials styles
-* 13. pricing styles
-* 14. service styles
+* 1. Design System Imports
+* 2. Base & Common Styles (Enhanced)
+* 3. Header Styles (Polished)
+* 4. Banner Styles (Refined)
+* 5. Blog Styles (Updated)
+* 6. CTA Styles (Enhanced)
+* 7. Footer Styles (Polished)
+* 8. Inner Banner Styles
+* 9. Sidebar Styles
+* 10. Fun Fact Styles
+* 11. Brand Styles
+* 12. Testimonials Styles
+* 13. Menu/Pricing Styles (Enhanced)
+* 14. Service Styles (Refined)
+* 15. Modern Button Styles (NEW)
+* 16. Enhanced Form Styles (NEW)
 ****************************************************************************************************************
 ||||||||||||||||||||||||||||            End TABLE OF CONTENT                ||||||||||||||||||||||||||||||||||||
 ****************************************************************************************************************/
+
 /*
-* 2. common styles
+* 1. Design System Imports
+*/
+@import 'variables';
+@import 'animations';
+
+/*
+* 2. Base & Common Styles (Enhanced with Design System)
 */
 body {
-  font-family: "spartan_mbsemibold";
-  font-size: 16px;
-  line-height: 34px;
-  color: #8b8c9c;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a,
@@ -90,24 +103,49 @@ a:visited {
 }
 
 .thm-btn {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  display: inline-block;
-  vertical-align: middle;
-  background-color: #f7c324;
-  color: #252758;
-  font-size: 29px;
-  font-family: "spartan_mbbold";
-  -webkit-transition: all 0.4s ease;
-  transition: all 0.4s ease;
-  border-radius: 30.5px;
-  padding: 13.5px 58px;
-  transition: all 0.4s ease;
-}
-.thm-btn:hover {
-  background-color: #252758;
-  color: #fff;
+  @include button-base;
+  background: var(--gradient-secondary);
+  color: var(--text-primary);
+  font-size: var(--font-size-lg);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--border-radius-2xl);
+  padding: var(--spacing-md) var(--spacing-4xl);
+  box-shadow: var(--shadow-secondary);
+  position: relative;
+  overflow: hidden;
+
+  // Enhanced hover effects
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-primary);
+    transition: left var(--duration-slow) var(--ease-out);
+    z-index: -1;
+  }
+
+  &:hover {
+    color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-primary);
+
+    &::before {
+      left: 0;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    transition-duration: var(--duration-fast);
+  }
+
+  &:focus {
+    @include focus-ring(var(--color-primary));
+  }
 }
 
 .bootstrap-select .btn-light:not(:disabled):not(.disabled).active,
@@ -2394,5 +2432,552 @@ a:visited {
       translateY(15px);
     transform: perspective(30px) scale(1.2) translateX(-15px) translateY(15px);
     opacity: 0.6;
+  }
+}
+
+/*
+* 15. Modern Button Styles (Enhanced Polish)
+*/
+.btn {
+  @include button-base;
+
+  // Primary button with Osassy's Kitchen branding
+  &-primary {
+    background: var(--gradient-primary);
+    color: var(--text-white);
+    box-shadow: var(--shadow-primary);
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px var(--color-primary-300);
+    }
+
+    &:active {
+      transform: translateY(-1px);
+    }
+
+    &:focus {
+      @include focus-ring(var(--color-primary));
+    }
+  }
+
+  // Secondary button
+  &-secondary {
+    background: var(--gradient-secondary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-secondary);
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px var(--color-secondary-300);
+    }
+
+    &:focus {
+      @include focus-ring(var(--color-secondary));
+    }
+  }
+
+  // Accent button
+  &-accent {
+    background: var(--color-accent);
+    color: var(--text-white);
+    box-shadow: var(--shadow-accent);
+
+    &:hover {
+      background: var(--color-accent-light);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px var(--color-accent-300);
+    }
+
+    &:focus {
+      @include focus-ring(var(--color-accent));
+    }
+  }
+
+  // Outline button
+  &-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border: var(--border-width-medium) solid var(--color-primary);
+    box-shadow: none;
+
+    &:hover {
+      background: var(--color-primary);
+      color: var(--text-white);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-primary);
+    }
+
+    &:focus {
+      @include focus-ring(var(--color-primary));
+    }
+  }
+
+  // Ghost button
+  &-ghost {
+    background: transparent;
+    color: var(--color-primary);
+    box-shadow: none;
+
+    &:hover {
+      background: var(--color-primary-50);
+      transform: translateY(-1px);
+    }
+
+    &:focus {
+      @include focus-ring(var(--color-primary));
+    }
+  }
+
+  // Size variations
+  &-sm {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    height: var(--button-height-sm);
+  }
+
+  &-md {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-base);
+    height: var(--button-height-md);
+  }
+
+  &-lg {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-lg);
+    height: var(--button-height-lg);
+  }
+
+  &-xl {
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    font-size: var(--font-size-xl);
+    height: var(--button-height-xl);
+  }
+
+  // With loading state
+  &-loading {
+    position: relative;
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .btn-text {
+      opacity: 0;
+    }
+  }
+
+  // Icon buttons
+  &-icon {
+    width: var(--button-height-md);
+    height: var(--button-height-md);
+    padding: 0;
+    justify-content: center;
+
+    &.btn-sm {
+      width: var(--button-height-sm);
+      height: var(--button-height-sm);
+    }
+
+    &.btn-lg {
+      width: var(--button-height-lg);
+      height: var(--button-height-lg);
+    }
+  }
+
+  // Floating Action Button
+  &-fab {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--border-radius-full);
+    position: fixed;
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+    z-index: var(--z-fixed);
+    box-shadow: var(--shadow-xl);
+
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-2xl);
+    }
+  }
+}
+
+/*
+* 16. Enhanced Form Styles (Modern Polish)
+*/
+.form-group {
+  margin-bottom: var(--spacing-lg);
+
+  label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-control {
+    @include input-base;
+    position: relative;
+
+    &.is-invalid {
+      border-color: var(--color-error);
+      box-shadow: 0 0 0 var(--focus-ring-width) var(--color-error-bg);
+    }
+
+    &.is-valid {
+      border-color: var(--color-success);
+      box-shadow: 0 0 0 var(--focus-ring-width) var(--color-success-bg);
+    }
+  }
+
+  .form-control-lg {
+    height: var(--input-height-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-lg);
+  }
+
+  .form-control-sm {
+    height: var(--input-height-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .form-help {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+  }
+
+  .form-error {
+    font-size: var(--font-size-xs);
+    color: var(--color-error);
+    margin-top: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+
+    &::before {
+      content: '⚠';
+    }
+  }
+
+  .form-success {
+    font-size: var(--font-size-xs);
+    color: var(--color-success);
+    margin-top: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+
+    &::before {
+      content: '✓';
+    }
+  }
+}
+
+// Floating label inputs
+.form-floating {
+  position: relative;
+
+  .form-control {
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+
+    &:focus ~ label,
+    &:not(:placeholder-shown) ~ label {
+      top: var(--spacing-sm);
+      font-size: var(--font-size-xs);
+      color: var(--color-primary);
+      transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+  }
+
+  label {
+    position: absolute;
+    top: 50%;
+    left: var(--spacing-md);
+    transform: translateY(-50%);
+    font-size: var(--font-size-base);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: all var(--duration-normal) var(--ease-out);
+    background: var(--bg-primary);
+    padding: 0 var(--spacing-xs);
+    text-transform: none;
+  }
+}
+
+// Custom checkbox and radio styles
+.form-check {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+
+  .form-check-input {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: var(--border-width-medium) solid var(--border-color-medium);
+    border-radius: var(--border-radius-sm);
+    background: var(--bg-primary);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    position: relative;
+
+    &:checked {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+
+      &::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-white);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+      }
+    }
+
+    &:focus {
+      @include focus-ring(var(--color-primary));
+    }
+
+    &[type="radio"] {
+      border-radius: var(--border-radius-full);
+
+      &:checked::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: var(--text-white);
+        border-radius: var(--border-radius-full);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  .form-check-label {
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    text-transform: none;
+    margin-bottom: 0;
+  }
+}
+
+// File upload styles
+.form-file {
+  position: relative;
+  display: inline-block;
+
+  .form-file-input {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .form-file-label {
+    @include button-base;
+    background: var(--color-accent);
+    color: var(--text-white);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-accent-light);
+      transform: translateY(-2px);
+    }
+
+    &::after {
+      content: '📎';
+      margin-left: var(--spacing-sm);
+    }
+  }
+
+  &.has-file .form-file-label {
+    background: var(--color-success);
+
+    &::after {
+      content: '✓';
+    }
+  }
+}
+
+// Search input with icon
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .form-control {
+    padding-left: var(--spacing-3xl);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+// Input groups
+.input-group {
+  display: flex;
+  width: 100%;
+
+  .form-control {
+    flex: 1;
+    border-radius: 0;
+
+    &:first-child {
+      border-top-left-radius: var(--border-radius-md);
+      border-bottom-left-radius: var(--border-radius-md);
+    }
+
+    &:last-child {
+      border-top-right-radius: var(--border-radius-md);
+      border-bottom-right-radius: var(--border-radius-md);
+    }
+  }
+
+  .input-group-text {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-muted);
+    border: var(--border-width-thin) solid var(--border-color-medium);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+
+    &:first-child {
+      border-top-left-radius: var(--border-radius-md);
+      border-bottom-left-radius: var(--border-radius-md);
+      border-right: 0;
+    }
+
+    &:last-child {
+      border-top-right-radius: var(--border-radius-md);
+      border-bottom-right-radius: var(--border-radius-md);
+      border-left: 0;
+    }
+  }
+}
+
+// Select dropdown enhancements
+.form-select {
+  @include input-base;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--spacing-sm) center;
+  background-repeat: no-repeat;
+  background-size: 16px 12px;
+  padding-right: var(--spacing-3xl);
+  appearance: none;
+}
+
+// Range slider
+.form-range {
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--color-gray-200);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    border-radius: var(--border-radius-full);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-normal) var(--ease-out);
+
+    &:hover {
+      transform: scale(1.2);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    border-radius: var(--border-radius-full);
+    cursor: pointer;
+    border: none;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-normal) var(--ease-out);
+
+    &:hover {
+      transform: scale(1.2);
+      box-shadow: var(--shadow-md);
+    }
+  }
+}
+
+// Form validation states
+.was-validated {
+  .form-control:valid {
+    border-color: var(--color-success);
+    
+    &:focus {
+      box-shadow: 0 0 0 var(--focus-ring-width) var(--color-success-bg);
+    }
+  }
+
+  .form-control:invalid {
+    border-color: var(--color-error);
+    
+    &:focus {
+      box-shadow: 0 0 0 var(--focus-ring-width) var(--color-error-bg);
+    }
+  }
+}
+
+// Responsive form adjustments
+@include mobile-only {
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-floating label {
+    font-size: var(--font-size-sm);
+  }
+
+  .input-group {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+
+    .form-control,
+    .input-group-text {
+      border-radius: var(--border-radius-md);
+    }
   }
 }

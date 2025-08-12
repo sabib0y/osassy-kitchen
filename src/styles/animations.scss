@@ -1,0 +1,545 @@
+// Animation Utilities for Osassy's Kitchen
+// Enhanced visual polish with smooth micro-interactions
+
+// CSS Custom Properties for consistent animations
+:root {
+  // Timing functions
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  // Duration variables
+  --duration-fast: 0.15s;
+  --duration-normal: 0.3s;
+  --duration-slow: 0.5s;
+  --duration-slower: 0.8s;
+  
+  // Brand colors for animations
+  --primary-color: #C52D2F;
+  --secondary-color: #F1C40F;
+  --accent-color: #FF6F3C;
+  --success-color: #4CAF50;
+  --warning-color: #FF9800;
+  --error-color: #F44336;
+  
+  // Shadow variables
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --shadow-strong: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --shadow-brand: 0 8px 24px rgba(197, 45, 47, 0.15);
+  --shadow-accent: 0 8px 24px rgba(255, 111, 60, 0.15);
+}
+
+// Base animation classes
+.animate-fade-in {
+  animation: fadeIn var(--duration-slow) var(--ease-out-expo) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-slow) var(--ease-out-expo) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--duration-slow) var(--ease-out-expo) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--duration-slow) var(--ease-out-expo) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--duration-slow) var(--ease-out-expo) forwards;
+}
+
+.animate-bounce-in {
+  animation: bounceIn var(--duration-slower) var(--ease-bounce) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-normal) var(--ease-out-quart) forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s var(--ease-in-out-quart) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s var(--ease-in-out-quart) infinite;
+}
+
+.animate-float {
+  animation: float 3s var(--ease-in-out-quart) infinite;
+}
+
+// Hover animations
+.hover-lift {
+  transition: all var(--duration-normal) var(--ease-out-quart);
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-strong);
+  }
+  
+  &:active {
+    transform: translateY(-2px);
+    transition-duration: var(--duration-fast);
+  }
+}
+
+.hover-scale {
+  transition: all var(--duration-normal) var(--ease-out-quart);
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(1.02);
+    transition-duration: var(--duration-fast);
+  }
+}
+
+.hover-glow {
+  position: relative;
+  transition: all var(--duration-normal) var(--ease-out-quart);
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-out-quart);
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    
+    &::after {
+      opacity: 0.7;
+    }
+  }
+}
+
+.hover-shimmer {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transform: translateX(-100%);
+    transition: transform var(--duration-slower) var(--ease-out-expo);
+  }
+  
+  &:hover::before {
+    transform: translateX(100%);
+  }
+}
+
+// Loading states
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-text {
+  height: 1em;
+  margin-bottom: 0.5em;
+  
+  &:last-child {
+    margin-bottom: 0;
+    width: 80%;
+  }
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeleton-button {
+  height: 40px;
+  width: 120px;
+  border-radius: 8px;
+}
+
+.skeleton-card {
+  height: 200px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+// Loading spinner
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(197, 45, 47, 0.1);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner-small {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.spinner-large {
+  width: 60px;
+  height: 60px;
+  border-width: 4px;
+}
+
+// Progress indicators
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(197, 45, 47, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 4px;
+    transform: translateX(-100%);
+    animation: progress 2s var(--ease-out-expo) forwards;
+  }
+}
+
+// Notification animations
+.notification-enter {
+  opacity: 0;
+  transform: translateY(-100%) scale(0.8);
+}
+
+.notification-enter-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: all var(--duration-slow) var(--ease-bounce);
+}
+
+.notification-exit {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.notification-exit-active {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.9);
+  transition: all var(--duration-normal) var(--ease-out-quart);
+}
+
+// Modal animations
+.modal-backdrop-enter {
+  opacity: 0;
+}
+
+.modal-backdrop-enter-active {
+  opacity: 1;
+  transition: opacity var(--duration-normal) var(--ease-out-quart);
+}
+
+.modal-content-enter {
+  opacity: 0;
+  transform: scale(0.8) translateY(-20px);
+}
+
+.modal-content-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: all var(--duration-slow) var(--ease-bounce);
+}
+
+// Accordion animations
+.accordion-enter {
+  max-height: 0;
+  overflow: hidden;
+}
+
+.accordion-enter-active {
+  max-height: 300px;
+  transition: max-height var(--duration-slow) var(--ease-out-expo);
+}
+
+.accordion-exit {
+  max-height: 300px;
+}
+
+.accordion-exit-active {
+  max-height: 0;
+  transition: max-height var(--duration-normal) var(--ease-out-quart);
+}
+
+// Page transition animations
+.page-transition-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all var(--duration-slow) var(--ease-out-expo);
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all var(--duration-normal) var(--ease-out-quart);
+}
+
+// Stagger animations for lists
+.stagger-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: staggerIn var(--duration-slow) var(--ease-out-expo) forwards;
+}
+
+@for $i from 1 through 20 {
+  .stagger-item:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 0.1}s;
+  }
+}
+
+// Button ripple effect
+.ripple {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width var(--duration-slower) var(--ease-out-expo),
+                height var(--duration-slower) var(--ease-out-expo);
+  }
+  
+  &:active::after {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+// Focus animations
+.focus-ring {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(197, 45, 47, 0.3);
+    transition: box-shadow var(--duration-fast) var(--ease-out-quart);
+  }
+}
+
+// Keyframe definitions
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes progress {
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes staggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Utility classes for performance
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+// GPU acceleration helpers
+.gpu-accelerated {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

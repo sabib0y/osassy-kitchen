@@ -66,6 +66,8 @@ model MenuItem {
   description       String
   price             Float
   imageUrl          String?
+  imagePublicId     String?
+  thumbnailUrl      String?
   category          String
   available         Boolean            @default(true)
   createdAt         DateTime           @default(now())

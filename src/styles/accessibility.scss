@@ -1,0 +1,602 @@
+// Accessibility Enhancements for Osassy's Kitchen
+// WCAG 2.1 AA compliant styles and utilities
+
+@import 'variables';
+@import 'animations';
+
+// Focus management utilities
+.focus-trap {
+  // Applied to containers that should trap focus (modals, dropdowns)
+  &:focus {
+    outline: none;
+  }
+  
+  &.focus-trap-active {
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border: 2px solid var(--color-primary);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+  }
+}
+
+// Skip links for keyboard navigation
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-primary);
+  color: var(--text-white);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  z-index: var(--z-toast);
+  transition: top var(--duration-normal) var(--ease-out);
+  
+  &:focus {
+    top: 6px;
+    outline: 2px solid var(--text-white);
+    outline-offset: 2px;
+  }
+}
+
+// Enhanced focus styles
+.focus-visible {
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-sm);
+  }
+  
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+// High contrast focus ring
+.focus-ring-high-contrast {
+  &:focus {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 1px var(--bg-primary);
+  }
+}
+
+// Screen reader only content
+.sr-only {
+  @include visually-hidden;
+}
+
+.sr-only-focusable {
+  @include visually-hidden;
+  
+  &:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+// Aria live regions
+.aria-live {
+  &[aria-live="polite"] {
+    // Styles for polite announcements
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  
+  &[aria-live="assertive"] {
+    // Styles for urgent announcements
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+}
+
+// Status announcements
+.status-announcement {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-primary);
+  color: var(--text-white);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  font-weight: var(--font-weight-medium);
+  z-index: var(--z-toast);
+  animation: slideInUp var(--duration-normal) var(--ease-out);
+  
+  &.success {
+    background: var(--color-success);
+  }
+  
+  &.error {
+    background: var(--color-error);
+  }
+  
+  &.warning {
+    background: var(--color-warning);
+    color: var(--text-primary);
+  }
+  
+  &.info {
+    background: var(--color-info);
+  }
+}
+
+// Accessible form enhancements
+.form-accessible {
+  .form-group {
+    position: relative;
+    
+    .form-label {
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-sm);
+      display: block;
+      
+      &.required::after {
+        content: ' *';
+        color: var(--color-error);
+      }
+    }
+    
+    .form-control {
+      &:invalid {
+        border-color: var(--color-error);
+        
+        &:focus {
+          box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.2);
+        }
+      }
+      
+      &:valid {
+        border-color: var(--color-success);
+        
+        &:focus {
+          box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+      }
+      
+      &[aria-describedby] {
+        // Ensure form controls reference their descriptions
+        position: relative;
+      }
+    }
+    
+    .form-error {
+      color: var(--color-error);
+      font-size: var(--font-size-sm);
+      margin-top: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      
+      &::before {
+        content: '⚠️';
+        font-size: 1em;
+      }
+      
+      &[role="alert"] {
+        // Style for error messages announced to screen readers
+        font-weight: var(--font-weight-semibold);
+      }
+    }
+    
+    .form-success {
+      color: var(--color-success);
+      font-size: var(--font-size-sm);
+      margin-top: var(--spacing-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      
+      &::before {
+        content: '✅';
+        font-size: 1em;
+      }
+    }
+    
+    .form-help {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      margin-top: var(--spacing-xs);
+      
+      &[id] {
+        // Ensure help text can be referenced by aria-describedby
+        display: block;
+      }
+    }
+  }
+  
+  fieldset {
+    border: 2px solid var(--border-color-medium);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    
+    legend {
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      padding: 0 var(--spacing-sm);
+    }
+  }
+}
+
+// Accessible button enhancements
+.btn-accessible {
+  position: relative;
+  
+  &[aria-pressed="true"] {
+    background: var(--color-primary-dark);
+    
+    &::after {
+      content: '✓';
+      position: absolute;
+      right: var(--spacing-sm);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-white);
+    }
+  }
+  
+  &[aria-expanded="true"] {
+    &::after {
+      content: '▲';
+      margin-left: var(--spacing-sm);
+    }
+  }
+  
+  &[aria-expanded="false"] {
+    &::after {
+      content: '▼';
+      margin-left: var(--spacing-sm);
+    }
+  }
+  
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    
+    &::after {
+      opacity: 0.6;
+    }
+  }
+}
+
+// Accessible navigation
+.nav-accessible {
+  ul[role="menubar"] {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    li {
+      position: relative;
+      
+      &[role="menuitem"] {
+        a,
+        button {
+          @extend .focus-visible;
+          display: block;
+          padding: var(--spacing-md) var(--spacing-lg);
+          text-decoration: none;
+          color: var(--text-primary);
+          transition: all var(--duration-normal) var(--ease-out);
+          
+          &:hover {
+            background: var(--color-primary-50);
+            color: var(--color-primary);
+          }
+          
+          &[aria-current="page"] {
+            background: var(--color-primary);
+            color: var(--text-white);
+            font-weight: var(--font-weight-semibold);
+          }
+        }
+      }
+      
+      &[aria-haspopup="true"] {
+        > a::after,
+        > button::after {
+          content: '▼';
+          margin-left: var(--spacing-xs);
+          font-size: var(--font-size-xs);
+        }
+        
+        ul[role="menu"] {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background: var(--bg-paper);
+          box-shadow: var(--shadow-lg);
+          border-radius: var(--border-radius-md);
+          padding: var(--spacing-sm) 0;
+          min-width: 200px;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-10px);
+          transition: all var(--duration-normal) var(--ease-out);
+          z-index: var(--z-dropdown);
+          
+          &[aria-expanded="true"] {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+          }
+          
+          li[role="menuitem"] {
+            a,
+            button {
+              padding: var(--spacing-sm) var(--spacing-lg);
+              
+              &:focus {
+                background: var(--color-primary);
+                color: var(--text-white);
+                outline: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Accessible modal dialog
+.modal-accessible {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  
+  .modal-dialog {
+    background: var(--bg-paper);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-2xl);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+    
+    &:focus {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+    
+    .modal-header {
+      padding: var(--spacing-xl);
+      border-bottom: 1px solid var(--border-color-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .modal-title {
+        margin: 0;
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+        color: var(--text-primary);
+      }
+      
+      .modal-close {
+        @extend .btn-accessible;
+        background: none;
+        border: none;
+        font-size: var(--font-size-xl);
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        
+        &:hover {
+          background: var(--color-error-bg);
+          color: var(--color-error);
+        }
+        
+        &:focus {
+          outline: 2px solid var(--color-primary);
+          outline-offset: 2px;
+        }
+        
+        // Screen reader text
+        .sr-only {
+          @include visually-hidden;
+        }
+      }
+    }
+    
+    .modal-content {
+      padding: var(--spacing-xl);
+    }
+    
+    .modal-footer {
+      padding: var(--spacing-xl);
+      border-top: 1px solid var(--border-color-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-md);
+    }
+  }
+}
+
+// Accessible tables
+.table-accessible {
+  width: 100%;
+  border-collapse: collapse;
+  
+  caption {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    text-align: left;
+    padding: var(--spacing-lg);
+  }
+  
+  th,
+  td {
+    padding: var(--spacing-md) var(--spacing-lg);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color-light);
+  }
+  
+  th {
+    background: var(--bg-muted);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    
+    button {
+      @extend .btn-accessible;
+      background: none;
+      border: none;
+      font-weight: inherit;
+      color: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      
+      &[aria-sort="ascending"]::after {
+        content: '▲';
+      }
+      
+      &[aria-sort="descending"]::after {
+        content: '▼';
+      }
+      
+      &[aria-sort="none"]::after {
+        content: '↕';
+        opacity: 0.5;
+      }
+    }
+  }
+  
+  tbody tr:hover {
+    background: var(--bg-muted);
+  }
+  
+  tbody tr:focus-within {
+    background: var(--color-primary-50);
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+}
+
+// Color contrast utilities
+.high-contrast {
+  // Applied when high contrast mode is detected
+  background: #ffffff;
+  color: #000000;
+  
+  .btn {
+    border: 2px solid #000000;
+  }
+  
+  a {
+    color: #0000ff;
+    text-decoration: underline;
+    
+    &:visited {
+      color: #800080;
+    }
+    
+    &:focus {
+      outline: 3px solid #000000;
+      background: #ffff00;
+      color: #000000;
+    }
+  }
+}
+
+// Media query support for accessibility preferences
+@media (prefers-reduced-motion: reduce) {
+  .status-announcement {
+    animation: none;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .modal-accessible .modal-dialog {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .focus-visible:focus-visible {
+    outline-width: 3px;
+    outline-offset: 3px;
+  }
+  
+  .btn-accessible {
+    border: 2px solid currentColor;
+  }
+  
+  .form-accessible .form-control {
+    border-width: 2px;
+  }
+}
+
+// Keyboard navigation indicators
+body.using-keyboard {
+  .focus-visible:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+body.using-mouse {
+  .focus-visible:focus {
+    outline: none;
+  }
+}
+
+// Print accessibility
+@media print {
+  .skip-link,
+  .status-announcement,
+  .modal-accessible {
+    display: none;
+  }
+  
+  .table-accessible {
+    th,
+    td {
+      border: 1px solid #000000;
+    }
+  }
+  
+  .btn-accessible {
+    border: 1px solid #000000;
+    background: transparent;
+    color: #000000;
+  }
+}

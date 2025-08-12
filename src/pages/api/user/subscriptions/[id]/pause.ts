@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { PrismaClient, SubscriptionStatus } from '@prisma/client';
 import stripe from '../../../../../lib/stripe';
+import { broadcastSubscriptionUpdate } from '@/lib/websocket';
+import { EventType } from '@/types/websocket';
 
 const prisma = new PrismaClient();
 
@@ -198,6 +200,26 @@ export default async function handler(
     if (pauseEndDate) {
       response.pauseEndDate = pauseEndDate.toISOString();
       response.message += ` and will automatically resume on ${pauseEndDate.toDateString()}`;
+    }
+
+    // Broadcast subscription update via WebSocket
+    try {
+      broadcastSubscriptionUpdate(id, {
+        subscriptionId: id,
+        userId: user.id,
+        data: {
+          status: SubscriptionStatus.PAUSED,
+          pauseStartDate: pauseStartDate?.toISOString(),
+          pauseEndDate: pauseEndDate?.toISOString(),
+          planName: updatedSubscription.planName,
+          nextDeliveryDate: updatedSubscription.nextDeliveryDate
+        },
+        eventType: EventType.SUBSCRIPTION_PAUSED,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Failed to broadcast subscription update:', error);
+      // Continue even if WebSocket broadcast fails
     }
 
     res.status(200).json(response);

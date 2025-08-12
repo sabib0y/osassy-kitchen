@@ -88,6 +88,18 @@ const config = {
   
   // Restore mocks after each test
   restoreMocks: true,
+  
+  // Watch mode configuration
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
+  
+  // Automatically clear mock calls and instances between every test
+  resetMocks: false,
+  
+  // The maximum amount of workers used to run your tests
+  maxWorkers: '50%',
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

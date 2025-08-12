@@ -1,0 +1,433 @@
+// Performance Optimization Styles for Osassy's Kitchen
+// CSS optimizations for better Core Web Vitals and user experience
+
+@import 'variables';
+
+// Critical CSS - Above the fold styles
+.critical-content {
+  // Styles that should be inlined for faster loading
+  font-display: swap; // Ensure web fonts don't block rendering
+  
+  // Optimized loading states
+  .loading-placeholder {
+    background: linear-gradient(
+      90deg,
+      var(--skeleton-base-color) 25%,
+      var(--skeleton-shimmer-color) 50%,
+      var(--skeleton-base-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
+  
+  // Prevent layout shift
+  .content-container {
+    contain: layout style;
+    min-height: 200px; // Reserve space for content
+  }
+}
+
+// Image optimization styles
+.image-optimized-container {
+  position: relative;
+  
+  .image-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+  
+  img {
+    &.loading {
+      opacity: 0;
+    }
+    
+    &.loaded {
+      opacity: 1;
+      transition: opacity 0.3s ease-in-out;
+      z-index: 2;
+    }
+  }
+  
+  .image-error-state {
+    z-index: 3;
+  }
+}
+
+// Progressive image loading
+.progressive-image {
+  position: relative;
+  overflow: hidden;
+  
+  .image-placeholder {
+    filter: blur(5px);
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+  }
+  
+  .image-full {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    
+    &.loaded {
+      opacity: 1;
+    }
+  }
+  
+  &.loaded .image-placeholder {
+    opacity: 0;
+  }
+}
+
+// Lazy loading utilities
+.lazy-load {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+  
+  &.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// GPU acceleration for better performance
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+// Reduce paint and composite layers
+.optimized-layer {
+  contain: layout style paint;
+  transform: translateZ(0);
+  
+  &.compositing {
+    will-change: transform, opacity;
+  }
+  
+  &.static {
+    will-change: auto;
+  }
+}
+
+// Efficient animations
+.efficient-animation {
+  // Only animate transform and opacity for best performance
+  &.scale {
+    animation: efficientScale 0.3s ease;
+  }
+  
+  &.fade {
+    animation: efficientFade 0.3s ease;
+  }
+  
+  &.slide {
+    animation: efficientSlide 0.3s ease;
+  }
+}
+
+@keyframes efficientScale {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes efficientFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes efficientSlide {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Scrolling performance
+.optimized-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-400) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-gray-400);
+    border-radius: 4px;
+    
+    &:hover {
+      background: var(--color-gray-500);
+    }
+  }
+  
+  // Enable momentum scrolling on iOS
+  -webkit-overflow-scrolling: touch;
+  
+  // Optimize scroll performance
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+// Virtualization support for large lists
+.virtualized-list {
+  height: 400px; // Fixed height required for virtualization
+  overflow: auto;
+  contain: strict;
+  
+  .list-item {
+    contain: layout style;
+    transform: translateZ(0);
+  }
+  
+  .virtual-spacer {
+    // Spacers for virtualized items
+    pointer-events: none;
+  }
+}
+
+// Preload critical resources
+.resource-hints {
+  // These should be added to HTML head
+  // <link rel="preload" href="/fonts/font.woff2" as="font" type="font/woff2" crossorigin>
+  // <link rel="preconnect" href="https://api.example.com">
+  // <link rel="dns-prefetch" href="//images.example.com">
+}
+
+// Critical path optimization
+.above-fold {
+  // Styles for above-the-fold content
+  contain: layout;
+  
+  .hero-section {
+    min-height: 500px;
+    background: var(--gradient-hero);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .hero-content {
+      max-width: 800px;
+      text-align: center;
+      color: var(--text-white);
+      
+      h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        margin-bottom: var(--spacing-lg);
+        font-weight: var(--font-weight-bold);
+      }
+      
+      p {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        margin-bottom: var(--spacing-xl);
+        opacity: 0.9;
+      }
+    }
+  }
+}
+
+// Bundle splitting optimization
+.dynamic-import {
+  // Styles for dynamically imported components
+  .loading-component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--color-primary-200);
+      border-top: 3px solid var(--color-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// Memory efficient styles
+.memory-optimized {
+  // Avoid complex selectors and large cascade
+  .simple-card {
+    background: var(--bg-paper);
+    border: 1px solid var(--border-color-light);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+  }
+  
+  // Use transform instead of changing layout properties
+  .hover-effect {
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Print optimization
+@media print {
+  .performance-optimized {
+    // Optimize for print
+    * {
+      background: transparent !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+    
+    .no-print {
+      display: none !important;
+    }
+    
+    .print-only {
+      display: block !important;
+    }
+    
+    // Optimize images for print
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+    
+    // Better page breaks
+    .page-break {
+      page-break-before: always;
+    }
+    
+    .no-break {
+      page-break-inside: avoid;
+    }
+  }
+}
+
+// Reduced motion optimizations
+@media (prefers-reduced-motion: reduce) {
+  .performance-optimized {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    
+    .loading-placeholder {
+      animation: none;
+      background: var(--skeleton-base-color);
+    }
+  }
+}
+
+// Connection-based optimizations
+@media (prefers-reduced-data: reduce) {
+  .performance-optimized {
+    // Reduce data usage
+    .background-image {
+      background-image: none;
+    }
+    
+    .video-embed {
+      display: none;
+    }
+    
+    .heavy-animation {
+      animation: none;
+    }
+  }
+}
+
+// High refresh rate optimizations
+@media (update: fast) {
+  .performance-optimized {
+    .smooth-animation {
+      animation-duration: 0.15s;
+    }
+  }
+}
+
+// CSS custom properties for runtime performance
+:root {
+  // Pre-calculated values to avoid runtime calculations
+  --header-height: 64px;
+  --sidebar-width: 280px;
+  --content-max-width: calc(100vw - var(--sidebar-width));
+  --safe-area-inset-top: env(safe-area-inset-top, 0);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0);
+}
+
+// Container queries for better responsive design
+@container (min-width: 768px) {
+  .container-optimized {
+    .responsive-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@container (min-width: 1024px) {
+  .container-optimized {
+    .responsive-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+// Modern CSS features for better performance
+.modern-layout {
+  // Use CSS Grid and Flexbox efficiently
+  display: grid;
+  grid-template-areas: 
+    "header header"
+    "sidebar content"
+    "footer footer";
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100vh;
+  
+  .header {
+    grid-area: header;
+  }
+  
+  .sidebar {
+    grid-area: sidebar;
+  }
+  
+  .content {
+    grid-area: content;
+    contain: layout style;
+  }
+  
+  .footer {
+    grid-area: footer;
+  }
+}

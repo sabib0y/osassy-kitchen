@@ -54,6 +54,8 @@ export interface MenuItem {
   price: number;
   category: MenuCategory;
   imageUrl?: string;
+  imagePublicId?: string;
+  thumbnailUrl?: string;
   available: boolean;
   createdAt: string;
   updatedAt: string;
@@ -91,7 +93,9 @@ export interface CreateMenuItemData {
   price: number;
   category: MenuCategory;
   available: boolean;
-  image?: File;
+  imageUrl?: string;
+  imagePublicId?: string;
+  thumbnailUrl?: string;
 }
 
 export interface UpdateMenuItemData extends Partial<CreateMenuItemData> {

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Edit2, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Edit2, Trash2, ToggleLeft, ToggleRight, ImageIcon } from 'lucide-react';
 import { MenuItem } from '../../../types/admin';
 import styles from '@/styles/components/admin/menu.module.scss';
 
@@ -10,7 +10,7 @@ interface MenuItemCardProps {
   onToggleAvailability: () => void;
 }
 
-// Sample image URLs for demonstration
+// Sample image URLs for demonstration (fallback when no image is uploaded)
 const foodImages: Record<string, string> = {
   'jollof-rice': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=200&fit=crop',
   'egusi-soup': 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&h=200&fit=crop',
@@ -27,28 +27,68 @@ export default function MenuItemCard({
   onDelete,
   onToggleAvailability
 }: MenuItemCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
   const formatPrice = (price: number) => {
     return `£${price.toLocaleString()}`;
   };
 
   // Get image URL based on item name or use default
-  const getImageUrl = (name: string) => {
+  const getFallbackImageUrl = (name: string) => {
     const key = name.toLowerCase().replace(/\s+/g, '-');
     return foodImages[key] || foodImages.default;
+  };
+
+  // Determine which image to display
+  const getDisplayImage = () => {
+    // Use uploaded thumbnail if available
+    if (item.thumbnailUrl && !imageError) {
+      return item.thumbnailUrl;
+    }
+    // Fall back to main image URL
+    if (item.imageUrl && !imageError) {
+      return item.imageUrl;
+    }
+    // Fall back to sample images
+    return getFallbackImageUrl(item.name);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoading(false);
   };
 
   return (
     <div className={styles.menuItemCard}>
       {/* Image */}
       <div className={styles.imageContainer}>
+        {imageLoading && (
+          <div className={styles.imageLoading}>
+            <ImageIcon size={32} className={styles.loadingIcon} />
+          </div>
+        )}
         <img
-          src={item.imageUrl || getImageUrl(item.name)}
+          src={getDisplayImage()}
           alt={item.name}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{ display: imageLoading ? 'none' : 'block' }}
         />
         {/* Availability Badge - Overlay on image */}
         <span className={`${styles.availabilityBadge} ${item.available ? styles.available : styles.unavailable}`}>
           {item.available ? 'Available' : 'Unavailable'}
         </span>
+        {/* Image Source Indicator */}
+        {item.imageUrl && !imageError && (
+          <div className={styles.imageSource} title="Custom image uploaded">
+            <ImageIcon size={14} />
+          </div>
+        )}
       </div>
 
       {/* Content */}

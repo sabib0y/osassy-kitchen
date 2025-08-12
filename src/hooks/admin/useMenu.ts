@@ -1,133 +1,37 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MenuItem, MenuItemFilters, MenuStats, CreateMenuItemData, UpdateMenuItemData, BulkMenuItemUpdate, PaginatedResponse } from '@/types/admin';
 
-// API functions (mock implementations - replace with actual API calls)
+// API functions
 const fetchMenuItems = async (filters: MenuItemFilters): Promise<PaginatedResponse<MenuItem>> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  const params = new URLSearchParams();
   
-  const mockItems: MenuItem[] = [
-    {
-      id: '1',
-      name: 'Jollof Rice',
-      description: 'Delicious Nigerian jollof rice with vegetables and spices',
-      price: 3500,
-      category: 'rice-dishes',
-      imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=200&fit=crop',
-      available: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      subscriptionUsage: 15
-    },
-    {
-      id: '2',
-      name: 'Egusi Soup',
-      description: 'Traditional Nigerian soup made with ground melon seeds',
-      price: 4200,
-      category: 'soups',
-      imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=200&fit=crop',
-      available: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      subscriptionUsage: 8
-    },
-    {
-      id: '3',
-      name: 'Grilled Chicken',
-      description: 'Perfectly grilled chicken with Nigerian spices',
-      price: 5000,
-      category: 'grilled',
-      imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=200&fit=crop',
-      available: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      subscriptionUsage: 12
-    },
-    {
-      id: '4',
-      name: 'Pounded Yam',
-      description: 'Smooth and stretchy pounded yam, perfect with soups',
-      price: 2800,
-      category: 'sides',
-      imageUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=200&fit=crop',
-      available: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      subscriptionUsage: 6
-    },
-    {
-      id: '5',
-      name: 'Nkwobi',
-      description: 'Spicy cow foot delicacy with palm wine and utazi leaves',
-      price: 6500,
-      category: 'appetizers',
-      imageUrl: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=200&fit=crop',
-      available: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      subscriptionUsage: 4
-    },
-    {
-      id: '6',
-      name: 'Chapman',
-      description: 'Refreshing Nigerian cocktail drink with fruits',
-      price: 1800,
-      category: 'beverages',
-      imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=200&fit=crop',
-      available: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      subscriptionUsage: 9
-    }
-  ];
+  if (filters.search) params.append('search', filters.search);
+  if (filters.category) params.append('category', filters.category);
+  if (filters.availability) params.append('availability', filters.availability);
+  if (filters.page) params.append('page', filters.page.toString());
+  if (filters.limit) params.append('limit', filters.limit.toString());
 
-  // Apply filters
-  let filteredItems = mockItems;
+  const response = await fetch(`/api/admin/menu?${params}`);
   
-  if (filters.search) {
-    const searchLower = filters.search.toLowerCase();
-    filteredItems = filteredItems.filter(item => 
-      item.name.toLowerCase().includes(searchLower) ||
-      item.description.toLowerCase().includes(searchLower)
-    );
-  }
-  
-  if (filters.category) {
-    filteredItems = filteredItems.filter(item => item.category === filters.category);
-  }
-  
-  if (filters.availability) {
-    const isAvailable = filters.availability === 'available';
-    filteredItems = filteredItems.filter(item => item.available === isAvailable);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to fetch menu items');
   }
 
-  const page = filters.page || 1;
-  const limit = filters.limit || 20;
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  const paginatedItems = filteredItems.slice(startIndex, endIndex);
-
-  return {
-    data: paginatedItems,
-    pagination: {
-      page,
-      limit,
-      total: filteredItems.length,
-      totalPages: Math.ceil(filteredItems.length / limit)
-    }
-  };
+  const result = await response.json();
+  return result.data;
 };
 
 const fetchMenuStats = async (): Promise<MenuStats> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 500));
+  const response = await fetch('/api/admin/menu/stats');
   
-  return {
-    totalItems: 48,
-    availableItems: 42,
-    totalCategories: 8,
-    averagePrice: 4200
-  };
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to fetch menu stats');
+  }
+
+  const result = await response.json();
+  return result.data;
 };
 
 const fetchMenuItem = async (id: string): Promise<MenuItem> => {
@@ -193,6 +97,15 @@ const updateMenuItem = async (data: UpdateMenuItemData): Promise<MenuItem> => {
 const deleteMenuItem = async (id: string): Promise<void> => {
   // Mock implementation - replace with actual API call
   await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // In real implementation, this would:
+  // 1. Get the menu item to retrieve imagePublicId
+  // 2. Delete the menu item from database
+  // 3. Delete the image from Cloudinary using the imagePublicId
+  
+  // Example real implementation:
+  // const response = await fetch(`/api/admin/menu/${id}`, { method: 'DELETE' });
+  // if (!response.ok) throw new Error('Failed to delete menu item');
 };
 
 const toggleMenuItemAvailability = async (id: string): Promise<MenuItem> => {
