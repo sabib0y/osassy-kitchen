@@ -6,7 +6,7 @@ import path from 'path';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './tests/e2e/specs',
   /* Test timeout */
   timeout: 30 * 1000,
   /* Test execution settings */

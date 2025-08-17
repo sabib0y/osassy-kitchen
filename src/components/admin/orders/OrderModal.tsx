@@ -43,7 +43,7 @@ export default function OrderModal({ order, isOpen, onClose }: OrderModalProps) 
     switch (currentStatus) {
       case 'PENDING':
         return [
-          { value: 'IN_PROGRESS', label: 'Mark In Progress', color: 'blue' },
+          { value: 'IN_PROGRESS', label: 'Mark In Progress', color: 'red' },
           { value: 'DELIVERED', label: 'Mark Delivered', color: 'green' },
           { value: 'CANCELLED', label: 'Cancel Order', color: 'red' },
         ];
@@ -224,7 +224,7 @@ export default function OrderModal({ order, isOpen, onClose }: OrderModalProps) 
                           disabled={updateOrderMutation.isPending}
                           className={`
                             w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed
-                            ${option.color === 'blue' ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : ''}
+                            ${option.color === 'red' ? 'bg-red-100 text-red-700 hover:bg-red-200' : ''}
                             ${option.color === 'green' ? 'bg-green-100 text-green-700 hover:bg-green-200' : ''}
                             ${option.color === 'red' ? 'bg-red-100 text-red-700 hover:bg-red-200' : ''}
                           `}
@@ -256,7 +256,7 @@ export default function OrderModal({ order, isOpen, onClose }: OrderModalProps) 
                     
                     {order.updatedAt !== order.createdAt && (
                       <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                         <div>
                           <p className="text-sm font-medium text-gray-900">Status Updated</p>
                           <p className="text-xs text-gray-500">{formatDate(order.updatedAt)}</p>

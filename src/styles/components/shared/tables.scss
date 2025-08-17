@@ -1,0 +1,680 @@
+/**
+ * TABLE COMPONENTS
+ * Consistent table styles across the Osassy's Kitchen application
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// TABLE BASE
+// =============================================================================
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--osassy-white);
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  
+  // Table variants
+  &.table-bordered {
+    border: 1px solid var(--osassy-gray-200);
+  }
+  
+  &.table-borderless {
+    box-shadow: none;
+    
+    th,
+    td {
+      border: none;
+    }
+  }
+  
+  &.table-striped {
+    tbody tr:nth-child(even) {
+      background: var(--osassy-gray-50);
+    }
+  }
+  
+  &.table-hover {
+    tbody tr {
+      transition: $transition-colors;
+      
+      &:hover {
+        background: var(--osassy-primary-50);
+        cursor: pointer;
+      }
+    }
+  }
+  
+  &.table-compact {
+    th,
+    td {
+      padding: $spacing-2 $spacing-3;
+      font-size: $font-size-sm;
+    }
+  }
+  
+  &.table-spacious {
+    th,
+    td {
+      padding: $spacing-6 $spacing-4;
+      font-size: $font-size-base;
+    }
+  }
+}
+
+// =============================================================================
+// TABLE HEADER
+// =============================================================================
+
+.table thead th {
+  background: var(--osassy-gradient-warm);
+  color: var(--osassy-gray-800);
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+  padding: $spacing-4;
+  border-bottom: 2px solid var(--osassy-primary);
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  
+  &.th-center {
+    text-align: center;
+  }
+  
+  &.th-right {
+    text-align: right;
+  }
+  
+  // Sortable headers
+  &.th-sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: $spacing-8;
+    transition: $transition-colors;
+    
+    &:hover {
+      background: var(--osassy-primary-50);
+      color: var(--osassy-primary-dark);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      right: $spacing-3;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 4px solid var(--osassy-gray-400);
+      opacity: 0.5;
+      transition: $transition-all;
+    }
+    
+    &.th-sort-asc::after {
+      border-bottom: 4px solid var(--osassy-primary);
+      border-top: none;
+      opacity: 1;
+    }
+    
+    &.th-sort-desc::after {
+      border-top: 4px solid var(--osassy-primary);
+      border-bottom: none;
+      opacity: 1;
+    }
+  }
+}
+
+// =============================================================================
+// TABLE BODY
+// =============================================================================
+
+.table tbody {
+  td {
+    padding: $spacing-4;
+    border-bottom: 1px solid var(--osassy-gray-200);
+    color: var(--osassy-gray-700);
+    vertical-align: middle;
+    
+    &.td-center {
+      text-align: center;
+    }
+    
+    &.td-right {
+      text-align: right;
+    }
+    
+    &.td-nowrap {
+      white-space: nowrap;
+    }
+    
+    &.td-truncate {
+      @include truncate;
+      max-width: 200px;
+    }
+  }
+  
+  tr {
+    &:last-child td {
+      border-bottom: none;
+    }
+    
+    &.tr-selected {
+      background: var(--osassy-primary-100);
+    }
+    
+    &.tr-success {
+      background: var(--osassy-success-50);
+      border-left: 4px solid var(--osassy-success);
+    }
+    
+    &.tr-error {
+      background: var(--osassy-error-50);
+      border-left: 4px solid var(--osassy-error);
+    }
+    
+    &.tr-warning {
+      background: var(--osassy-warning-50);
+      border-left: 4px solid var(--osassy-warning);
+    }
+    
+    &.tr-info {
+      background: var(--osassy-info-50);
+      border-left: 4px solid var(--osassy-info);
+    }
+  }
+}
+
+// =============================================================================
+// TABLE FOOTER
+// =============================================================================
+
+.table tfoot {
+  th,
+  td {
+    background: var(--osassy-gray-100);
+    color: var(--osassy-gray-800);
+    font-weight: $font-weight-semibold;
+    padding: $spacing-4;
+    border-top: 2px solid var(--osassy-gray-300);
+  }
+}
+
+// =============================================================================
+// TABLE WRAPPER AND RESPONSIVE
+// =============================================================================
+
+.table-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  
+  &.table-wrapper-responsive {
+    overflow-x: auto;
+    
+    @include mobile-only {
+      .table {
+        min-width: 600px;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// TABLE ACTIONS
+// =============================================================================
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-4;
+  padding: $spacing-4 0;
+  
+  .table-search {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    
+    .form-search {
+      min-width: 300px;
+      
+      @include mobile-only {
+        min-width: 200px;
+      }
+    }
+  }
+  
+  .table-filters {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+  }
+  
+  .table-bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    
+    &.table-bulk-actions-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}
+
+// =============================================================================
+// TABLE CELL CONTENT TYPES
+// =============================================================================
+
+// Status badges in cells
+.table-status {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+  
+  &.status-success {
+    background: var(--osassy-success-100);
+    color: var(--osassy-success-dark);
+  }
+  
+  &.status-error {
+    background: var(--osassy-error-100);
+    color: var(--osassy-error-dark);
+  }
+  
+  &.status-warning {
+    background: var(--osassy-warning-100);
+    color: var(--osassy-warning-dark);
+  }
+  
+  &.status-info {
+    background: var(--osassy-info-100);
+    color: var(--osassy-info-dark);
+  }
+  
+  &.status-pending {
+    background: var(--osassy-gray-100);
+    color: var(--osassy-gray-700);
+  }
+  
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+// Avatar in cells
+.table-avatar {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  
+  .avatar-image {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .avatar-info {
+    .avatar-name {
+      font-weight: $font-weight-medium;
+      color: var(--osassy-gray-900);
+      margin-bottom: $spacing-0-5;
+    }
+    
+    .avatar-email {
+      font-size: $font-size-sm;
+      color: var(--osassy-gray-600);
+    }
+  }
+}
+
+// Actions in cells
+.table-cell-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  
+  .btn {
+    padding: $spacing-1 $spacing-2;
+    font-size: $font-size-sm;
+  }
+}
+
+// Progress bars in cells
+.table-progress {
+  width: 100%;
+  height: 8px;
+  background: var(--osassy-gray-200);
+  border-radius: $radius-full;
+  overflow: hidden;
+  
+  .progress-fill {
+    height: 100%;
+    background: var(--osassy-gradient-primary);
+    border-radius: $radius-full;
+    transition: width $duration-normal $ease-out;
+  }
+  
+  &.progress-success .progress-fill {
+    background: var(--osassy-success);
+  }
+  
+  &.progress-warning .progress-fill {
+    background: var(--osassy-warning);
+  }
+  
+  &.progress-error .progress-fill {
+    background: var(--osassy-error);
+  }
+}
+
+// Currency/price formatting
+.table-currency {
+  font-weight: $font-weight-semibold;
+  color: var(--osassy-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+// =============================================================================
+// TABLE PAGINATION
+// =============================================================================
+
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  margin-top: $spacing-6;
+  padding: $spacing-4 0;
+  border-top: 1px solid var(--osassy-gray-200);
+  
+  .pagination-info {
+    font-size: $font-size-sm;
+    color: var(--osassy-gray-600);
+  }
+  
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    margin-left: auto;
+  }
+  
+  .pagination-select {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-sm;
+    
+    select {
+      padding: $spacing-1 $spacing-2;
+      border: 1px solid var(--osassy-gray-300);
+      border-radius: $radius-sm;
+      background: var(--osassy-white);
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// =============================================================================
+// TABLE LOADING AND EMPTY STATES
+// =============================================================================
+
+.table-loading {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: $z-overlay;
+  }
+  
+  tbody tr {
+    opacity: 0.5;
+  }
+}
+
+.table-empty {
+  text-align: center;
+  padding: $spacing-12 $spacing-4;
+  color: var(--osassy-gray-500);
+  
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto $spacing-4;
+    opacity: 0.5;
+  }
+  
+  .empty-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: var(--osassy-gray-700);
+    margin-bottom: $spacing-2;
+  }
+  
+  .empty-description {
+    font-size: $font-size-base;
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-6;
+  }
+}
+
+// =============================================================================
+// MOBILE TABLE (CARD LAYOUT)
+// =============================================================================
+
+@include mobile-only {
+  .table-mobile-cards {
+    .table {
+      display: none;
+    }
+    
+    .mobile-card {
+      background: var(--osassy-white);
+      border: 1px solid var(--osassy-gray-200);
+      border-radius: $radius-lg;
+      padding: $spacing-4;
+      margin-bottom: $spacing-4;
+      box-shadow: $shadow-sm;
+      
+      .mobile-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: $spacing-3;
+        padding-bottom: $spacing-3;
+        border-bottom: 1px solid var(--osassy-gray-200);
+        
+        .mobile-card-title {
+          font-weight: $font-weight-semibold;
+          color: var(--osassy-gray-900);
+        }
+      }
+      
+      .mobile-card-body {
+        .mobile-field {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: $spacing-2 0;
+          border-bottom: 1px solid var(--osassy-gray-100);
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          .field-label {
+            font-size: $font-size-sm;
+            font-weight: $font-weight-medium;
+            color: var(--osassy-gray-600);
+          }
+          
+          .field-value {
+            color: var(--osassy-gray-800);
+            text-align: right;
+          }
+        }
+      }
+      
+      .mobile-card-actions {
+        margin-top: $spacing-4;
+        padding-top: $spacing-3;
+        border-top: 1px solid var(--osassy-gray-200);
+        display: flex;
+        gap: $spacing-2;
+        
+        .btn {
+          flex: 1;
+          font-size: $font-size-sm;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// BRANDED TABLE VARIANTS
+// =============================================================================
+
+.table-primary {
+  thead th {
+    background: var(--osassy-primary);
+    color: var(--osassy-white);
+    border-bottom-color: var(--osassy-primary-dark);
+  }
+  
+  &.table-hover tbody tr:hover {
+    background: var(--osassy-primary-50);
+  }
+}
+
+.table-secondary {
+  thead th {
+    background: var(--osassy-secondary);
+    color: var(--osassy-gray-900);
+    border-bottom-color: var(--osassy-secondary-dark);
+  }
+  
+  &.table-hover tbody tr:hover {
+    background: var(--osassy-secondary-50);
+  }
+}
+
+.table-accent {
+  thead th {
+    background: var(--osassy-accent);
+    color: var(--osassy-white);
+    border-bottom-color: var(--osassy-accent-dark);
+  }
+  
+  &.table-hover tbody tr:hover {
+    background: var(--osassy-accent-50);
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+.table-row-enter {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: tableRowEnter $duration-normal $ease-out forwards;
+}
+
+.table-row-exit {
+  animation: tableRowExit $duration-fast $ease-in forwards;
+}
+
+@keyframes tableRowEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tableRowExit {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY
+// =============================================================================
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .table {
+    border: 2px solid var(--osassy-gray-800);
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid var(--osassy-gray-600);
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .table tbody tr,
+  .table-progress .progress-fill,
+  .table th.th-sortable::after {
+    transition: none;
+    animation: none;
+  }
+}
+
+// Screen reader improvements
+.table {
+  caption {
+    padding: $spacing-4;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    text-align: left;
+    caption-side: top;
+    color: var(--osassy-gray-900);
+  }
+}
+
+// Focus visible for keyboard navigation
+.table {
+  tbody tr:focus {
+    outline: 2px solid var(--osassy-primary);
+    outline-offset: -2px;
+  }
+  
+  th.th-sortable:focus {
+    outline: 2px solid var(--osassy-primary);
+    outline-offset: -2px;
+  }
+}

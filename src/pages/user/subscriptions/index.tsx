@@ -151,11 +151,9 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
               <p>Manage your meal delivery subscriptions</p>
             </div>
             <div className={styles.headerActions}>
-              <Link href="/subscriptions/create">
-                <button className={styles.createButton}>
-                  <i className="fas fa-plus"></i>
-                  New Subscription
-                </button>
+              <Link href="/subscriptions/create" className={styles.createButton}>
+                <i className="fas fa-plus"></i>
+                New Subscription
               </Link>
             </div>
           </div>
@@ -200,11 +198,9 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
                 }
               </p>
               {subscriptions.length === 0 && (
-                <Link href="/subscriptions/create">
-                  <button className={styles.createButton}>
-                    <i className="fas fa-plus"></i>
-                    Create Your First Subscription
-                  </button>
+                <Link href="/subscriptions/create" className={styles.createButton}>
+                  <i className="fas fa-plus"></i>
+                  Create Your First Subscription
                 </Link>
               )}
             </div>
@@ -267,11 +263,12 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
 
                     {/* Card Actions */}
                     <div className={styles.cardActions}>
-                      <Link href={`/user/subscriptions/${subscription.id}`}>
-                        <button className={styles.manageButton}>
-                          <i className="fas fa-edit"></i>
-                          Manage
-                        </button>
+                      <Link 
+                        href={`/user/subscriptions/${subscription.id}`} 
+                        className={styles.manageButton}
+                      >
+                        <i className="fas fa-edit"></i>
+                        Manage
                       </Link>
                       
                       {subscription.status === 'ACTIVE' && (

@@ -1,0 +1,155 @@
+/**
+ * SHARED COMPONENT STYLES INDEX
+ * Import all shared component styles for Osassy's Kitchen
+ */
+
+// Import the unified theme first
+@import '../../unified-theme.scss';
+
+// Import all shared component styles
+@import './buttons.scss';
+@import './cards.scss';
+@import './forms.scss';
+@import './tables.scss';
+@import './utilities.scss';
+
+// Additional global overrides and utilities
+body {
+  font-family: var(--font-family-primary);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Heading styles using our theme
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--spacing-md);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  
+  @include mobile-only {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  
+  @include mobile-only {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+  
+  @include mobile-only {
+    font-size: var(--font-size-xl);
+  }
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+}
+
+h5 {
+  font-size: var(--font-size-lg);
+}
+
+h6 {
+  font-size: var(--font-size-base);
+}
+
+// Links
+a {
+  color: var(--osassy-primary);
+  text-decoration: none;
+  transition: var(--transition-colors);
+  
+  &:hover {
+    color: var(--osassy-primary-dark);
+    text-decoration: underline;
+  }
+  
+  &:focus {
+    outline: 2px solid var(--osassy-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+// Selection color
+::selection {
+  background: var(--osassy-primary-200);
+  color: var(--osassy-primary-dark);
+}
+
+::-moz-selection {
+  background: var(--osassy-primary-200);
+  color: var(--osassy-primary-dark);
+}
+
+// Scrollbar styles (webkit)
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--osassy-gray-100);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--osassy-gray-400);
+  border-radius: var(--radius-sm);
+  
+  &:hover {
+    background: var(--osassy-gray-500);
+  }
+}
+
+// Firefox scrollbar
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--osassy-gray-400) var(--osassy-gray-100);
+}
+
+// Focus outline reset and custom styling
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--osassy-primary);
+  outline-offset: 2px;
+}
+
+// Print styles
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .btn,
+  .card,
+  .table {
+    box-shadow: none !important;
+  }
+  
+  .loading,
+  .loading-page,
+  .btn-fab {
+    display: none !important;
+  }
+}

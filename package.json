@@ -19,7 +19,25 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:codegen": "playwright codegen",
-    "playwright:install": "playwright install"
+    "playwright:install": "playwright install",
+    "review:capture": "tsx testing/playwright/e2e/scripts/capture-baseline.ts",
+    "review:polish": "tsx testing/playwright/e2e/scripts/apply-polish.ts",
+    "review:approve": "tsx testing/playwright/e2e/scripts/mark-approved.ts",
+    "capture:all-ui": "tsx testing/playwright/e2e/scripts/capture-all-ui-routes.ts",
+    "capture:validate": "tsx testing/playwright/e2e/scripts/validate-ui-capture.ts",
+    "visual:test": "tsx tests/e2e/scripts/visual-test-runner.ts test",
+    "visual:baseline": "tsx tests/e2e/scripts/visual-test-runner.ts baseline",
+    "visual:update": "tsx tests/e2e/scripts/visual-test-runner.ts update",
+    "visual:compare": "tsx tests/e2e/scripts/visual-test-runner.ts compare",
+    "visual:clean": "tsx tests/e2e/scripts/visual-test-runner.ts clean",
+    "visual:report": "tsx tests/e2e/scripts/visual-test-runner.ts report",
+    "visual:cross-browser": "tsx tests/e2e/scripts/visual-test-runner.ts cross-browser",
+    "visual:headed": "tsx tests/e2e/scripts/visual-test-runner.ts test --headed",
+    "visual:debug": "tsx tests/e2e/scripts/visual-test-runner.ts test --debug",
+    "test:visual": "playwright test --config=tests/e2e/visual.config.ts",
+    "test:visual:update": "playwright test --config=tests/e2e/visual.config.ts --update-snapshots",
+    "test:visual:headed": "playwright test --config=tests/e2e/visual.config.ts --headed",
+    "test:visual:debug": "playwright test --config=tests/e2e/visual.config.ts --debug"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -64,6 +82,7 @@
     "zod": "^4.0.14"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@playwright/test": "^1.54.2",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
@@ -80,6 +99,7 @@
     "jest-watch-typeahead": "^3.0.1",
     "playwright": "^1.54.2",
     "ts-jest": "^29.4.1",
+    "tsx": "^4.20.4",
     "typescript": "^5.8.3"
   },
   "prisma": {

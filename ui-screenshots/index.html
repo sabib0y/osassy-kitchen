@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lums Kitchen - UI Review Gallery</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 { 
+      color: #C52D2F;
+      margin-bottom: 10px;
+    }
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: #f8f8f8;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border-left: 3px solid #C52D2F;
+    }
+    .filters {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 16px;
+      border: 2px solid #C52D2F;
+      background: white;
+      color: #C52D2F;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: #C52D2F;
+      color: white;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .screenshot {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    .screenshot:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    .screenshot-header {
+      padding: 15px;
+      background: linear-gradient(135deg, #C52D2F, #FF6F3C);
+      color: white;
+    }
+    .screenshot-title {
+      font-weight: bold;
+      font-size: 14px;
+      text-transform: capitalize;
+    }
+    .screenshot-path {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+    .screenshot img {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 300px;
+      object-fit: cover;
+      object-position: top;
+    }
+    .mobile { border-top: 5px solid #F1C40F; }
+    .admin { border-top: 5px solid #FF6F3C; }
+    .user { border-top: 5px solid #C52D2F; }
+    .public { border-top: 5px solid #666; }
+    .payment { border-top: 5px solid #4CAF50; }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      overflow: auto;
+    }
+    .modal-content {
+      margin: 20px auto;
+      display: block;
+      max-width: 90%;
+      max-height: 90vh;
+    }
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #C52D2F;
+    }
+    .modal-caption {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+      text-align: center;
+      color: #ccc;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🍴 Lums Kitchen - UI Review Gallery</h1>
+    <p>Complete UI audit of all application pages - Click any image to view full size</p>
+    <div class="stats">
+      <div class="stat">📸 Total Pages: 17</div>
+      <div class="stat">👤 User Pages: 6</div>
+      <div class="stat">👨‍💼 Admin Pages: 2</div>
+      <div class="stat">📱 Mobile Views: 2</div>
+    </div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterScreenshots('all')">All Pages</button>
+      <button class="filter-btn" onclick="filterScreenshots('public')">Public</button>
+      <button class="filter-btn" onclick="filterScreenshots('user')">User</button>
+      <button class="filter-btn" onclick="filterScreenshots('admin')">Admin</button>
+      <button class="filter-btn" onclick="filterScreenshots('payment')">Payment</button>
+      <button class="filter-btn" onclick="filterScreenshots('mobile')">Mobile</button>
+    </div>
+  </div>
+  
+  <div class="grid" id="screenshot-grid">
+    <!-- Public Pages -->
+    <div class="screenshot public" data-type="public" onclick="openModal('01-landing.png', 'Landing Page', '/')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Landing Page</div>
+        <div class="screenshot-path">/</div>
+      </div>
+      <img src="01-landing.png" alt="Landing Page" loading="lazy">
+    </div>
+    
+    <div class="screenshot public" data-type="public" onclick="openModal('02-login.png', 'Login', '/login')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Login</div>
+        <div class="screenshot-path">/login</div>
+      </div>
+      <img src="02-login.png" alt="Login" loading="lazy">
+    </div>
+    
+    <div class="screenshot public" data-type="public" onclick="openModal('03-signup.png', 'Sign Up', '/signup')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Sign Up</div>
+        <div class="screenshot-path">/signup</div>
+      </div>
+      <img src="03-signup.png" alt="Sign Up" loading="lazy">
+    </div>
+    
+    <div class="screenshot public" data-type="public" onclick="openModal('04-blog.png', 'Blog', '/blog')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Blog</div>
+        <div class="screenshot-path">/blog</div>
+      </div>
+      <img src="04-blog.png" alt="Blog" loading="lazy">
+    </div>
+    
+    <div class="screenshot public" data-type="public" onclick="openModal('05-unauthorized.png', 'Unauthorized', '/unauthorized')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Unauthorized</div>
+        <div class="screenshot-path">/unauthorized</div>
+      </div>
+      <img src="05-unauthorized.png" alt="Unauthorized" loading="lazy">
+    </div>
+    
+    <!-- User Pages -->
+    <div class="screenshot user" data-type="user" onclick="openModal('06-user-dashboard.png', 'User Dashboard', '/user/dashboard')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">User Dashboard</div>
+        <div class="screenshot-path">/user/dashboard</div>
+      </div>
+      <img src="06-user-dashboard.png" alt="User Dashboard" loading="lazy">
+    </div>
+    
+    <div class="screenshot user" data-type="user" onclick="openModal('07-user-subscriptions.png', 'My Subscriptions', '/user/subscriptions')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">My Subscriptions</div>
+        <div class="screenshot-path">/user/subscriptions</div>
+      </div>
+      <img src="07-user-subscriptions.png" alt="My Subscriptions" loading="lazy">
+    </div>
+    
+    <div class="screenshot user" data-type="user" onclick="openModal('08-create-subscription.png', 'Create Subscription', '/subscriptions/create')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Create Subscription</div>
+        <div class="screenshot-path">/subscriptions/create</div>
+      </div>
+      <img src="08-create-subscription.png" alt="Create Subscription" loading="lazy">
+    </div>
+    
+    <div class="screenshot user" data-type="user" onclick="openModal('09-user-orders.png', 'Order History', '/user/orders')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Order History</div>
+        <div class="screenshot-path">/user/orders</div>
+      </div>
+      <img src="09-user-orders.png" alt="Order History" loading="lazy">
+    </div>
+    
+    <div class="screenshot user" data-type="user" onclick="openModal('10-user-payments.png', 'Payment Methods', '/user/payments')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Payment Methods</div>
+        <div class="screenshot-path">/user/payments</div>
+      </div>
+      <img src="10-user-payments.png" alt="Payment Methods" loading="lazy">
+    </div>
+    
+    <div class="screenshot user" data-type="user" onclick="openModal('11-user-profile.png', 'User Profile', '/user/profile')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">User Profile</div>
+        <div class="screenshot-path">/user/profile</div>
+      </div>
+      <img src="11-user-profile.png" alt="User Profile" loading="lazy">
+    </div>
+    
+    <!-- Admin Pages -->
+    <div class="screenshot admin" data-type="admin" onclick="openModal('13-admin-menu.png', 'Menu Management', '/admin/menu')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Menu Management</div>
+        <div class="screenshot-path">/admin/menu</div>
+      </div>
+      <img src="13-admin-menu.png" alt="Menu Management" loading="lazy">
+    </div>
+    
+    <div class="screenshot admin" data-type="admin" onclick="openModal('14-admin-orders.png', 'Order Management', '/admin/orders')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Order Management</div>
+        <div class="screenshot-path">/admin/orders</div>
+      </div>
+      <img src="14-admin-orders.png" alt="Order Management" loading="lazy">
+    </div>
+    
+    <!-- Payment Pages -->
+    <div class="screenshot payment" data-type="payment" onclick="openModal('15-payment-success.png', 'Payment Success', '/success')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Payment Success</div>
+        <div class="screenshot-path">/success</div>
+      </div>
+      <img src="15-payment-success.png" alt="Payment Success" loading="lazy">
+    </div>
+    
+    <div class="screenshot payment" data-type="payment" onclick="openModal('16-payment-cancel.png', 'Payment Cancelled', '/cancel')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Payment Cancelled</div>
+        <div class="screenshot-path">/cancel</div>
+      </div>
+      <img src="16-payment-cancel.png" alt="Payment Cancelled" loading="lazy">
+    </div>
+    
+    <!-- Mobile Views -->
+    <div class="screenshot mobile" data-type="mobile" onclick="openModal('mobile-01-landing.png', 'Mobile Landing', '/')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Mobile Landing</div>
+        <div class="screenshot-path">Mobile View - /</div>
+      </div>
+      <img src="mobile-01-landing.png" alt="Mobile Landing" loading="lazy">
+    </div>
+    
+    <div class="screenshot mobile" data-type="mobile" onclick="openModal('mobile-02-login.png', 'Mobile Login', '/login')">
+      <div class="screenshot-header">
+        <div class="screenshot-title">Mobile Login</div>
+        <div class="screenshot-path">Mobile View - /login</div>
+      </div>
+      <img src="mobile-02-login.png" alt="Mobile Login" loading="lazy">
+    </div>
+  </div>
+  
+  <!-- Modal for full-size images -->
+  <div id="imageModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+    <div class="modal-caption" id="modalCaption"></div>
+  </div>
+  
+  <script>
+    function filterScreenshots(type) {
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const screenshots = document.querySelectorAll('.screenshot');
+      screenshots.forEach(shot => {
+        if (type === 'all' || shot.dataset.type === type) {
+          shot.style.display = 'block';
+        } else {
+          shot.style.display = 'none';
+        }
+      });
+    }
+    
+    function openModal(imgSrc, title, path) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImage');
+      const caption = document.getElementById('modalCaption');
+      
+      modal.style.display = 'block';
+      modalImg.src = imgSrc;
+      caption.innerHTML = `<strong>${title}</strong> - ${path}`;
+    }
+    
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+    
+    // Close modal on clicking outside the image
+    document.getElementById('imageModal').addEventListener('click', (e) => {
+      if (e.target.id === 'imageModal') closeModal();
+    });
+  </script>
+</body>
+</html>

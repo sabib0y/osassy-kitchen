@@ -1,0 +1,503 @@
+/**
+ * BUTTON COMPONENTS
+ * Consistent button styles across the Osassy's Kitchen application
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// BUTTON BASE
+// =============================================================================
+
+.btn {
+  @include button-base;
+  
+  // Size variations
+  &.btn-xs {
+    padding: $spacing-1-5 $spacing-3;
+    font-size: $font-size-xs;
+    gap: $spacing-1;
+  }
+  
+  &.btn-sm {
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    gap: $spacing-1-5;
+  }
+  
+  &.btn-md {
+    padding: $spacing-3 $spacing-6;
+    font-size: $font-size-base;
+    gap: $spacing-2;
+  }
+  
+  &.btn-lg {
+    padding: $spacing-4 $spacing-8;
+    font-size: $font-size-lg;
+    gap: $spacing-2-5;
+  }
+  
+  &.btn-xl {
+    padding: $spacing-5 $spacing-10;
+    font-size: $font-size-xl;
+    gap: $spacing-3;
+  }
+  
+  // Full width
+  &.btn-full {
+    width: 100%;
+  }
+  
+  // Icon only buttons
+  &.btn-icon {
+    padding: $spacing-3;
+    aspect-ratio: 1;
+    
+    &.btn-xs {
+      padding: $spacing-1-5;
+    }
+    
+    &.btn-sm {
+      padding: $spacing-2;
+    }
+    
+    &.btn-lg {
+      padding: $spacing-4;
+    }
+    
+    &.btn-xl {
+      padding: $spacing-5;
+    }
+  }
+}
+
+// =============================================================================
+// PRIMARY BUTTON (Osassy's Red)
+// =============================================================================
+
+.btn-primary {
+  background: var(--osassy-primary);
+  color: var(--osassy-white);
+  box-shadow: $shadow-primary;
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-primary-dark);
+    box-shadow: $shadow-primary-lg;
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-primary-dark);
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-primary-200), $shadow-primary;
+  }
+}
+
+// =============================================================================
+// SECONDARY BUTTON (Osassy's Yellow)
+// =============================================================================
+
+.btn-secondary {
+  background: var(--osassy-secondary);
+  color: var(--osassy-gray-900);
+  box-shadow: $shadow-secondary;
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-secondary-dark);
+    box-shadow: 0 4px 16px rgba(241, 196, 15, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-secondary-dark);
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-secondary-200), $shadow-secondary;
+  }
+}
+
+// =============================================================================
+// ACCENT BUTTON (Osassy's Orange)
+// =============================================================================
+
+.btn-accent {
+  background: var(--osassy-accent);
+  color: var(--osassy-white);
+  box-shadow: $shadow-accent;
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-accent-dark);
+    box-shadow: 0 4px 16px rgba(255, 111, 60, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-accent-dark);
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-accent-200), $shadow-accent;
+  }
+}
+
+// =============================================================================
+// TERTIARY BUTTON (Outline style)
+// =============================================================================
+
+.btn-tertiary {
+  background: transparent;
+  color: var(--osassy-primary);
+  border: 2px solid var(--osassy-primary);
+  box-shadow: none;
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-primary-50);
+    border-color: var(--osassy-primary-dark);
+    color: var(--osassy-primary-dark);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-primary-100);
+    transform: translateY(0);
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-primary-200);
+  }
+}
+
+// =============================================================================
+// GHOST BUTTON (Minimal style)
+// =============================================================================
+
+.btn-ghost {
+  background: transparent;
+  color: var(--osassy-gray-700);
+  border: none;
+  box-shadow: none;
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-gray-100);
+    color: var(--osassy-gray-900);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-gray-200);
+    transform: translateY(0);
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-gray-200);
+  }
+}
+
+// =============================================================================
+// SUCCESS BUTTON
+// =============================================================================
+
+.btn-success {
+  background: var(--osassy-success);
+  color: var(--osassy-white);
+  box-shadow: 0 4px 16px var(--osassy-success-200);
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-success-dark);
+    box-shadow: 0 4px 16px var(--osassy-success-300);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-success-dark);
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-success-200);
+  }
+}
+
+// =============================================================================
+// ERROR/DANGER BUTTON
+// =============================================================================
+
+.btn-error,
+.btn-danger {
+  background: var(--osassy-error);
+  color: var(--osassy-white);
+  box-shadow: 0 4px 16px var(--osassy-error-200);
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-error-dark);
+    box-shadow: 0 4px 16px var(--osassy-error-300);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-error-dark);
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-error-200);
+  }
+}
+
+// =============================================================================
+// WARNING BUTTON
+// =============================================================================
+
+.btn-warning {
+  background: var(--osassy-warning);
+  color: var(--osassy-white);
+  box-shadow: 0 4px 16px var(--osassy-warning-200);
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-warning-dark);
+    box-shadow: 0 4px 16px var(--osassy-warning-300);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-warning-dark);
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-warning-200);
+  }
+}
+
+// =============================================================================
+// INFO BUTTON
+// =============================================================================
+
+.btn-info {
+  background: var(--osassy-info);
+  color: var(--osassy-white);
+  box-shadow: 0 4px 16px var(--osassy-info-200);
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-info-dark);
+    box-shadow: 0 4px 16px var(--osassy-info-300);
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    background: var(--osassy-info-dark);
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 3px var(--osassy-info-200);
+  }
+}
+
+// =============================================================================
+// LOADING STATE
+// =============================================================================
+
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  &.btn-sm::after {
+    width: 14px;
+    height: 14px;
+  }
+  
+  &.btn-lg::after {
+    width: 18px;
+    height: 18px;
+  }
+  
+  &.btn-xl::after {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// =============================================================================
+// BUTTON GROUPS
+// =============================================================================
+
+.btn-group {
+  display: inline-flex;
+  vertical-align: middle;
+  
+  .btn {
+    position: relative;
+    border-radius: 0;
+    
+    &:first-child {
+      border-top-left-radius: $radius-button;
+      border-bottom-left-radius: $radius-button;
+    }
+    
+    &:last-child {
+      border-top-right-radius: $radius-button;
+      border-bottom-right-radius: $radius-button;
+    }
+    
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+    
+    &:hover,
+    &:focus,
+    &:active {
+      z-index: 1;
+    }
+  }
+}
+
+// Vertical button group
+.btn-group-vertical {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  vertical-align: middle;
+  
+  .btn {
+    width: 100%;
+    border-radius: 0;
+    
+    &:first-child {
+      border-top-left-radius: $radius-button;
+      border-top-right-radius: $radius-button;
+    }
+    
+    &:last-child {
+      border-bottom-left-radius: $radius-button;
+      border-bottom-right-radius: $radius-button;
+    }
+    
+    &:not(:first-child) {
+      margin-top: -1px;
+    }
+    
+    &:hover,
+    &:focus,
+    &:active {
+      z-index: 1;
+    }
+  }
+}
+
+// =============================================================================
+// FLOATING ACTION BUTTON
+// =============================================================================
+
+.btn-fab {
+  @include button-base;
+  position: fixed;
+  bottom: $spacing-6;
+  right: $spacing-6;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--osassy-primary);
+  color: var(--osassy-white);
+  box-shadow: $shadow-lg;
+  z-index: $z-docked;
+  
+  &:hover:not(:disabled) {
+    background: var(--osassy-primary-dark);
+    box-shadow: $shadow-xl;
+    transform: scale(1.1);
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(1.05);
+  }
+  
+  &.btn-fab-sm {
+    width: 40px;
+    height: 40px;
+    bottom: $spacing-4;
+    right: $spacing-4;
+  }
+  
+  &.btn-fab-lg {
+    width: 72px;
+    height: 72px;
+    bottom: $spacing-8;
+    right: $spacing-8;
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY IMPROVEMENTS
+// =============================================================================
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .btn {
+    border: 2px solid currentColor;
+  }
+  
+  .btn-ghost {
+    border: 2px solid var(--osassy-gray-500);
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn-loading::after {
+    transition: none;
+    animation: none;
+  }
+  
+  .btn:hover,
+  .btn:active {
+    transform: none;
+  }
+}
+
+// Focus visible for keyboard navigation
+@media (prefers-reduced-motion: no-preference) {
+  .btn:focus-visible {
+    outline: 2px solid var(--osassy-primary);
+    outline-offset: 2px;
+  }
+}

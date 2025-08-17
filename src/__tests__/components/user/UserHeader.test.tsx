@@ -23,11 +23,19 @@ jest.mock('next/link', () => {
   return function MockLink({
     children,
     href,
+    className,
+    ...props
   }: {
     children: React.ReactNode
     href: string
+    className?: string
+    [key: string]: any
   }) {
-    return React.cloneElement(children as React.ReactElement, { 'data-href': href })
+    return (
+      <a href={href} className={className} data-href={href} {...props}>
+        {children}
+      </a>
+    )
   }
 })
 

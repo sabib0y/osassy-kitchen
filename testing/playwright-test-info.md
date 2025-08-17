@@ -11,3 +11,19 @@ city: London
 state: London
 zip code: E1 6AN
 country: United Kingdom
+account type: User
+
+email: osasp419@gmail.com
+password: test
+
+stripe test payment details:
+card number: 4242424242424242
+security code: 123
+expiration month: 12
+expiration year: 2036
+Address: 72 Malmsmead house
+city: London
+state: London
+zip code: E1 6AN
+country: United Kingdom
+account type: Admin

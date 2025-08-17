@@ -20,13 +20,21 @@ jest.mock('next/link', () => {
   return function MockLink({
     children,
     href,
-    passHref,
+    className,
+    onClick,
+    ...props
   }: {
     children: React.ReactNode
     href: string
-    passHref?: boolean
+    className?: string
+    onClick?: () => void
+    [key: string]: any
   }) {
-    return <div data-href={href}>{children}</div>
+    return (
+      <a href={href} className={className} onClick={onClick} data-href={href} {...props}>
+        {children}
+      </a>
+    )
   }
 })
 
@@ -144,7 +152,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} activeTab="orders" />)
 
       const ordersItem = screen.getByText('Orders').closest('a')
-      expect(ordersItem).toHaveClass('active')
+      expect(ordersItem?.className).toMatch(/active/)
       expect(ordersItem).toHaveAttribute('aria-current', 'page')
     })
 
@@ -160,7 +168,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       const overviewItem = screen.getByText('Overview').closest('a')
-      expect(overviewItem).toHaveClass('active')
+      expect(overviewItem?.className).toMatch(/active/)
     })
 
     it('should detect active tab from current route - subscriptions', () => {
@@ -175,7 +183,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       const subscriptionsItem = screen.getByText('Subscriptions').closest('a')
-      expect(subscriptionsItem).toHaveClass('active')
+      expect(subscriptionsItem?.className).toMatch(/active/)
     })
 
     it('should detect active tab from current route - orders', () => {
@@ -190,7 +198,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       const ordersItem = screen.getByText('Orders').closest('a')
-      expect(ordersItem).toHaveClass('active')
+      expect(ordersItem?.className).toMatch(/active/)
     })
 
     it('should detect active tab from current route - profile', () => {
@@ -205,7 +213,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       const profileItem = screen.getByText('Profile').closest('a')
-      expect(profileItem).toHaveClass('active')
+      expect(profileItem?.className).toMatch(/active/)
     })
 
     it('should detect active tab from current route - payments', () => {
@@ -220,7 +228,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       const paymentsItem = screen.getByText('Payments').closest('a')
-      expect(paymentsItem).toHaveClass('active')
+      expect(paymentsItem?.className).toMatch(/active/)
     })
 
     it('should default to overview for unknown routes', () => {
@@ -235,7 +243,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       const overviewItem = screen.getByText('Overview').closest('a')
-      expect(overviewItem).toHaveClass('active')
+      expect(overviewItem?.className).toMatch(/active/)
     })
 
     it('should prioritise activeTab prop over route detection', () => {
@@ -252,8 +260,8 @@ describe('UserSidebar', () => {
       const profileItem = screen.getByText('Profile').closest('a')
       const ordersItem = screen.getByText('Orders').closest('a')
       
-      expect(profileItem).toHaveClass('active')
-      expect(ordersItem).not.toHaveClass('active')
+      expect(profileItem?.className).toMatch(/active/)
+      expect(ordersItem?.className).not.toMatch(/active/)
     })
   })
 

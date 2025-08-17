@@ -261,7 +261,7 @@ export default function MenuItemModal({
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.name ? 'border-red-500' : ''}`}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${errors.name ? 'border-red-500' : ''}`}
                     placeholder="Enter menu item name"
                     disabled={isLoading}
                   />
@@ -278,7 +278,7 @@ export default function MenuItemModal({
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
-                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.description ? 'border-red-500' : ''}`}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${errors.description ? 'border-red-500' : ''}`}
                     placeholder="Describe the menu item"
                     disabled={isLoading}
                   />
@@ -298,7 +298,7 @@ export default function MenuItemModal({
                       onChange={handleInputChange}
                       step="0.01"
                       min="0"
-                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.price ? 'border-red-500' : ''}`}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${errors.price ? 'border-red-500' : ''}`}
                       placeholder="0.00"
                       disabled={isLoading}
                     />
@@ -314,7 +314,7 @@ export default function MenuItemModal({
                       name="category"
                       value={formData.category}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.category ? 'border-red-500' : ''}`}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${errors.category ? 'border-red-500' : ''}`}
                       disabled={isLoading}
                     >
                       {CATEGORIES.map((cat) => (
@@ -334,7 +334,7 @@ export default function MenuItemModal({
                       name="available"
                       checked={formData.available}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                      className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
                       disabled={isLoading}
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700">
@@ -350,14 +350,14 @@ export default function MenuItemModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 disabled={isLoading}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 disabled={isLoading}
               >
                 {isLoading ? (

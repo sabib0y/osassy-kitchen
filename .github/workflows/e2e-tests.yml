@@ -1,0 +1,466 @@
+name: E2E Tests
+
+on:
+  # Trigger on pull requests to main branch
+  pull_request:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
+      - '.gitignore'
+      - 'LICENSE'
+
+  # Trigger on pushes to main branch
+  push:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
+      - '.gitignore'
+      - 'LICENSE'
+
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'Browser to test (chromium, firefox, webkit, all)'
+        required: false
+        default: 'chromium'
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+          - all
+      environment:
+        description: 'Environment to test against'
+        required: false
+        default: 'local'
+        type: choice
+        options:
+          - local
+          - staging
+          - production
+
+  # Schedule daily tests
+  schedule:
+    - cron: '0 2 * * *'  # Run at 2 AM UTC daily
+
+# Ensure only one workflow runs at a time for the same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Global environment variables
+env:
+  NODE_VERSION: '18'
+  PLAYWRIGHT_BROWSERS_PATH: 0
+  CI: true
+
+jobs:
+  # Pre-flight checks
+  pre-flight:
+    name: Pre-flight Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should-run-tests: ${{ steps.check.outputs.should-run-tests }}
+      test-matrix: ${{ steps.matrix.outputs.test-matrix }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for Test Changes
+        id: check
+        run: |
+          # Check if tests, source code, or configs have changed
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 2>/dev/null || echo "all")
+          
+          if [[ "$CHANGED_FILES" == "all" ]] || \
+             echo "$CHANGED_FILES" | grep -E '\.(ts|tsx|js|jsx|json|yml|yaml)$' || \
+             echo "$CHANGED_FILES" | grep -E '^(src/|tests/|playwright\.config|package\.json)'; then
+            echo "should-run-tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-run-tests=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Test Matrix
+        id: matrix
+        run: |
+          if [ "${{ github.event.inputs.browser }}" = "all" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            echo 'test-matrix=["chromium", "firefox", "webkit"]' >> $GITHUB_OUTPUT
+          else
+            BROWSER="${{ github.event.inputs.browser || 'chromium' }}"
+            echo "test-matrix=[\"$BROWSER\"]" >> $GITHUB_OUTPUT
+          fi
+
+  # Main E2E test job
+  e2e-tests:
+    name: E2E Tests (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    needs: pre-flight
+    if: needs.pre-flight.outputs.should-run-tests == 'true'
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: ${{ fromJson(needs.pre-flight.outputs.test-matrix) }}
+        shard: [1, 2, 3, 4]  # Parallel execution across 4 shards
+
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/kitchen_test"
+      NEXTAUTH_SECRET: "test-secret-for-ci"
+      NEXTAUTH_URL: "http://localhost:3000"
+      NODE_ENV: "test"
+      PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: kitchen_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Cache Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-deps-${{ hashFiles('package-lock.json') }}-${{ matrix.browser }}
+          restore-keys: |
+            ${{ runner.os }}-deps-${{ hashFiles('package-lock.json') }}-
+            ${{ runner.os }}-deps-
+
+      - name: Install Dependencies
+        run: |
+          npm ci --prefer-offline --no-audit
+          npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Database Setup
+        run: |
+          npx prisma generate
+          npx prisma db push --accept-data-loss
+          npm run seed
+
+      - name: Build Application
+        run: |
+          npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Start Application
+        run: |
+          npm start &
+          sleep 30  # Wait for application to start
+          curl --retry 10 --retry-delay 3 --retry-connrefused http://localhost:3000
+        env:
+          NODE_ENV: test
+          PORT: 3000
+
+      - name: Run E2E Tests
+        run: |
+          npx playwright test \
+            --config=tests/e2e/playwright.config.ts \
+            --project="${{ matrix.browser }}" \
+            --shard=${{ matrix.shard }}/4 \
+            --reporter=html,json,junit \
+            --output-dir=test-results \
+            --trace=retain-on-failure \
+            --screenshot=only-on-failure \
+            --video=retain-on-failure
+        env:
+          BROWSER: ${{ matrix.browser }}
+          SHARD: ${{ matrix.shard }}
+          BASE_URL: "http://localhost:3000"
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.browser }}-${{ matrix.shard }}
+          path: |
+            test-results/
+            playwright-report/
+            tests/reports/
+          retention-days: 7
+
+      - name: Upload Failure Artifacts
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: failure-artifacts-${{ matrix.browser }}-${{ matrix.shard }}
+          path: |
+            test-results/**/*.png
+            test-results/**/*.webm
+            test-results/**/*.zip
+            tests/reports/**/*.html
+          retention-days: 14
+
+      - name: Comment PR with Test Results
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request' && always()
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            try {
+              // Read test results if available
+              const resultsPath = 'tests/reports/test-summary.json';
+              let testSummary = 'Test results not available';
+              
+              if (fs.existsSync(resultsPath)) {
+                const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+                testSummary = `
+            ## E2E Test Results (${{ matrix.browser }}, Shard ${{ matrix.shard }})
+            
+            - **Total Suites**: ${results.summary.total}
+            - **Passed**: ${results.summary.passed}
+            - **Failed**: ${results.summary.failed}
+            - **Success Rate**: ${results.summary.successRate.toFixed(1)}%
+            - **Duration**: ${(results.duration / 1000).toFixed(1)}s
+            
+            ${results.summary.failed > 0 ? '❌ Some tests failed' : '✅ All tests passed'}
+                `;
+              }
+              
+              // Find existing comment or create new one
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+              
+              const botComment = comments.data.find(comment => 
+                comment.user.login === 'github-actions[bot]' && 
+                comment.body.includes('E2E Test Results')
+              );
+              
+              const commentBody = `
+            ## 🧪 E2E Test Results
+            
+            ${testSummary}
+            
+            <details>
+            <summary>View detailed results</summary>
+            
+            **Matrix**: ${{ matrix.browser }} (Shard ${{ matrix.shard }}/4)
+            **Workflow**: [${context.workflow}](${context.server_url}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            **Commit**: ${context.sha.substring(0, 7)}
+            
+            </details>
+              `;
+              
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: commentBody
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: commentBody
+                });
+              }
+            } catch (error) {
+              console.log('Failed to post test results comment:', error);
+            }
+
+  # Aggregate results from all shards
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [pre-flight, e2e-tests]
+    if: always() && needs.pre-flight.outputs.should-run-tests == 'true'
+    timeout-minutes: 5
+
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-results
+
+      - name: Aggregate Test Results
+        run: |
+          echo "## 📊 E2E Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          TOTAL_JOBS=0
+          PASSED_JOBS=0
+          
+          for result_dir in all-results/test-results-*/; do
+            if [ -d "$result_dir" ]; then
+              TOTAL_JOBS=$((TOTAL_JOBS + 1))
+              
+              # Check if this job passed (look for success indicators)
+              if [ -f "$result_dir/test-summary.json" ]; then
+                SUCCESS_RATE=$(cat "$result_dir/test-summary.json" | jq -r '.summary.successRate // 0')
+                if (( $(echo "$SUCCESS_RATE > 95" | bc -l) )); then
+                  PASSED_JOBS=$((PASSED_JOBS + 1))
+                  echo "✅ $(basename "$result_dir")" >> $GITHUB_STEP_SUMMARY
+                else
+                  echo "❌ $(basename "$result_dir") (${SUCCESS_RATE}% success)" >> $GITHUB_STEP_SUMMARY
+                fi
+              else
+                echo "⚠️ $(basename "$result_dir") (no results)" >> $GITHUB_STEP_SUMMARY
+              fi
+            fi
+          done
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Overall Results:** $PASSED_JOBS/$TOTAL_JOBS jobs passed" >> $GITHUB_STEP_SUMMARY
+          
+          # Set job status
+          if [ $PASSED_JOBS -eq $TOTAL_JOBS ] && [ $TOTAL_JOBS -gt 0 ]; then
+            echo "STATUS=success" >> $GITHUB_ENV
+          else
+            echo "STATUS=failure" >> $GITHUB_ENV
+          fi
+
+      - name: Notify on Failure
+        if: env.STATUS == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Create an issue on test failure (for main branch)
+            if (context.ref === 'refs/heads/main' || context.ref === 'refs/heads/master') {
+              const title = `🚨 E2E Tests Failed - ${new Date().toISOString().split('T')[0]}`;
+              const body = `
+            ## E2E Test Failure Alert
+            
+            The E2E tests have failed on the main branch.
+            
+            **Details:**
+            - **Commit**: ${context.sha}
+            - **Workflow**: [View Run](${context.server_url}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            - **Time**: ${new Date().toISOString()}
+            
+            Please investigate and fix the failing tests.
+            
+            **Auto-generated by GitHub Actions**
+              `;
+              
+              // Check if similar issue already exists
+              const issues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'e2e-failure,automated'
+              });
+              
+              const existingIssue = issues.data.find(issue => 
+                issue.title.includes('E2E Tests Failed') && 
+                issue.created_at > new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+              );
+              
+              if (!existingIssue) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  body: body,
+                  labels: ['bug', 'e2e-failure', 'automated', 'high-priority']
+                });
+              }
+            }
+
+      - name: Report Status
+        run: |
+          if [ "$STATUS" = "success" ]; then
+            echo "🎉 All E2E tests passed successfully!"
+            exit 0
+          else
+            echo "💥 Some E2E tests failed!"
+            exit 1
+          fi
+
+  # Performance benchmark (optional, runs only on schedule)
+  performance-benchmark:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Run Performance Tests
+        run: |
+          npx playwright test \
+            --config=tests/e2e/playwright.config.ts \
+            --grep="@performance" \
+            --project="Desktop Chrome" \
+            --reporter=json \
+            --output-dir=perf-results
+
+      - name: Upload Performance Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: perf-results/
+          retention-days: 30
+
+  # Security scan (runs on PR and schedule)
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'schedule'
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Security Audit
+        run: |
+          npm audit --audit-level=moderate
+          npx audit-ci --moderate
+
+      - name: Scan for Secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified

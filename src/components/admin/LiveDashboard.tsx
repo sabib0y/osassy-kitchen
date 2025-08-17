@@ -262,7 +262,7 @@ export function LiveDashboard() {
   const getStatusColor = (status: OrderStatus) => {
     const colors: Record<OrderStatus, string> = {
       [OrderStatus.PENDING]: 'bg-yellow-100 text-yellow-800',
-      [OrderStatus.CONFIRMED]: 'bg-blue-100 text-blue-800',
+      [OrderStatus.CONFIRMED]: 'bg-red-100 text-red-800',
       [OrderStatus.PREPARING]: 'bg-purple-100 text-purple-800',
       [OrderStatus.OUT_FOR_DELIVERY]: 'bg-orange-100 text-orange-800',
       [OrderStatus.DELIVERED]: 'bg-green-100 text-green-800',

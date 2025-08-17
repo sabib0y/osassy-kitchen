@@ -3,7 +3,7 @@ import useScroll from "@/hooks/useScroll";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
-import Header from "../Header/Header";
+import ModernHeader from "../Header/ModernHeader";
 import SiteFooter from "../SiteFooter/SiteFooter";
 
 const Layout = ({ children, pageTitle }) => {
@@ -28,10 +28,10 @@ const Layout = ({ children, pageTitle }) => {
       <Preloader loading={loading} />
       <main
         id="wrapper"
-        style={{ opacity: loading ? 0 : 1 }}
+        style={{ opacity: loading ? 0 : 1, paddingTop: '80px' }}
         className="page-wrapper animated fadeIn"
       >
-        <Header />
+        <ModernHeader />
         {children}
         <SiteFooter />
       </main>

@@ -112,8 +112,8 @@ const UserHeader: React.FC<UserHeaderProps> = ({
           <div className={styles.pageTitle}>
             <h1>{getPageTitle()}</h1>
             <div className={styles.breadcrumb}>
-              <Link href="/user/dashboard">
-                <a>Dashboard</a>
+              <Link href="/user/dashboard" className={styles.breadcrumbLink}>
+                Dashboard
               </Link>
               {router.pathname !== '/user/dashboard' && (
                 <>
@@ -129,14 +129,13 @@ const UserHeader: React.FC<UserHeaderProps> = ({
         <div className={styles.headerRight}>
           {/* Quick Actions */}
           <div className={styles.quickActions}>
-            <Link href="/subscriptions">
-              <a 
-                className={styles.quickActionBtn}
-                title="Create new subscription"
-              >
-                <i className="fas fa-plus" aria-hidden="true"></i>
-                <span className={styles.quickActionLabel}>New Subscription</span>
-              </a>
+            <Link 
+              href="/subscriptions"
+              className={styles.quickActionBtn}
+              title="Create new subscription"
+            >
+              <i className="fas fa-plus" aria-hidden="true"></i>
+              <span className={styles.quickActionLabel}>New Subscription</span>
             </Link>
           </div>
 
@@ -199,8 +198,8 @@ const UserHeader: React.FC<UserHeaderProps> = ({
                 </div>
                 
                 <div className={styles.notificationFooter}>
-                  <Link href="/user/notifications">
-                    <a>View all notifications</a>
+                  <Link href="/user/notifications" className={styles.notificationLink}>
+                    View all notifications
                   </Link>
                 </div>
               </div>
@@ -237,34 +236,42 @@ const UserHeader: React.FC<UserHeaderProps> = ({
                 </div>
                 
                 <div className={styles.userDropdownMenu}>
-                  <Link href="/user/profile">
-                    <a className={styles.dropdownItem} onClick={() => setShowDropdown(false)}>
-                      <i className="fas fa-user" aria-hidden="true"></i>
-                      <span>My Profile</span>
-                    </a>
+                  <Link 
+                    href="/user/profile" 
+                    className={styles.dropdownItem} 
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <i className="fas fa-user" aria-hidden="true"></i>
+                    <span>My Profile</span>
                   </Link>
                   
-                  <Link href="/user/payments">
-                    <a className={styles.dropdownItem} onClick={() => setShowDropdown(false)}>
-                      <i className="fas fa-credit-card" aria-hidden="true"></i>
-                      <span>Payment Methods</span>
-                    </a>
+                  <Link 
+                    href="/user/payments" 
+                    className={styles.dropdownItem} 
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <i className="fas fa-credit-card" aria-hidden="true"></i>
+                    <span>Payment Methods</span>
                   </Link>
                   
-                  <Link href="/user/settings">
-                    <a className={styles.dropdownItem} onClick={() => setShowDropdown(false)}>
-                      <i className="fas fa-cog" aria-hidden="true"></i>
-                      <span>Settings</span>
-                    </a>
+                  <Link 
+                    href="/user/settings" 
+                    className={styles.dropdownItem} 
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <i className="fas fa-cog" aria-hidden="true"></i>
+                    <span>Settings</span>
                   </Link>
                   
                   <div className={styles.dropdownDivider}></div>
                   
-                  <Link href="/support">
-                    <a className={styles.dropdownItem} onClick={() => setShowDropdown(false)}>
-                      <i className="fas fa-question-circle" aria-hidden="true"></i>
-                      <span>Help & Support</span>
-                    </a>
+                  <Link 
+                    href="/support" 
+                    className={styles.dropdownItem} 
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <i className="fas fa-question-circle" aria-hidden="true"></i>
+                    <span>Help & Support</span>
                   </Link>
                   
                   <button 

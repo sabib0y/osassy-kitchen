@@ -80,13 +80,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({
   }
 
   return (
-    <>
-      <Head>
-        <title>{pageTitle}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
-      
+    <Layout pageTitle={pageTitle}>
       <div className={styles.userLayout}>
         {/* Background Pattern */}
         <div className={styles.backgroundPattern}></div>
@@ -125,7 +119,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({
           </main>
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

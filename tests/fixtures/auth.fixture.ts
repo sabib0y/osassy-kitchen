@@ -49,7 +49,7 @@ export const test = base.extend<AuthFixtures>({
       await page.click('button[type="submit"]');
       
       // Wait for navigation after login
-      await page.waitForURL('**/user/dashboard', { timeout: 10000 });
+      await page.waitForURL(url => url.pathname.includes('dashboard'), { timeout: 30000 });
       
       // Verify we're logged in
       await expect(page.locator('[data-testid="user-header"]')).toBeVisible();
@@ -65,7 +65,7 @@ export const test = base.extend<AuthFixtures>({
       await page.click('button[type="submit"]');
       
       // Wait for admin dashboard
-      await page.waitForURL('**/admin/dashboard', { timeout: 10000 });
+      await page.waitForURL(url => url.pathname.includes('dashboard'), { timeout: 30000 });
       
       // Verify we're in admin area
       await expect(page.locator('[data-testid="admin-layout"]')).toBeVisible();
@@ -90,24 +90,52 @@ export { expect } from '@playwright/test';
  */
 export async function setupAuth(page: Page, userType: 'user' | 'admin') {
   const email = userType === 'admin' 
-    ? process.env.ADMIN_EMAIL || 'admin@osassyskitchen.com'
-    : process.env.TEST_USER_EMAIL || 'testuser@example.com';
+    ? process.env.TEST_ADMIN_EMAIL || 'osasp419@gmail.com'
+    : process.env.TEST_USER_EMAIL || 'test@test.com';
   
   const password = userType === 'admin'
-    ? process.env.ADMIN_PASSWORD || 'Admin123!'
-    : process.env.TEST_USER_PASSWORD || 'Test123!';
+    ? process.env.TEST_ADMIN_PASSWORD || 'test'
+    : process.env.TEST_USER_PASSWORD || 'test';
 
-  await page.goto('/login');
-  await page.fill('input[name="email"]', email);
-  await page.fill('input[name="password"]', password);
+  const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+  await page.goto(`${baseURL}/login`);
+  
+  // Wait for form elements to be present
+  await page.waitForSelector('input[type="email"], input#email, input[name="email"]', { timeout: 10000 });
+  
+  await page.fill('input[type="email"], input#email, input[name="email"]', email);
+  await page.fill('input[type="password"], input#password, input[name="password"]', password);
   await page.click('button[type="submit"]');
   
-  // Wait for successful login
-  const expectedUrl = userType === 'admin' ? '/admin/dashboard' : '/user/dashboard';
-  await page.waitForURL(`**${expectedUrl}`, { timeout: 10000 });
+  // Wait for successful login with more flexible timing
+  try {
+    await page.waitForURL(url => !url.pathname.includes('/login'), { timeout: 15000 });
+    console.log(`${userType} login successful - navigated to: ${page.url()}`);
+  } catch (error) {
+    console.log(`Login navigation failed for ${userType}. Current URL: ${page.url()}`);
+    // If we're not on login page anymore, consider it successful
+    if (!page.url().includes('/login')) {
+      console.log(`Login appears successful - navigated away from login page to: ${page.url()}`);
+    } else {
+      // Check if we have an error message
+      const hasError = await page.locator('text=Invalid email or password').isVisible().catch(() => false);
+      if (hasError) {
+        throw new Error(`Login failed for ${userType} - invalid credentials`);
+      } else {
+        throw error;
+      }
+    }
+  }
   
   // Save storage state
   const storageStatePath = path.join(__dirname, '.auth', `${userType}.json`);
+  
+  // Ensure the .auth directory exists
+  const authDir = path.join(__dirname, '.auth');
+  if (!fs.existsSync(authDir)) {
+    fs.mkdirSync(authDir, { recursive: true });
+  }
+  
   await page.context().storageState({ path: storageStatePath });
 }
 

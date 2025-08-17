@@ -1,0 +1,899 @@
+/**
+ * UTILITY CLASSES
+ * Common patterns and state styles for Osassy's Kitchen application
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// LOADING STATES
+// =============================================================================
+
+.loading {
+  position: relative;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: $z-overlay;
+    border-radius: inherit;
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--osassy-primary-200);
+    border-top-color: var(--osassy-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    z-index: $z-overlay + 1;
+  }
+}
+
+.loading-sm {
+  &::before {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+  }
+}
+
+.loading-lg {
+  &::before {
+    width: 48px;
+    height: 48px;
+    border-width: 4px;
+  }
+}
+
+// Inline loader (for buttons, etc.)
+.loading-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  
+  &::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--osassy-primary-200);
+    border-top-color: var(--osassy-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    position: static;
+    transform: none;
+  }
+}
+
+// Page loading overlay
+.loading-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+  
+  .loading-spinner {
+    width: 64px;
+    height: 64px;
+    border: 4px solid var(--osassy-primary-200);
+    border-top-color: var(--osassy-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: $spacing-4;
+  }
+  
+  .loading-text {
+    font-size: $font-size-lg;
+    color: var(--osassy-gray-700);
+    text-align: center;
+  }
+}
+
+// =============================================================================
+// ERROR STATES
+// =============================================================================
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-8;
+  text-align: center;
+  color: var(--osassy-error);
+  
+  .error-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: $spacing-4;
+    opacity: 0.8;
+  }
+  
+  .error-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-error-dark);
+    margin-bottom: $spacing-2;
+  }
+  
+  .error-message {
+    font-size: $font-size-base;
+    color: var(--osassy-gray-600);
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-6;
+    max-width: 400px;
+  }
+  
+  .error-actions {
+    display: flex;
+    gap: $spacing-3;
+    
+    @include mobile-only {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}
+
+.error-inline {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  background: var(--osassy-error-50);
+  border: 1px solid var(--osassy-error-200);
+  border-radius: $radius-md;
+  color: var(--osassy-error-dark);
+  font-size: $font-size-sm;
+  
+  .error-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}
+
+.error-banner {
+  background: var(--osassy-error);
+  color: var(--osassy-white);
+  padding: $spacing-4;
+  text-align: center;
+  position: relative;
+  
+  .error-banner-close {
+    position: absolute;
+    right: $spacing-4;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--osassy-white);
+    cursor: pointer;
+    padding: $spacing-1;
+    border-radius: 50%;
+    transition: $transition-colors;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// =============================================================================
+// SUCCESS STATES
+// =============================================================================
+
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-8;
+  text-align: center;
+  
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: $spacing-4;
+    color: var(--osassy-success);
+  }
+  
+  .success-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-success-dark);
+    margin-bottom: $spacing-2;
+  }
+  
+  .success-message {
+    font-size: $font-size-base;
+    color: var(--osassy-gray-600);
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-6;
+    max-width: 400px;
+  }
+  
+  .success-actions {
+    display: flex;
+    gap: $spacing-3;
+    
+    @include mobile-only {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}
+
+.success-inline {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  background: var(--osassy-success-50);
+  border: 1px solid var(--osassy-success-200);
+  border-radius: $radius-md;
+  color: var(--osassy-success-dark);
+  font-size: $font-size-sm;
+  
+  .success-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}
+
+.success-banner {
+  background: var(--osassy-success);
+  color: var(--osassy-white);
+  padding: $spacing-4;
+  text-align: center;
+  position: relative;
+  
+  .success-banner-close {
+    position: absolute;
+    right: $spacing-4;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--osassy-white);
+    cursor: pointer;
+    padding: $spacing-1;
+    border-radius: 50%;
+    transition: $transition-colors;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// =============================================================================
+// WARNING STATES
+// =============================================================================
+
+.warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-8;
+  text-align: center;
+  
+  .warning-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: $spacing-4;
+    color: var(--osassy-warning);
+  }
+  
+  .warning-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-warning-dark);
+    margin-bottom: $spacing-2;
+  }
+  
+  .warning-message {
+    font-size: $font-size-base;
+    color: var(--osassy-gray-600);
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-6;
+    max-width: 400px;
+  }
+  
+  .warning-actions {
+    display: flex;
+    gap: $spacing-3;
+    
+    @include mobile-only {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}
+
+.warning-inline {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-4;
+  background: var(--osassy-warning-50);
+  border: 1px solid var(--osassy-warning-200);
+  border-radius: $radius-md;
+  color: var(--osassy-warning-dark);
+  font-size: $font-size-sm;
+  
+  .warning-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+}
+
+// =============================================================================
+// EMPTY STATES
+// =============================================================================
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-12 $spacing-4;
+  text-align: center;
+  
+  .empty-icon {
+    width: 96px;
+    height: 96px;
+    margin-bottom: $spacing-6;
+    color: var(--osassy-gray-400);
+    opacity: 0.8;
+  }
+  
+  .empty-title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-gray-700);
+    margin-bottom: $spacing-3;
+  }
+  
+  .empty-description {
+    font-size: $font-size-base;
+    color: var(--osassy-gray-600);
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-8;
+    max-width: 500px;
+  }
+  
+  .empty-actions {
+    display: flex;
+    gap: $spacing-3;
+    
+    @include mobile-only {
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}
+
+.empty-compact {
+  padding: $spacing-8 $spacing-4;
+  
+  .empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: $spacing-4;
+  }
+  
+  .empty-title {
+    font-size: $font-size-lg;
+    margin-bottom: $spacing-2;
+  }
+  
+  .empty-description {
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-6;
+  }
+}
+
+// =============================================================================
+// NOTIFICATION/ALERT STYLES
+// =============================================================================
+
+.alert {
+  padding: $spacing-4 $spacing-5;
+  border-radius: $radius-md;
+  border: 1px solid;
+  margin-bottom: $spacing-4;
+  position: relative;
+  
+  .alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-3;
+  }
+  
+  .alert-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  
+  .alert-body {
+    flex: 1;
+    
+    .alert-title {
+      font-weight: $font-weight-semibold;
+      margin-bottom: $spacing-1;
+    }
+    
+    .alert-message {
+      line-height: $line-height-relaxed;
+    }
+  }
+  
+  .alert-close {
+    position: absolute;
+    top: $spacing-3;
+    right: $spacing-3;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: $spacing-1;
+    border-radius: 50%;
+    transition: $transition-colors;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  // Alert variants
+  &.alert-success {
+    background: var(--osassy-success-50);
+    border-color: var(--osassy-success-200);
+    color: var(--osassy-success-dark);
+  }
+  
+  &.alert-error {
+    background: var(--osassy-error-50);
+    border-color: var(--osassy-error-200);
+    color: var(--osassy-error-dark);
+  }
+  
+  &.alert-warning {
+    background: var(--osassy-warning-50);
+    border-color: var(--osassy-warning-200);
+    color: var(--osassy-warning-dark);
+  }
+  
+  &.alert-info {
+    background: var(--osassy-info-50);
+    border-color: var(--osassy-info-200);
+    color: var(--osassy-info-dark);
+  }
+  
+  &.alert-primary {
+    background: var(--osassy-primary-50);
+    border-color: var(--osassy-primary-200);
+    color: var(--osassy-primary-dark);
+  }
+}
+
+// =============================================================================
+// SKELETON/PLACEHOLDER STYLES
+// =============================================================================
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--osassy-gray-200) 25%,
+    var(--osassy-gray-300) 50%,
+    var(--osassy-gray-200) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: $radius-sm;
+}
+
+.skeleton-text {
+  height: 1em;
+  margin-bottom: $spacing-2;
+  
+  &:last-child {
+    margin-bottom: 0;
+    width: 80%;
+  }
+  
+  &.skeleton-text-sm {
+    height: 0.875em;
+  }
+  
+  &.skeleton-text-lg {
+    height: 1.25em;
+  }
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  
+  &.skeleton-circle-sm {
+    width: 32px;
+    height: 32px;
+  }
+  
+  &.skeleton-circle-md {
+    width: 48px;
+    height: 48px;
+  }
+  
+  &.skeleton-circle-lg {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.skeleton-card {
+  padding: $spacing-6;
+  background: var(--osassy-white);
+  border-radius: $radius-card;
+  box-shadow: $shadow-sm;
+  
+  .skeleton-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    margin-bottom: $spacing-4;
+  }
+  
+  .skeleton-body {
+    .skeleton-text {
+      margin-bottom: $spacing-3;
+    }
+  }
+}
+
+// =============================================================================
+// PROGRESS INDICATORS
+// =============================================================================
+
+.progress {
+  width: 100%;
+  height: 8px;
+  background: var(--osassy-gray-200);
+  border-radius: $radius-full;
+  overflow: hidden;
+  
+  .progress-bar {
+    height: 100%;
+    background: var(--osassy-gradient-primary);
+    border-radius: $radius-full;
+    transition: width $duration-normal $ease-out;
+    
+    &.progress-success {
+      background: var(--osassy-success);
+    }
+    
+    &.progress-warning {
+      background: var(--osassy-warning);
+    }
+    
+    &.progress-error {
+      background: var(--osassy-error);
+    }
+  }
+  
+  &.progress-sm {
+    height: 4px;
+  }
+  
+  &.progress-lg {
+    height: 12px;
+  }
+}
+
+.progress-circle {
+  width: 64px;
+  height: 64px;
+  position: relative;
+  
+  svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  
+  .progress-circle-bg {
+    fill: none;
+    stroke: var(--osassy-gray-200);
+    stroke-width: 4;
+  }
+  
+  .progress-circle-bar {
+    fill: none;
+    stroke: var(--osassy-primary);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset $duration-normal $ease-out;
+  }
+  
+  .progress-circle-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-gray-700);
+  }
+}
+
+// =============================================================================
+// BADGE/TAG STYLES
+// =============================================================================
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  text-transform: uppercase;
+  letter-spacing: $letter-spacing-wide;
+  
+  &.badge-sm {
+    padding: $spacing-0-5 $spacing-1-5;
+    font-size: 10px;
+  }
+  
+  &.badge-lg {
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+  }
+  
+  // Badge variants
+  &.badge-primary {
+    background: var(--osassy-primary-100);
+    color: var(--osassy-primary-dark);
+  }
+  
+  &.badge-secondary {
+    background: var(--osassy-secondary-100);
+    color: var(--osassy-secondary-dark);
+  }
+  
+  &.badge-accent {
+    background: var(--osassy-accent-100);
+    color: var(--osassy-accent-dark);
+  }
+  
+  &.badge-success {
+    background: var(--osassy-success-100);
+    color: var(--osassy-success-dark);
+  }
+  
+  &.badge-error {
+    background: var(--osassy-error-100);
+    color: var(--osassy-error-dark);
+  }
+  
+  &.badge-warning {
+    background: var(--osassy-warning-100);
+    color: var(--osassy-warning-dark);
+  }
+  
+  &.badge-info {
+    background: var(--osassy-info-100);
+    color: var(--osassy-info-dark);
+  }
+  
+  &.badge-gray {
+    background: var(--osassy-gray-100);
+    color: var(--osassy-gray-700);
+  }
+  
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+// =============================================================================
+// DIVIDER STYLES
+// =============================================================================
+
+.divider {
+  border: none;
+  height: 1px;
+  background: var(--osassy-gray-200);
+  margin: $spacing-6 0;
+  
+  &.divider-primary {
+    background: var(--osassy-primary-200);
+  }
+  
+  &.divider-thick {
+    height: 2px;
+  }
+  
+  &.divider-dashed {
+    border-top: 1px dashed var(--osassy-gray-300);
+    background: none;
+  }
+  
+  &.divider-vertical {
+    width: 1px;
+    height: auto;
+    margin: 0 $spacing-4;
+    align-self: stretch;
+  }
+}
+
+.divider-text {
+  position: relative;
+  text-align: center;
+  margin: $spacing-6 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--osassy-gray-200);
+  }
+  
+  span {
+    background: var(--osassy-white);
+    padding: 0 $spacing-4;
+    color: var(--osassy-gray-600);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+// Animation utility classes
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn $duration-slow $ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp $duration-normal $ease-out;
+}
+
+// =============================================================================
+// ACCESSIBILITY
+// =============================================================================
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .loading::before,
+  .loading-inline::before,
+  .loading-page .loading-spinner,
+  .progress-bar,
+  .progress-circle-bar,
+  .animate-spin,
+  .animate-pulse,
+  .animate-bounce,
+  .animate-fade-in,
+  .animate-slide-up {
+    animation: none;
+    transition: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .alert,
+  .badge {
+    border-width: 2px;
+  }
+  
+  .skeleton {
+    background: var(--osassy-gray-400);
+  }
+}

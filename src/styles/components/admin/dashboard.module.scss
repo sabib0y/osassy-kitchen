@@ -1,9 +1,12 @@
-// Admin Dashboard Styles
+// Admin Dashboard Styles - Aligned with Brand Colors
+@import '../../variables';
+@import '../../animations';
+
 .dashboardContainer {
   display: flex;
   height: 100vh;
-  background: #f8fafc;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-secondary);
+  font-family: var(--font-primary);
 }
 
 // Sidebar Styles
@@ -30,14 +33,15 @@
       .logoIcon {
         width: 32px;
         height: 32px;
-        background: #3b82f6;
-        border-radius: 8px;
+        background: var(--color-primary);
+        border-radius: var(--radius-base);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 14px;
+        color: var(--text-white);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-sm);
+        box-shadow: var(--shadow-button);
       }
 
       .logoText {
@@ -75,8 +79,10 @@
       }
 
       &.active {
-        background: #eff6ff;
-        color: #3b82f6;
+        background: var(--color-primary-50);
+        color: var(--color-primary);
+        font-weight: var(--font-weight-semibold);
+        box-shadow: inset 3px 0 0 var(--color-primary);
       }
     }
   }
@@ -207,19 +213,26 @@
     .viewAllBtn {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: #3b82f6;
-      color: white;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-base);
+      background: var(--color-primary);
+      color: var(--text-white);
       border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
+      border-radius: var(--radius-button);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: var(--transition-normal);
+      box-shadow: var(--shadow-button);
 
       &:hover {
-        background: #2563eb;
+        background: var(--color-primary-dark);
+        box-shadow: var(--shadow-button-hover);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
       }
 
       svg {
@@ -284,8 +297,8 @@
               }
 
               &.inProgress {
-                background: #dbeafe;
-                color: #1e40af;
+                background: var(--color-info-bg);
+                color: var(--color-info-dark);
               }
 
               &.cancelled {
@@ -305,18 +318,21 @@
             }
 
             .viewBtn {
-              padding: 0.375rem 0.875rem;
-              background: #3b82f6;
-              color: white;
+              padding: var(--spacing-xs) var(--spacing-sm);
+              background: var(--color-primary);
+              color: var(--text-white);
               border: none;
-              border-radius: 6px;
-              font-size: 12px;
-              font-weight: 500;
+              border-radius: var(--radius-md);
+              font-size: var(--font-size-xs);
+              font-weight: var(--font-weight-medium);
               cursor: pointer;
-              transition: background 0.2s ease;
+              transition: var(--transition-normal);
+              box-shadow: var(--shadow-sm);
 
               &:hover {
-                background: #2563eb;
+                background: var(--color-primary-dark);
+                box-shadow: var(--shadow-md);
+                transform: translateY(-1px);
               }
             }
           }
@@ -372,8 +388,8 @@
         }
 
         &.orderUpdated {
-          background: #dbeafe;
-          color: #1e40af;
+          background: var(--color-info-bg);
+          color: var(--color-info-dark);
         }
 
         &.orderCancelled {

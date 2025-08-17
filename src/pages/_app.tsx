@@ -17,6 +17,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // import "tiny-slider/dist/tiny-slider.css";
 
 // extra css
+import "@/styles/globals-variables.css";
 import "@/styles/style.scss";
 import "@/styles/responsive.scss";
 import "@/styles/admin-theme.css";

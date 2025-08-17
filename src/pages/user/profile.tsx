@@ -21,12 +21,12 @@ const UserProfile: React.FC = () => {
 
   if (status === 'loading' || loading) {
     return (
-      <Layout pageTitle="Profile Settings - Osassy's Kitchen">
+      <UserLayout pageTitle="Profile Settings - Osassy's Kitchen" activeTab="profile">
         <div className={styles.loadingContainer}>
           <div className={styles.loadingSpinner}></div>
           <p>Loading your profile...</p>
         </div>
-      </Layout>
+      </UserLayout>
     );
   }
 
@@ -37,7 +37,7 @@ const UserProfile: React.FC = () => {
 
   if (error) {
     return (
-      <Layout pageTitle="Profile Settings - Osassy's Kitchen">
+      <UserLayout pageTitle="Profile Settings - Osassy's Kitchen" activeTab="profile">
         <div className={styles.errorContainer}>
           <i className="fas fa-exclamation-triangle"></i>
           <h3>Error Loading Profile</h3>
@@ -46,7 +46,7 @@ const UserProfile: React.FC = () => {
             Try Again
           </button>
         </div>
-      </Layout>
+      </UserLayout>
     );
   }
 
@@ -55,9 +55,8 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <Layout pageTitle="Profile Settings - Osassy's Kitchen">
-      <UserLayout>
-        <div className={styles.profilePage}>
+    <UserLayout pageTitle="Profile Settings - Osassy's Kitchen" activeTab="profile">
+      <div className={styles.profilePage}>
           
           <div className={styles.profileContainer}>
             {/* Tab Navigation */}
@@ -131,8 +130,7 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
         </div>
-      </UserLayout>
-    </Layout>
+    </UserLayout>
   );
 };
 

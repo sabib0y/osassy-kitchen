@@ -1,0 +1,704 @@
+/**
+ * FORM COMPONENTS
+ * Consistent form styles across the Osassy's Kitchen application
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// FORM CONTAINER
+// =============================================================================
+
+.form {
+  width: 100%;
+  
+  .form-section {
+    margin-bottom: $spacing-8;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .form-section-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-gray-900);
+    margin-bottom: $spacing-4;
+    border-bottom: 2px solid var(--osassy-primary);
+    padding-bottom: $spacing-2;
+  }
+  
+  .form-section-description {
+    color: var(--osassy-gray-600);
+    margin-bottom: $spacing-6;
+    line-height: $line-height-relaxed;
+  }
+}
+
+// =============================================================================
+// FORM GROUPS
+// =============================================================================
+
+.form-group {
+  margin-bottom: $spacing-6;
+  
+  &.form-group-sm {
+    margin-bottom: $spacing-4;
+  }
+  
+  &.form-group-lg {
+    margin-bottom: $spacing-8;
+  }
+  
+  &.form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    
+    .form-label {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: $spacing-4;
+  
+  .form-group {
+    flex: 1;
+  }
+  
+  @include mobile-only {
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+}
+
+// =============================================================================
+// LABELS
+// =============================================================================
+
+.form-label {
+  display: block;
+  margin-bottom: $spacing-2;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--osassy-gray-700);
+  
+  &.form-label-required::after {
+    content: ' *';
+    color: var(--osassy-error);
+  }
+  
+  &.form-label-optional::after {
+    content: ' (optional)';
+    color: var(--osassy-gray-500);
+    font-weight: $font-weight-regular;
+  }
+}
+
+// =============================================================================
+// INPUT FIELDS
+// =============================================================================
+
+.form-input {
+  @include input-base;
+  
+  // Size variations
+  &.form-input-sm {
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+  }
+  
+  &.form-input-lg {
+    padding: $spacing-4 $spacing-5;
+    font-size: $font-size-lg;
+  }
+  
+  // State variations
+  &.form-input-success {
+    border-color: var(--osassy-success);
+    
+    &:focus {
+      border-color: var(--osassy-success);
+      box-shadow: 0 0 0 3px var(--osassy-success-100);
+    }
+  }
+  
+  &.form-input-error {
+    border-color: var(--osassy-error);
+    
+    &:focus {
+      border-color: var(--osassy-error);
+      box-shadow: 0 0 0 3px var(--osassy-error-100);
+    }
+  }
+  
+  &.form-input-warning {
+    border-color: var(--osassy-warning);
+    
+    &:focus {
+      border-color: var(--osassy-warning);
+      box-shadow: 0 0 0 3px var(--osassy-warning-100);
+    }
+  }
+}
+
+// =============================================================================
+// TEXTAREA
+// =============================================================================
+
+.form-textarea {
+  @include input-base;
+  min-height: 120px;
+  resize: vertical;
+  font-family: $font-primary;
+  
+  &.form-textarea-sm {
+    min-height: 80px;
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+  }
+  
+  &.form-textarea-lg {
+    min-height: 160px;
+    padding: $spacing-4 $spacing-5;
+    font-size: $font-size-lg;
+  }
+  
+  &.form-textarea-auto {
+    resize: none;
+    overflow: hidden;
+  }
+}
+
+// =============================================================================
+// SELECT DROPDOWN
+// =============================================================================
+
+.form-select {
+  @include input-base;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right $spacing-3 center;
+  background-repeat: no-repeat;
+  background-size: 16px 12px;
+  padding-right: $spacing-10;
+  appearance: none;
+  
+  &.form-select-sm {
+    padding: $spacing-2 $spacing-8 $spacing-2 $spacing-3;
+    font-size: $font-size-sm;
+  }
+  
+  &.form-select-lg {
+    padding: $spacing-4 $spacing-12 $spacing-4 $spacing-5;
+    font-size: $font-size-lg;
+  }
+  
+  &:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C52D2F' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  }
+}
+
+// =============================================================================
+// CHECKBOX AND RADIO
+// =============================================================================
+
+.form-checkbox,
+.form-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    border: 2px solid var(--osassy-gray-300);
+    background: var(--osassy-white);
+    transition: $transition-all;
+    
+    &:checked {
+      background-color: var(--osassy-primary);
+      border-color: var(--osassy-primary);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--osassy-primary-100);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  input[type="checkbox"] {
+    border-radius: $radius-sm;
+  }
+  
+  input[type="radio"] {
+    border-radius: 50%;
+  }
+  
+  .form-check-label {
+    flex: 1;
+    font-size: $font-size-base;
+    color: var(--osassy-gray-700);
+    line-height: $line-height-normal;
+    cursor: pointer;
+    
+    &.form-check-label-sm {
+      font-size: $font-size-sm;
+    }
+    
+    &.form-check-label-lg {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+// =============================================================================
+// FORM CONTROL WITH ICONS
+// =============================================================================
+
+.form-control {
+  position: relative;
+  
+  .form-input {
+    width: 100%;
+  }
+  
+  &.form-control-icon-left {
+    .form-input {
+      padding-left: $spacing-10;
+    }
+    
+    .form-icon {
+      position: absolute;
+      left: $spacing-3;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--osassy-gray-500);
+      pointer-events: none;
+    }
+  }
+  
+  &.form-control-icon-right {
+    .form-input {
+      padding-right: $spacing-10;
+    }
+    
+    .form-icon {
+      position: absolute;
+      right: $spacing-3;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--osassy-gray-500);
+      pointer-events: none;
+    }
+  }
+  
+  &.form-control-loading {
+    .form-icon {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// =============================================================================
+// HELP TEXT AND VALIDATION
+// =============================================================================
+
+.form-help {
+  display: block;
+  margin-top: $spacing-1;
+  font-size: $font-size-sm;
+  color: var(--osassy-gray-600);
+  line-height: $line-height-normal;
+}
+
+.form-error {
+  display: block;
+  margin-top: $spacing-1;
+  font-size: $font-size-sm;
+  color: var(--osassy-error);
+  line-height: $line-height-normal;
+}
+
+.form-success {
+  display: block;
+  margin-top: $spacing-1;
+  font-size: $font-size-sm;
+  color: var(--osassy-success);
+  line-height: $line-height-normal;
+}
+
+.form-warning {
+  display: block;
+  margin-top: $spacing-1;
+  font-size: $font-size-sm;
+  color: var(--osassy-warning);
+  line-height: $line-height-normal;
+}
+
+// =============================================================================
+// FORM ACTIONS
+// =============================================================================
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-top: $spacing-8;
+  padding-top: $spacing-6;
+  border-top: 1px solid var(--osassy-gray-200);
+  
+  &.form-actions-center {
+    justify-content: center;
+  }
+  
+  &.form-actions-end {
+    justify-content: flex-end;
+  }
+  
+  &.form-actions-between {
+    justify-content: space-between;
+  }
+  
+  &.form-actions-no-border {
+    border-top: none;
+    padding-top: 0;
+  }
+  
+  @include mobile-only {
+    flex-direction: column;
+    align-items: stretch;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+// =============================================================================
+// SEARCH INPUT
+// =============================================================================
+
+.form-search {
+  position: relative;
+  
+  .form-input {
+    padding-left: $spacing-10;
+    padding-right: $spacing-10;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--osassy-gray-500);
+    pointer-events: none;
+  }
+  
+  .search-clear {
+    position: absolute;
+    right: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--osassy-gray-500);
+    cursor: pointer;
+    padding: $spacing-1;
+    border-radius: 50%;
+    transition: $transition-colors;
+    
+    &:hover {
+      background: var(--osassy-gray-100);
+      color: var(--osassy-gray-700);
+    }
+  }
+}
+
+// =============================================================================
+// TOGGLE SWITCH
+// =============================================================================
+
+.form-toggle {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  
+  .toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 24px;
+    background: var(--osassy-gray-300);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: $transition-colors;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: var(--osassy-white);
+      border-radius: 50%;
+      transition: $transition-transform;
+      box-shadow: $shadow-sm;
+    }
+    
+    &.toggle-checked {
+      background: var(--osassy-primary);
+      
+      &::after {
+        transform: translateX(24px);
+      }
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--osassy-primary-100);
+    }
+  }
+  
+  .toggle-label {
+    font-size: $font-size-base;
+    color: var(--osassy-gray-700);
+    cursor: pointer;
+  }
+}
+
+// =============================================================================
+// FILE UPLOAD
+// =============================================================================
+
+.form-file {
+  .file-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .file-drop-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-8;
+    border: 2px dashed var(--osassy-gray-300);
+    border-radius: $radius-lg;
+    background: var(--osassy-gray-50);
+    text-align: center;
+    cursor: pointer;
+    transition: $transition-all;
+    
+    &:hover,
+    &.file-drop-active {
+      border-color: var(--osassy-primary);
+      background: var(--osassy-primary-50);
+    }
+    
+    .file-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: $spacing-4;
+      color: var(--osassy-gray-400);
+    }
+    
+    .file-text {
+      font-size: $font-size-base;
+      color: var(--osassy-gray-700);
+      margin-bottom: $spacing-2;
+    }
+    
+    .file-hint {
+      font-size: $font-size-sm;
+      color: var(--osassy-gray-500);
+    }
+  }
+  
+  .file-list {
+    margin-top: $spacing-4;
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+      padding: $spacing-3;
+      background: var(--osassy-white);
+      border: 1px solid var(--osassy-gray-200);
+      border-radius: $radius-md;
+      margin-bottom: $spacing-2;
+      
+      .file-info {
+        flex: 1;
+        
+        .file-name {
+          font-weight: $font-weight-medium;
+          color: var(--osassy-gray-900);
+        }
+        
+        .file-size {
+          font-size: $font-size-sm;
+          color: var(--osassy-gray-500);
+        }
+      }
+      
+      .file-remove {
+        background: none;
+        border: none;
+        color: var(--osassy-error);
+        cursor: pointer;
+        padding: $spacing-1;
+        border-radius: 50%;
+        transition: $transition-colors;
+        
+        &:hover {
+          background: var(--osassy-error-50);
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// FORM VALIDATION STATES
+// =============================================================================
+
+.form-group {
+  &.form-group-success {
+    .form-label {
+      color: var(--osassy-success-dark);
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-select {
+      border-color: var(--osassy-success);
+      
+      &:focus {
+        border-color: var(--osassy-success);
+        box-shadow: 0 0 0 3px var(--osassy-success-100);
+      }
+    }
+  }
+  
+  &.form-group-error {
+    .form-label {
+      color: var(--osassy-error-dark);
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-select {
+      border-color: var(--osassy-error);
+      
+      &:focus {
+        border-color: var(--osassy-error);
+        box-shadow: 0 0 0 3px var(--osassy-error-100);
+      }
+    }
+  }
+  
+  &.form-group-warning {
+    .form-label {
+      color: var(--osassy-warning-dark);
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-select {
+      border-color: var(--osassy-warning);
+      
+      &:focus {
+        border-color: var(--osassy-warning);
+        box-shadow: 0 0 0 3px var(--osassy-warning-100);
+      }
+    }
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Field focus animation
+.form-input,
+.form-textarea,
+.form-select {
+  position: relative;
+  
+  &:focus {
+    animation: fieldFocus $duration-fast $ease-out;
+  }
+}
+
+@keyframes fieldFocus {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY
+// =============================================================================
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .form-input,
+  .form-textarea,
+  .form-select {
+    border-width: 2px;
+  }
+  
+  .form-checkbox input[type="checkbox"],
+  .form-radio input[type="radio"] {
+    border-width: 3px;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .form-input,
+  .form-textarea,
+  .form-select,
+  .toggle-switch,
+  .toggle-switch::after,
+  .file-drop-zone {
+    transition: none;
+    animation: none;
+  }
+}
+
+// Focus visible for keyboard navigation
+@media (prefers-reduced-motion: no-preference) {
+  .form-input:focus-visible,
+  .form-textarea:focus-visible,
+  .form-select:focus-visible {
+    outline: 2px solid var(--osassy-primary);
+    outline-offset: 2px;
+  }
+}

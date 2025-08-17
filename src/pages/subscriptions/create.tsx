@@ -35,16 +35,27 @@ import { createCheckoutSession, redirectToCheckout } from '@/lib/stripe-client';
 // Map categories from database to UI display format
 const categoryMapping: { [key: string]: string } = {
   'rice-dishes': 'rice',
+  'Rice': 'rice',
+  'rice': 'rice',
   'soups': 'soup',
+  'Soup': 'soup',
+  'soup': 'soup',
+  'Stew': 'soup',
+  'stew': 'soup',
   'grilled': 'protein',
+  'Grilled': 'protein',
   'main-dishes': 'protein',
+  'Main': 'protein',
   'sides': 'protein',
-  'appetizers': 'protein'
+  'Sides': 'protein',
+  'appetizers': 'protein',
+  'Protein': 'protein',
+  'protein': 'protein'
 };
 
 // Helper function to map database category to UI category
 const mapCategory = (dbCategory: string): string => {
-  return categoryMapping[dbCategory] || 'protein';
+  return categoryMapping[dbCategory] || categoryMapping[dbCategory.toLowerCase()] || 'protein';
 };
 
 const CreateSubscriptionPage: React.FC = () => {

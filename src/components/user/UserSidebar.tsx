@@ -114,18 +114,18 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
               const isActive = activeItem === item.id;
               
               return (
-                <Link key={item.id} href={item.href} passHref>
-                  <a
-                    className={`${styles.navItem} ${isActive ? styles.active : ''}`}
-                    onClick={() => handleNavClick(item)}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    <i className={item.icon} aria-hidden="true"></i>
-                    <span>{item.label}</span>
-                    {isActive && (
-                      <div className={styles.activeIndicator} aria-hidden="true"></div>
-                    )}
-                  </a>
+                <Link 
+                  key={item.id} 
+                  href={item.href}
+                  className={`${styles.navItem} ${isActive ? styles.active : ''}`}
+                  onClick={() => handleNavClick(item)}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <i className={item.icon} aria-hidden="true"></i>
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <div className={styles.activeIndicator} aria-hidden="true"></div>
+                  )}
                 </Link>
               );
             })}
@@ -133,28 +133,34 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
 
           {/* Action Buttons */}
           <div className={styles.sidebarActions}>
-            <Link href="/subscriptions" passHref>
-              <a className={styles.createSubscriptionBtn} onClick={onClose}>
-                <i className="fas fa-plus" aria-hidden="true"></i>
-                <span>New Subscription</span>
-              </a>
+            <Link 
+              href="/subscriptions" 
+              className={styles.createSubscriptionBtn} 
+              onClick={onClose}
+            >
+              <i className="fas fa-plus" aria-hidden="true"></i>
+              <span>New Subscription</span>
             </Link>
             
-            <Link href="/menu" passHref>
-              <a className={styles.browseMenuBtn} onClick={onClose}>
-                <i className="fas fa-utensils" aria-hidden="true"></i>
-                <span>Browse Menu</span>
-              </a>
+            <Link 
+              href="/menu" 
+              className={styles.browseMenuBtn} 
+              onClick={onClose}
+            >
+              <i className="fas fa-utensils" aria-hidden="true"></i>
+              <span>Browse Menu</span>
             </Link>
           </div>
 
           {/* Support Link */}
           <div className={styles.sidebarFooter}>
-            <Link href="/support" passHref>
-              <a className={styles.supportLink} onClick={onClose}>
-                <i className="fas fa-question-circle" aria-hidden="true"></i>
-                <span>Help & Support</span>
-              </a>
+            <Link 
+              href="/support" 
+              className={styles.supportLink} 
+              onClick={onClose}
+            >
+              <i className="fas fa-question-circle" aria-hidden="true"></i>
+              <span>Help & Support</span>
             </Link>
           </div>
         </div>

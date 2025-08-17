@@ -1,0 +1,606 @@
+/**
+ * CARD COMPONENTS
+ * Consistent card styles across the Osassy's Kitchen application
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// BASE CARD
+// =============================================================================
+
+.card {
+  @include card-base;
+  
+  // Card variants
+  &.card-flat {
+    box-shadow: none;
+    border: 1px solid var(--osassy-gray-200);
+  }
+  
+  &.card-elevated {
+    box-shadow: $shadow-lg;
+    
+    &:hover {
+      box-shadow: $shadow-xl;
+      transform: translateY(-2px);
+    }
+  }
+  
+  &.card-outline {
+    background: transparent;
+    border: 2px solid var(--osassy-gray-200);
+    box-shadow: none;
+  }
+  
+  &.card-floating {
+    box-shadow: $shadow-2xl;
+    border: none;
+  }
+}
+
+// =============================================================================
+// CARD SIZES
+// =============================================================================
+
+.card {
+  &.card-xs {
+    padding: $spacing-3;
+    border-radius: $radius-sm;
+  }
+  
+  &.card-sm {
+    padding: $spacing-4;
+    border-radius: $radius-base;
+  }
+  
+  &.card-md {
+    padding: $spacing-6;
+    border-radius: $radius-card;
+  }
+  
+  &.card-lg {
+    padding: $spacing-8;
+    border-radius: $radius-xl;
+  }
+  
+  &.card-xl {
+    padding: $spacing-10;
+    border-radius: $radius-2xl;
+  }
+}
+
+// =============================================================================
+// CARD HEADER
+// =============================================================================
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-4;
+  padding-bottom: $spacing-4;
+  border-bottom: 1px solid var(--osassy-gray-200);
+  
+  &.card-header-center {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  &.card-header-no-border {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.card-title {
+  margin: 0;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: var(--osassy-gray-900);
+  line-height: $line-height-tight;
+  
+  &.card-title-sm {
+    font-size: $font-size-lg;
+  }
+  
+  &.card-title-lg {
+    font-size: $font-size-2xl;
+  }
+  
+  &.card-title-xl {
+    font-size: $font-size-3xl;
+  }
+}
+
+.card-subtitle {
+  margin: $spacing-1 0 0 0;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-regular;
+  color: var(--osassy-gray-600);
+  line-height: $line-height-normal;
+}
+
+.card-action {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin-left: auto;
+}
+
+// =============================================================================
+// CARD BODY
+// =============================================================================
+
+.card-body {
+  flex: 1;
+  
+  // Remove margin from first and last children
+  > *:first-child {
+    margin-top: 0;
+  }
+  
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// =============================================================================
+// CARD FOOTER
+// =============================================================================
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $spacing-3;
+  margin-top: $spacing-6;
+  padding-top: $spacing-4;
+  border-top: 1px solid var(--osassy-gray-200);
+  
+  &.card-footer-center {
+    justify-content: center;
+  }
+  
+  &.card-footer-start {
+    justify-content: flex-start;
+  }
+  
+  &.card-footer-between {
+    justify-content: space-between;
+  }
+  
+  &.card-footer-no-border {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+
+// =============================================================================
+// BRANDED CARD VARIANTS
+// =============================================================================
+
+.card-primary {
+  border-left: 4px solid var(--osassy-primary);
+  
+  .card-title {
+    color: var(--osassy-primary);
+  }
+}
+
+.card-secondary {
+  border-left: 4px solid var(--osassy-secondary);
+  
+  .card-title {
+    color: var(--osassy-secondary-dark);
+  }
+}
+
+.card-accent {
+  border-left: 4px solid var(--osassy-accent);
+  
+  .card-title {
+    color: var(--osassy-accent-dark);
+  }
+}
+
+.card-success {
+  border-left: 4px solid var(--osassy-success);
+  background: var(--osassy-success-50);
+  
+  .card-title {
+    color: var(--osassy-success-dark);
+  }
+}
+
+.card-error {
+  border-left: 4px solid var(--osassy-error);
+  background: var(--osassy-error-50);
+  
+  .card-title {
+    color: var(--osassy-error-dark);
+  }
+}
+
+.card-warning {
+  border-left: 4px solid var(--osassy-warning);
+  background: var(--osassy-warning-50);
+  
+  .card-title {
+    color: var(--osassy-warning-dark);
+  }
+}
+
+.card-info {
+  border-left: 4px solid var(--osassy-info);
+  background: var(--osassy-info-50);
+  
+  .card-title {
+    color: var(--osassy-info-dark);
+  }
+}
+
+// =============================================================================
+// GRADIENT CARD VARIANTS
+// =============================================================================
+
+.card-gradient-primary {
+  background: var(--osassy-gradient-primary);
+  color: var(--osassy-white);
+  border: none;
+  
+  .card-title,
+  .card-subtitle {
+    color: var(--osassy-white);
+  }
+  
+  .card-subtitle {
+    opacity: 0.9;
+  }
+}
+
+.card-gradient-secondary {
+  background: var(--osassy-gradient-secondary);
+  color: var(--osassy-gray-900);
+  border: none;
+  
+  .card-title {
+    color: var(--osassy-gray-900);
+  }
+  
+  .card-subtitle {
+    color: var(--osassy-gray-700);
+  }
+}
+
+.card-gradient-warm {
+  background: var(--osassy-gradient-warm);
+  border: 1px solid var(--osassy-gray-200);
+}
+
+// =============================================================================
+// SPECIAL CARD TYPES
+// =============================================================================
+
+// Product/Menu item card
+.card-product {
+  overflow: hidden;
+  transition: $transition-all;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+  
+  .card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: $radius-card $radius-card 0 0;
+    margin: -$spacing-6 -$spacing-6 $spacing-4 -$spacing-6;
+  }
+  
+  .card-price {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: var(--osassy-primary);
+  }
+  
+  .card-rating {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+    margin-top: $spacing-2;
+    font-size: $font-size-sm;
+    color: var(--osassy-secondary-dark);
+  }
+}
+
+// Stats card
+.card-stats {
+  text-align: center;
+  
+  .stats-number {
+    display: block;
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: var(--osassy-primary);
+    line-height: 1;
+  }
+  
+  .stats-label {
+    display: block;
+    margin-top: $spacing-2;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: var(--osassy-gray-600);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+  
+  .stats-change {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-1;
+    margin-top: $spacing-2;
+    font-size: $font-size-sm;
+    
+    &.stats-change-positive {
+      color: var(--osassy-success);
+    }
+    
+    &.stats-change-negative {
+      color: var(--osassy-error);
+    }
+    
+    &.stats-change-neutral {
+      color: var(--osassy-gray-600);
+    }
+  }
+}
+
+// Feature card
+.card-feature {
+  text-align: center;
+  padding: $spacing-8;
+  
+  .feature-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto $spacing-4;
+    padding: $spacing-4;
+    background: var(--osassy-primary-100);
+    color: var(--osassy-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-2xl;
+  }
+  
+  .feature-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-gray-900);
+    margin-bottom: $spacing-2;
+  }
+  
+  .feature-description {
+    color: var(--osassy-gray-600);
+    line-height: $line-height-relaxed;
+  }
+}
+
+// Testimonial card
+.card-testimonial {
+  position: relative;
+  padding: $spacing-8;
+  background: var(--osassy-gradient-warm);
+  
+  &::before {
+    content: '"';
+    position: absolute;
+    top: $spacing-4;
+    left: $spacing-6;
+    font-size: $font-size-6xl;
+    font-family: $font-secondary;
+    color: var(--osassy-primary-200);
+    line-height: 1;
+  }
+  
+  .testimonial-text {
+    font-size: $font-size-lg;
+    font-style: italic;
+    line-height: $line-height-relaxed;
+    color: var(--osassy-gray-700);
+    margin-bottom: $spacing-6;
+  }
+  
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .author-info {
+      .author-name {
+        font-weight: $font-weight-semibold;
+        color: var(--osassy-gray-900);
+        margin-bottom: $spacing-1;
+      }
+      
+      .author-role {
+        font-size: $font-size-sm;
+        color: var(--osassy-gray-600);
+      }
+    }
+  }
+}
+
+// =============================================================================
+// CARD GRID LAYOUTS
+// =============================================================================
+
+.cards-grid {
+  @include grid(1, $spacing-6);
+  
+  @include tablet-up {
+    @include grid(2, $spacing-6);
+  }
+  
+  @include desktop-up {
+    @include grid(3, $spacing-6);
+  }
+  
+  &.cards-grid-2 {
+    @include grid(1, $spacing-6);
+    
+    @include tablet-up {
+      @include grid(2, $spacing-6);
+    }
+  }
+  
+  &.cards-grid-4 {
+    @include grid(1, $spacing-6);
+    
+    @include tablet-up {
+      @include grid(2, $spacing-6);
+    }
+    
+    @include desktop-up {
+      @include grid(4, $spacing-6);
+    }
+  }
+}
+
+// =============================================================================
+// CARD STATES
+// =============================================================================
+
+.card-loading {
+  pointer-events: none;
+  opacity: 0.7;
+  
+  .card-body {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+      );
+      animation: shimmer 1.5s infinite;
+    }
+  }
+}
+
+.card-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  background: var(--osassy-gray-50);
+}
+
+.card-interactive {
+  cursor: pointer;
+  transition: $transition-all;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Card entrance animations
+.card-fade-in {
+  animation: cardFadeIn $duration-slow $ease-out forwards;
+}
+
+.card-slide-up {
+  animation: cardSlideUp $duration-slow $ease-out forwards;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY
+// =============================================================================
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid var(--osassy-gray-800);
+  }
+  
+  .card-outline {
+    border-width: 3px;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card-interactive,
+  .card-product,
+  .card-loading::after {
+    transition: none;
+    animation: none;
+  }
+  
+  .card:hover,
+  .card-interactive:hover,
+  .card-product:hover {
+    transform: none;
+  }
+}

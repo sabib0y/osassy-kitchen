@@ -8,9 +8,13 @@
   }
 }
 
+// Import design system variables
+@import '../../variables';
+@import '../../animations';
+
 // Menu Management Page Styles
 .menuManagement {
-  background: #F8FAFC;
+  background: var(--bg-secondary);
   padding: 0;
 
   .pageHeader {
@@ -91,8 +95,8 @@
 
           &:focus {
             outline: none;
-            border-color: #3B82F6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-100);
           }
 
           &::placeholder {
@@ -566,7 +570,7 @@
       svg {
         width: 1.5rem;
         height: 1.5rem;
-        color: #3B82F6;
+        color: var(--color-primary);
       }
 
       &.available {

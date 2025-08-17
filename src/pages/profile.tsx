@@ -1,41 +1,25 @@
-import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 
 const ProfilePage: NextPage = () => {
-  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [status, router]);
+    // Redirect to the proper user profile page
+    router.replace('/user/profile');
+  }, [router]);
 
-  if (status === 'loading') {
-    return <p>Loading...</p>;
-  }
-
-  if (session?.user) {
-    return (
-      <div>
-        <h1>Profile</h1>
-        <p>
-          <strong>Name:</strong> {session.user.name || 'N/A'}
-        </p>
-        <p>
-          <strong>Email:</strong> {session.user.email || 'N/A'}
-        </p>
-        <p>
-          <strong>Role:</strong> {(session.user as any).role || 'USER'}
-        </p>
-        <button onClick={() => signOut()}>Logout</button>
-      </div>
-    );
-  }
-
-  return null;
+  return (
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh' 
+    }}>
+      <p>Redirecting to your profile...</p>
+    </div>
+  );
 };
 
 export default ProfilePage;
