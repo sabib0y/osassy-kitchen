@@ -5,8 +5,8 @@ import { defineConfig, devices } from '@playwright/test';
  * Excludes global setup to avoid authentication issues
  */
 export default defineConfig({
-  testDir: './testing/playwright/e2e/specs',
-  testMatch: ['**/link-verification-test.ts', '**/console-error-check.ts'],
+  testDir: './tests/e2e',
+  testMatch: ['**/login.spec.ts'],
   
   /* Test timeout */
   timeout: 30 * 1000,

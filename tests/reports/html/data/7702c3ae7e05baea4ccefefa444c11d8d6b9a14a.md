@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- img "Awesome Image"
+- main:
+  - navigation:
+    - link "Osassy's Kitchen":
+      - /url: /
+      - img "Osassy's Kitchen"
+    - button "Toggle menu"
+  - navigation "User dashboard navigation":
+    - heading "test" [level=3]
+    - paragraph: test@test.com
+    - button "Close navigation menu"
+    - navigation:
+      - link "Overview":
+        - /url: /user/dashboard
+      - link "Subscriptions":
+        - /url: /user/subscriptions
+      - link "Orders":
+        - /url: /user/orders
+      - link "Profile":
+        - /url: /user/profile
+      - link "Payments":
+        - /url: /user/payments
+    - link "New Subscription":
+      - /url: /subscriptions
+    - link "Browse Menu":
+      - /url: /menu
+    - link "Help & Support":
+      - /url: /support
+  - main:
+    - button "Toggle navigation menu"
+    - heading "My Subscriptions" [level=1]
+    - link "Dashboard":
+      - /url: /user/dashboard
+    - text: My Subscriptions
+    - link "Create new subscription":
+      - /url: /subscriptions
+    - button "Notifications (2 unread)": "2"
+    - button "User menu"
+    - text: ⚠️
+    - heading "Failed to Load Subscriptions" [level=2]
+    - paragraph: Failed to fetch subscriptions
+    - button "Try Again"
+  - link "":
+    - /url: "#"
+  - link "":
+    - /url: "#"
+- button "Open Tanstack query devtools":
+  - img
+- alert
+```
