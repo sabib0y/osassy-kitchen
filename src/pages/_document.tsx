@@ -110,6 +110,14 @@ class MyDocument extends Document {
           <meta name="msapplication-TileImage" content="ms-icon-144x144.png" />
           <meta name="theme-color" content="#ffffff" />
           
+          {/* Google Fonts - Fugaz One & Lato */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=Lato:ital,wght@0,100;0,300;0,400;0,700;1,100;1,300;1,400&display=swap"
+            rel="stylesheet"
+          />
+
           {/* Font Awesome Icons */}
           <link
             rel="stylesheet"

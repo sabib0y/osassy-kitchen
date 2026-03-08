@@ -25,7 +25,12 @@ const headerData = {
     },
     {
       id: 5,
-      href: "#contact",
+      href: "/help",
+      name: "Help",
+    },
+    {
+      id: 6,
+      href: "/help#contact",
       name: "Contact",
     },
   ],

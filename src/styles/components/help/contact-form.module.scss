@@ -1,0 +1,941 @@
+/**
+ * CONTACT FORM COMPONENT STYLES
+ * Comprehensive contact form with validation states and accessibility features
+ * 
+ * Brand Colors:
+ * - Primary: #C52D2F (Deep Red)
+ * - Secondary: #F1C40F (Warm Yellow) 
+ * - Accent: #FF6F3C (Bright Orange)
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// CONTACT FORM CONTAINER
+// =============================================================================
+
+.contactForm {
+  background: var(--osassy-white);
+  padding: $spacing-8;
+  border-radius: $radius-xl;
+  border: 2px solid var(--osassy-gray-200);
+  box-shadow: $shadow-lg;
+  position: relative;
+  overflow: hidden;
+  transition: all $duration-normal $ease-out;
+
+  // Decorative gradient border effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--osassy-gradient-primary);
+    border-radius: $radius-xl $radius-xl 0 0;
+  }
+
+  &:hover {
+    border-color: var(--osassy-primary-200);
+    box-shadow: $shadow-xl;
+    transform: translateY(-2px);
+  }
+
+  .formHeader {
+    text-align: center;
+    margin-bottom: $spacing-8;
+
+    .formTitle {
+      font-family: $font-secondary;
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      color: var(--osassy-gray-900);
+      margin: 0 0 $spacing-3 0;
+      
+      @include mobile-only {
+        font-size: $font-size-xl;
+      }
+    }
+
+    .formSubtitle {
+      font-size: $font-size-base;
+      color: var(--osassy-gray-600);
+      margin: 0;
+      line-height: $line-height-relaxed;
+
+      @include mobile-only {
+        font-size: $font-size-sm;
+      }
+    }
+  }
+
+  @include mobile-only {
+    padding: $spacing-6;
+  }
+}
+
+// =============================================================================
+// FORM GROUPS AND FIELDS
+// =============================================================================
+
+.formGroup {
+  margin-bottom: $spacing-6;
+  position: relative;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .label {
+    display: block;
+    margin-bottom: $spacing-2;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-gray-700);
+    transition: $transition-colors;
+
+    &.required::after {
+      content: ' *';
+      color: var(--osassy-error);
+      font-weight: $font-weight-bold;
+    }
+
+    @include mobile-only {
+      font-size: $font-size-xs;
+    }
+  }
+
+  // Input field styles
+  .input,
+  .textarea,
+  .select {
+    @include input-base;
+    font-size: $font-size-base;
+    border: 2px solid var(--osassy-gray-300);
+    border-radius: $radius-lg;
+    padding: $spacing-4 $spacing-5;
+    transition: all $duration-normal $ease-out;
+    position: relative;
+    background: var(--osassy-white);
+
+    &:focus {
+      border-color: var(--osassy-primary);
+      box-shadow: 0 0 0 4px var(--osassy-primary-100);
+      transform: translateY(-1px);
+    }
+
+    &:hover {
+      border-color: var(--osassy-primary-200);
+    }
+
+    &::placeholder {
+      color: var(--osassy-gray-400);
+      font-style: italic;
+    }
+
+    @include mobile-only {
+      font-size: $font-size-sm;
+      padding: $spacing-3 $spacing-4;
+    }
+  }
+
+  // Textarea specific styles
+  .textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: $font-primary;
+    line-height: $line-height-relaxed;
+
+    &.large {
+      min-height: 160px;
+    }
+
+    @include mobile-only {
+      min-height: 100px;
+    }
+  }
+
+  // Select dropdown styles
+  .select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right $spacing-4 center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: $spacing-12;
+    appearance: none;
+    cursor: pointer;
+
+    &:focus {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C52D2F' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    }
+  }
+
+  // Validation states
+  &.success {
+    .label {
+      color: var(--osassy-success-dark);
+    }
+
+    .input,
+    .textarea,
+    .select {
+      border-color: var(--osassy-success);
+      background: var(--osassy-success-50);
+
+      &:focus {
+        border-color: var(--osassy-success);
+        box-shadow: 0 0 0 4px var(--osassy-success-100);
+      }
+    }
+
+    .validationMessage {
+      color: var(--osassy-success-dark);
+
+      .validationIcon {
+        color: var(--osassy-success);
+      }
+    }
+  }
+
+  &.error {
+    .label {
+      color: var(--osassy-error-dark);
+    }
+
+    .input,
+    .textarea,
+    .select {
+      border-color: var(--osassy-error);
+      background: var(--osassy-error-50);
+
+      &:focus {
+        border-color: var(--osassy-error);
+        box-shadow: 0 0 0 4px var(--osassy-error-100);
+      }
+    }
+
+    .validationMessage {
+      color: var(--osassy-error-dark);
+
+      .validationIcon {
+        color: var(--osassy-error);
+      }
+    }
+  }
+
+  &.warning {
+    .label {
+      color: var(--osassy-warning-dark);
+    }
+
+    .input,
+    .textarea,
+    .select {
+      border-color: var(--osassy-warning);
+      background: var(--osassy-warning-50);
+
+      &:focus {
+        border-color: var(--osassy-warning);
+        box-shadow: 0 0 0 4px var(--osassy-warning-100);
+      }
+    }
+
+    .validationMessage {
+      color: var(--osassy-warning-dark);
+
+      .validationIcon {
+        color: var(--osassy-warning);
+      }
+    }
+  }
+
+  // Loading state
+  &.loading {
+    .input,
+    .textarea,
+    .select {
+      background: var(--osassy-gray-100);
+      pointer-events: none;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: $spacing-4;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--osassy-gray-300);
+        border-top-color: var(--osassy-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// VALIDATION MESSAGES AND HELP TEXT
+// =============================================================================
+
+.validationMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-2;
+  margin-top: $spacing-2;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+  animation: slideInDown 0.3s ease-out;
+
+  .validationIcon {
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .validationText {
+    flex: 1;
+  }
+
+  @include mobile-only {
+    font-size: $font-size-xs;
+
+    .validationIcon {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.helpText {
+  display: block;
+  margin-top: $spacing-1;
+  font-size: $font-size-xs;
+  color: var(--osassy-gray-500);
+  line-height: $line-height-normal;
+
+  @include mobile-only {
+    font-size: 11px;
+  }
+}
+
+// =============================================================================
+// FORM ACTIONS AND BUTTONS
+// =============================================================================
+
+.formActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  margin-top: $spacing-8;
+  padding-top: $spacing-6;
+  border-top: 1px solid var(--osassy-gray-200);
+
+  @include mobile-only {
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-3;
+  }
+
+  .submitButton {
+    @include button-base;
+    background: var(--osassy-gradient-primary);
+    color: var(--osassy-white);
+    font-weight: $font-weight-semibold;
+    padding: $spacing-4 $spacing-8;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-primary;
+    position: relative;
+    overflow: hidden;
+    min-height: 48px; // Accessibility: minimum touch target
+    flex: 1;
+
+    // Hover effect overlay
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left $duration-normal $ease-out;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-primary-lg;
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:focus {
+      outline: 3px solid var(--osassy-primary-200);
+      outline-offset: 2px;
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: $shadow-primary;
+    }
+
+    &:disabled {
+      background: var(--osassy-gray-300);
+      color: var(--osassy-gray-500);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+
+      &:hover {
+        transform: none;
+        box-shadow: none;
+
+        &::before {
+          left: -100%;
+        }
+      }
+    }
+
+    // Loading state
+    &.loading {
+      pointer-events: none;
+      
+      .buttonText {
+        opacity: 0.7;
+      }
+
+      .loadingSpinner {
+        display: inline-block;
+        margin-left: $spacing-2;
+      }
+    }
+
+    .buttonIcon {
+      margin-right: $spacing-2;
+      width: 18px;
+      height: 18px;
+    }
+
+    .loadingSpinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: var(--osassy-white);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @include mobile-only {
+      padding: $spacing-3 $spacing-6;
+      font-size: $font-size-sm;
+    }
+  }
+
+  .resetButton {
+    @include button-base;
+    background: var(--osassy-white);
+    color: var(--osassy-gray-700);
+    border: 2px solid var(--osassy-gray-300);
+    padding: $spacing-4 $spacing-6;
+    border-radius: $radius-lg;
+    transition: all $duration-normal $ease-out;
+
+    &:hover {
+      background: var(--osassy-gray-50);
+      border-color: var(--osassy-gray-400);
+      color: var(--osassy-gray-900);
+      transform: translateY(-1px);
+      box-shadow: $shadow-sm;
+    }
+
+    &:focus {
+      outline: 3px solid var(--osassy-gray-300);
+      outline-offset: 2px;
+    }
+
+    @include mobile-only {
+      padding: $spacing-3 $spacing-4;
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// =============================================================================
+// FORM STATUS MESSAGES
+// =============================================================================
+
+.statusMessage {
+  padding: $spacing-4 $spacing-5;
+  border-radius: $radius-lg;
+  margin-bottom: $spacing-6;
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  font-weight: $font-weight-medium;
+  animation: slideInDown 0.4s ease-out;
+
+  .statusIcon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  &.success {
+    background: var(--osassy-success-50);
+    color: var(--osassy-success-dark);
+    border: 2px solid var(--osassy-success-200);
+
+    .statusIcon {
+      color: var(--osassy-success);
+    }
+  }
+
+  &.error {
+    background: var(--osassy-error-50);
+    color: var(--osassy-error-dark);
+    border: 2px solid var(--osassy-error-200);
+
+    .statusIcon {
+      color: var(--osassy-error);
+    }
+  }
+
+  &.info {
+    background: var(--osassy-info-50);
+    color: var(--osassy-info-dark);
+    border: 2px solid var(--osassy-info-200);
+
+    .statusIcon {
+      color: var(--osassy-info);
+    }
+  }
+
+  @include mobile-only {
+    padding: $spacing-3 $spacing-4;
+    font-size: $font-size-sm;
+
+    .statusIcon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+// =============================================================================
+// CHARACTER COUNTER
+// =============================================================================
+
+.characterCounter {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: $spacing-1;
+  font-size: $font-size-xs;
+  color: var(--osassy-gray-500);
+
+  &.nearLimit {
+    color: var(--osassy-warning);
+    font-weight: $font-weight-semibold;
+  }
+
+  &.overLimit {
+    color: var(--osassy-error);
+    font-weight: $font-weight-bold;
+  }
+
+  @include mobile-only {
+    font-size: 11px;
+  }
+}
+
+// =============================================================================
+// FILE UPLOAD FIELD
+// =============================================================================
+
+.fileUpload {
+  .fileDropZone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-8;
+    border: 2px dashed var(--osassy-gray-300);
+    border-radius: $radius-lg;
+    background: var(--osassy-gray-50);
+    text-align: center;
+    cursor: pointer;
+    transition: all $duration-normal $ease-out;
+    position: relative;
+
+    &:hover,
+    &.dragActive {
+      border-color: var(--osassy-primary);
+      background: var(--osassy-primary-50);
+    }
+
+    .fileIcon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: $spacing-4;
+      color: var(--osassy-gray-400);
+    }
+
+    .fileText {
+      font-size: $font-size-base;
+      color: var(--osassy-gray-700);
+      margin-bottom: $spacing-2;
+      font-weight: $font-weight-medium;
+    }
+
+    .fileHint {
+      font-size: $font-size-sm;
+      color: var(--osassy-gray-500);
+    }
+
+    .hiddenInput {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @include mobile-only {
+      padding: $spacing-6;
+
+      .fileIcon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .fileText {
+        font-size: $font-size-sm;
+      }
+
+      .fileHint {
+        font-size: $font-size-xs;
+      }
+    }
+  }
+
+  .fileList {
+    margin-top: $spacing-4;
+
+    .fileItem {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+      padding: $spacing-3;
+      background: var(--osassy-white);
+      border: 1px solid var(--osassy-gray-200);
+      border-radius: $radius-lg;
+      margin-bottom: $spacing-2;
+
+      .fileInfo {
+        flex: 1;
+
+        .fileName {
+          font-weight: $font-weight-medium;
+          color: var(--osassy-gray-900);
+          font-size: $font-size-sm;
+        }
+
+        .fileSize {
+          font-size: $font-size-xs;
+          color: var(--osassy-gray-500);
+        }
+      }
+
+      .removeFile {
+        background: none;
+        border: none;
+        color: var(--osassy-error);
+        cursor: pointer;
+        padding: $spacing-1;
+        border-radius: 50%;
+        transition: $transition-colors;
+
+        &:hover {
+          background: var(--osassy-error-50);
+        }
+
+        .removeIcon {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Form entrance animation
+.contactForm {
+  animation: fadeIn 0.6s ease-out;
+}
+
+// =============================================================================
+// ACCESSIBILITY ENHANCEMENTS
+// =============================================================================
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+  .contactForm {
+    animation: none;
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+
+    .formGroup {
+      .input,
+      .textarea,
+      .select {
+        transition: none;
+
+        &:focus {
+          transform: none;
+        }
+      }
+    }
+
+    .formActions {
+      .submitButton {
+        transition: none;
+
+        &:hover {
+          transform: none;
+
+          &::before {
+            transition: none;
+          }
+        }
+
+        &.loading {
+          .loadingSpinner {
+            animation: none;
+          }
+        }
+      }
+
+      .resetButton {
+        transition: none;
+
+        &:hover {
+          transform: none;
+        }
+      }
+    }
+
+    .validationMessage {
+      animation: none;
+    }
+
+    .statusMessage {
+      animation: none;
+    }
+
+    .fileUpload {
+      .fileDropZone {
+        transition: none;
+      }
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .contactForm {
+    border-width: 3px;
+
+    .formGroup {
+      .input,
+      .textarea,
+      .select {
+        border-width: 3px;
+      }
+
+      &.error,
+      &.success,
+      &.warning {
+        .input,
+        .textarea,
+        .select {
+          border-width: 4px;
+        }
+      }
+    }
+
+    .formActions {
+      .submitButton,
+      .resetButton {
+        border-width: 3px;
+      }
+    }
+
+    .statusMessage {
+      border-width: 3px;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .contactForm {
+    background: var(--osassy-gray-800);
+    border-color: var(--osassy-gray-600);
+
+    .formHeader {
+      .formTitle {
+        color: var(--osassy-white);
+      }
+
+      .formSubtitle {
+        color: var(--osassy-gray-300);
+      }
+    }
+
+    .formGroup {
+      .label {
+        color: var(--osassy-gray-200);
+
+        &.required::after {
+          color: var(--osassy-error-light);
+        }
+      }
+
+      .input,
+      .textarea,
+      .select {
+        background: var(--osassy-gray-700);
+        border-color: var(--osassy-gray-500);
+        color: var(--osassy-white);
+
+        &::placeholder {
+          color: var(--osassy-gray-400);
+        }
+
+        &:hover {
+          border-color: var(--osassy-primary-300);
+        }
+
+        &:focus {
+          border-color: var(--osassy-primary-light);
+        }
+      }
+    }
+
+    .formActions {
+      border-color: var(--osassy-gray-600);
+
+      .resetButton {
+        background: var(--osassy-gray-700);
+        color: var(--osassy-gray-200);
+        border-color: var(--osassy-gray-500);
+
+        &:hover {
+          background: var(--osassy-gray-600);
+          color: var(--osassy-white);
+        }
+      }
+    }
+
+    .fileUpload {
+      .fileDropZone {
+        background: var(--osassy-gray-700);
+        border-color: var(--osassy-gray-500);
+
+        .fileText {
+          color: var(--osassy-gray-200);
+        }
+
+        .fileHint {
+          color: var(--osassy-gray-400);
+        }
+
+        &:hover,
+        &.dragActive {
+          background: var(--osassy-gray-600);
+        }
+      }
+
+      .fileList {
+        .fileItem {
+          background: var(--osassy-gray-700);
+          border-color: var(--osassy-gray-500);
+
+          .fileInfo {
+            .fileName {
+              color: var(--osassy-gray-100);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .contactForm {
+    box-shadow: none !important;
+    border: 1px solid var(--osassy-gray-400) !important;
+
+    .formActions {
+      display: none;
+    }
+
+    .fileUpload {
+      display: none;
+    }
+  }
+}
+
+// Focus visible for keyboard navigation
+.contactForm {
+  .input:focus-visible,
+  .textarea:focus-visible,
+  .select:focus-visible {
+    outline: 3px solid var(--osassy-primary);
+    outline-offset: 2px;
+  }
+
+  .submitButton:focus-visible,
+  .resetButton:focus-visible {
+    outline: 3px solid var(--osassy-primary);
+    outline-offset: 3px;
+  }
+}

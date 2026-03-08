@@ -1,0 +1,388 @@
+@import '../../styles/unified-theme.scss';
+
+.contactInfoCard {
+  @include card-base;
+  max-width: 500px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, $gray-50, $white);
+  border: 1px solid $gray-200;
+
+  .cardHeader {
+    text-align: center;
+    margin-bottom: $spacing-6;
+    padding-bottom: $spacing-4;
+    border-bottom: 1px solid $gray-200;
+
+    .title {
+      margin: 0 0 $spacing-2 0;
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      color: $gray-900;
+      font-family: $font-family-heading;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: $font-size-base;
+      color: $gray-600;
+      line-height: $line-height-normal;
+    }
+  }
+
+  .contactMethods {
+    .contactMethod {
+      display: flex;
+      align-items: flex-start;
+      gap: $spacing-4;
+      padding: $spacing-5 0;
+      border-bottom: 1px solid $gray-200;
+      transition: all $transition-base;
+
+      &:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        background: $gray-100;
+        margin: 0 (-$spacing-6);
+        padding-left: $spacing-6;
+        padding-right: $spacing-6;
+        border-radius: $border-radius-lg;
+
+        .methodIcon {
+          transform: scale(1.1);
+          background: $primary;
+          color: $white;
+        }
+      }
+
+      .methodIcon {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: lighten($primary, 30%);
+        color: $primary;
+        border-radius: $border-radius-lg;
+        font-size: $font-size-xl;
+        transition: all $transition-base;
+
+        @include mobile {
+          width: 40px;
+          height: 40px;
+          font-size: $font-size-lg;
+        }
+      }
+
+      .methodContent {
+        flex: 1;
+
+        .methodTitle {
+          margin: 0 0 $spacing-1 0;
+          font-size: $font-size-lg;
+          font-weight: $font-weight-semibold;
+          color: $gray-900;
+        }
+
+        .methodDescription {
+          margin: 0 0 $spacing-3 0;
+          font-size: $font-size-sm;
+          color: $gray-500;
+        }
+
+        .methodDetails {
+          .primaryLink,
+          .primaryText {
+            display: block;
+            font-size: $font-size-base;
+            font-weight: $font-weight-semibold;
+            color: $gray-900;
+            margin-bottom: $spacing-1;
+          }
+
+          .primaryLink {
+            text-decoration: none;
+            color: $primary;
+            transition: color $transition-fast;
+
+            &:hover {
+              color: darken($primary, 15%);
+              text-decoration: underline;
+            }
+
+            &:focus {
+              outline: 2px solid $primary;
+              outline-offset: 2px;
+              border-radius: $border-radius-sm;
+            }
+          }
+
+          .secondaryText {
+            display: block;
+            font-size: $font-size-sm;
+            color: $gray-500;
+          }
+
+          .socialLinks {
+            display: flex;
+            gap: $spacing-3;
+            margin-top: $spacing-3;
+
+            .socialLink {
+              display: flex;
+              align-items: center;
+              gap: $spacing-2;
+              padding: $spacing-2 $spacing-3;
+              background: $white;
+              color: $gray-600;
+              text-decoration: none;
+              border-radius: $border-radius-lg;
+              font-size: $font-size-sm;
+              font-weight: $font-weight-medium;
+              border: 1px solid $gray-200;
+              transition: all $transition-base;
+
+              &:hover {
+                background: $primary;
+                color: $white;
+                border-color: $primary;
+                transform: translateY(-2px);
+                box-shadow: $shadow-sm;
+              }
+
+              &:focus {
+                outline: 2px solid $primary;
+                outline-offset: 2px;
+              }
+
+              i {
+                font-size: $font-size-base;
+              }
+
+              @include mobile {
+                padding: $spacing-2;
+                font-size: $font-size-xs;
+
+                span {
+                  display: none;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .cardFooter {
+    margin-top: $spacing-6;
+    padding-top: $spacing-4;
+    border-top: 1px solid $gray-200;
+
+    .additionalInfo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: $spacing-4;
+      margin-bottom: $spacing-4;
+
+      @include mobile {
+        grid-template-columns: 1fr;
+        gap: $spacing-3;
+      }
+
+      .infoItem {
+        display: flex;
+        align-items: center;
+        gap: $spacing-3;
+
+        i {
+          flex-shrink: 0;
+          width: 20px;
+          color: $accent;
+          text-align: center;
+        }
+
+        div {
+          display: flex;
+          flex-direction: column;
+          gap: $spacing-1;
+
+          .infoTitle {
+            font-size: $font-size-xs;
+            font-weight: $font-weight-semibold;
+            color: $gray-900;
+            text-transform: uppercase;
+            letter-spacing: $letter-spacing-wide;
+          }
+
+          .infoText {
+            font-size: $font-size-sm;
+            color: $gray-600;
+          }
+        }
+      }
+    }
+
+    .emergencyNotice {
+      display: flex;
+      align-items: flex-start;
+      gap: $spacing-2;
+      padding: $spacing-3;
+      background: lighten($warning, 40%);
+      border: 1px solid lighten($warning, 30%);
+      border-radius: $border-radius;
+      font-size: $font-size-sm;
+      color: darken($warning, 10%);
+      line-height: $line-height-normal;
+
+      i {
+        flex-shrink: 0;
+        color: $warning;
+        margin-top: 2px;
+      }
+    }
+  }
+
+  // Mobile responsive adjustments
+  @include mobile {
+    .cardHeader {
+      margin-bottom: $spacing-5;
+
+      .title {
+        font-size: $font-size-xl;
+      }
+
+      .subtitle {
+        font-size: $font-size-sm;
+      }
+    }
+
+    .contactMethods {
+      .contactMethod {
+        padding: $spacing-4 0;
+        gap: $spacing-3;
+
+        &:hover {
+          margin: 0;
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        .methodContent {
+          .methodTitle {
+            font-size: $font-size-base;
+          }
+
+          .methodDescription {
+            font-size: $font-size-xs;
+          }
+
+          .methodDetails {
+            .primaryLink,
+            .primaryText {
+              font-size: $font-size-sm;
+            }
+
+            .secondaryText {
+              font-size: $font-size-xs;
+            }
+          }
+        }
+      }
+    }
+
+    .cardFooter {
+      margin-top: $spacing-5;
+
+      .emergencyNotice {
+        padding: $spacing-2;
+        font-size: $font-size-xs;
+      }
+    }
+  }
+}
+
+// Animation for card entrance
+.contactInfoCard {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .contactInfoCard {
+    animation: none;
+
+    .contactMethods {
+      .contactMethod {
+        &:hover {
+          .methodIcon {
+            transform: none;
+          }
+        }
+
+        .socialLinks {
+          .socialLink {
+            &:hover {
+              transform: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .contactInfoCard {
+    border-width: 2px;
+
+    .contactMethods {
+      .contactMethod {
+        .methodIcon {
+          border: 2px solid $primary;
+        }
+
+        .socialLinks {
+          .socialLink {
+            border-width: 2px;
+          }
+        }
+      }
+    }
+
+    .cardFooter {
+      .emergencyNotice {
+        border-width: 2px;
+      }
+    }
+  }
+}
+
+// Focus improvements for keyboard navigation
+.contactInfoCard {
+  .contactMethods {
+    .contactMethod {
+      .primaryLink:focus-visible,
+      .socialLink:focus-visible {
+        outline: 2px solid $primary;
+        outline-offset: 2px;
+        border-radius: $border-radius-sm;
+      }
+    }
+  }
+}

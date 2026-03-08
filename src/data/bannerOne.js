@@ -1,7 +1,14 @@
 const bannerOne = {
-  images: [{ id: 3, image: "nkwobi.png", className: "banner-one__moc" }],
-  tagline: "Welcome to\nOsassy's Kitchen",
-  title: "African soul food freshly made for you",
+  slides: [
+    { id: 1, image: "img1.png" },
+    { id: 2, image: "img2.png" },
+    { id: 3, image: "img3.png" },
+  ],
+  trustBadges: [
+    "Freshly cooked weekly",
+    "Flexible subscription",
+    "Authentic Nigerian recipes",
+  ],
 };
 
 export default bannerOne;

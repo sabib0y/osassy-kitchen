@@ -1,0 +1,176 @@
+@import '../../styles/unified-theme.scss';
+
+.searchBar {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .searchIcon {
+      position: absolute;
+      left: $spacing-4;
+      z-index: 1;
+      color: $gray-500;
+      font-size: $font-size-lg;
+      pointer-events: none;
+      transition: color $transition-base;
+    }
+
+    .searchInput {
+      @include input-base;
+      width: 100%;
+      padding: $spacing-4 $spacing-12 $spacing-4 $spacing-12;
+      font-size: $font-size-lg;
+      border-radius: $border-radius-xl;
+      border: 2px solid $gray-300;
+      background: $white;
+      transition: all $transition-base;
+      
+      &::placeholder {
+        color: $gray-500;
+        font-style: italic;
+      }
+
+      &:focus {
+        border-color: $primary;
+        box-shadow: 0 0 0 4px lighten($primary, 30%);
+        background: $white;
+
+        + .searchIcon {
+          color: $primary;
+        }
+      }
+
+      &.typing {
+        border-color: $accent;
+      }
+
+      // Responsive sizing
+      @include mobile {
+        padding: $spacing-3 $spacing-10 $spacing-3 $spacing-10;
+        font-size: $font-size-base;
+      }
+    }
+
+    .clearButton {
+      position: absolute;
+      right: $spacing-12;
+      background: none;
+      border: none;
+      padding: $spacing-2;
+      color: $gray-500;
+      cursor: pointer;
+      border-radius: $border-radius-full;
+      transition: all $transition-fast;
+      z-index: 2;
+
+      &:hover {
+        background: $gray-100;
+        color: $gray-900;
+        transform: scale(1.1);
+      }
+
+      &:focus {
+        outline: 2px solid $primary;
+        outline-offset: 2px;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      @include mobile {
+        right: $spacing-10;
+      }
+    }
+
+    .loadingIndicator {
+      position: absolute;
+      right: $spacing-4;
+      color: $accent;
+      font-size: $font-size-sm;
+      z-index: 2;
+      animation: pulse 1.5s ease-in-out infinite;
+
+      @include mobile {
+        right: $spacing-3;
+      }
+    }
+  }
+
+  // Hover effects
+  &:hover {
+    .searchIcon {
+      color: lighten($primary, 20%);
+    }
+  }
+
+  // Focus-within for better keyboard navigation
+  &:focus-within {
+    .searchIcon {
+      color: $primary;
+    }
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Dark mode support (if implemented)
+@media (prefers-color-scheme: dark) {
+  .searchBar {
+    .inputWrapper {
+      .searchInput {
+        background: $gray-100;
+        color: $gray-900;
+        
+        &::placeholder {
+          color: $gray-500;
+        }
+      }
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .searchBar {
+    .inputWrapper {
+      .searchInput {
+        border-width: 3px;
+        
+        &:focus {
+          border-width: 3px;
+        }
+      }
+    }
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .searchBar {
+    .inputWrapper {
+      .searchInput,
+      .clearButton,
+      .searchIcon {
+        transition: none;
+      }
+      
+      .loadingIndicator {
+        animation: none;
+      }
+    }
+  }
+}

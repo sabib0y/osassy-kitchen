@@ -1,0 +1,306 @@
+@import '../../styles/unified-theme.scss';
+
+.faqAccordion {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .faqItem {
+    @include card-base;
+    margin-bottom: $spacing-4;
+    overflow: hidden;
+    transition: all $transition-base;
+    border: 1px solid $gray-200;
+    
+    &.expanded {
+      border-color: lighten($primary, 20%);
+      box-shadow: $shadow-lg;
+    }
+
+    &:hover {
+      border-color: lighten($primary, 30%);
+    }
+
+    .faqHeader {
+      @include button-base;
+      width: 100%;
+      padding: $spacing-5 $spacing-6;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      transition: all $transition-base;
+
+      &:hover {
+        background: $gray-100;
+      }
+
+      &:focus {
+        outline: 2px solid $primary;
+        outline-offset: 2px;
+        background: $gray-100;
+      }
+
+      .faqQuestion {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        .questionContent {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: $spacing-3;
+          align-items: flex-start;
+
+          .categoryBadge {
+            display: inline-flex;
+            align-items: center;
+            padding: $spacing-1 $spacing-3;
+            border-radius: $border-radius-full;
+            font-size: $font-size-xs;
+            font-weight: $font-weight-semibold;
+            text-transform: uppercase;
+            letter-spacing: $letter-spacing-wide;
+
+            // Category colors
+            &.primary {
+              background: lighten($primary, 30%);
+              color: darken($primary, 15%);
+            }
+
+            &.accent {
+              background: lighten($accent, 30%);
+              color: darken($accent, 15%);
+            }
+
+            &.secondary {
+              background: lighten($secondary, 30%);
+              color: darken($secondary, 15%);
+            }
+
+            &.success {
+              background: lighten($success, 40%);
+              color: darken($success, 10%);
+            }
+
+            &.info {
+              background: lighten($info, 40%);
+              color: darken($info, 10%);
+            }
+
+            &.default {
+              background: $gray-100;
+              color: $gray-700;
+            }
+          }
+
+          .questionText {
+            margin: 0;
+            font-size: $font-size-lg;
+            font-weight: $font-weight-semibold;
+            color: $gray-900;
+            line-height: $line-height-tight;
+
+            @include mobile {
+              font-size: $font-size-base;
+            }
+          }
+        }
+      }
+
+      .expandIcon {
+        margin-left: $spacing-4;
+        color: $gray-500;
+        transition: all $transition-base;
+        transform-origin: center;
+        font-size: $font-size-lg;
+
+        &.rotated {
+          transform: rotate(180deg);
+          color: $primary;
+        }
+
+        @include mobile {
+          margin-left: $spacing-2;
+          font-size: $font-size-base;
+        }
+      }
+    }
+
+    .faqAnswer {
+      max-height: 0;
+      overflow: hidden;
+      transition: all $transition-base;
+      opacity: 0;
+
+      &.expanded {
+        max-height: 1000px;
+        opacity: 1;
+      }
+
+      .answerContent {
+        padding: 0 $spacing-6 $spacing-5 $spacing-6;
+        border-top: 1px solid $gray-200;
+        margin-top: $spacing-2;
+
+        p {
+          margin: $spacing-4 0 0 0;
+          font-size: $font-size-base;
+          color: $gray-600;
+          line-height: $line-height-relaxed;
+
+          &:first-child {
+            margin-top: 0;
+          }
+
+          @include mobile {
+            font-size: $font-size-sm;
+          }
+        }
+      }
+    }
+
+    // Enhanced mobile layout
+    @include mobile {
+      .faqHeader {
+        padding: $spacing-4 $spacing-5;
+
+        .faqQuestion {
+          .questionContent {
+            gap: $spacing-2;
+
+            .categoryBadge {
+              align-self: flex-start;
+            }
+          }
+        }
+      }
+
+      .faqAnswer {
+        .answerContent {
+          padding: 0 $spacing-5 $spacing-4 $spacing-5;
+        }
+      }
+    }
+  }
+}
+
+// Empty state styles
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-8;
+  text-align: center;
+  max-width: 400px;
+  margin: $spacing-8 auto;
+
+  .emptyIcon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $gray-100;
+    border-radius: $border-radius-full;
+    margin-bottom: $spacing-4;
+    color: $gray-500;
+    font-size: $font-size-2xl;
+  }
+
+  h3 {
+    margin: 0 0 $spacing-2 0;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $gray-900;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-base;
+    color: $gray-500;
+    line-height: $line-height-relaxed;
+  }
+}
+
+// Animation classes
+.faqItem {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .faqAccordion {
+    .faqItem {
+      animation: none;
+      
+      .faqHeader {
+        .expandIcon {
+          transition: none;
+        }
+      }
+
+      .faqAnswer {
+        transition: none;
+
+        &.expanded {
+          max-height: none;
+        }
+      }
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .faqAccordion {
+    .faqItem {
+      border-width: 2px;
+
+      &.expanded {
+        border-width: 3px;
+      }
+
+      .faqHeader {
+        &:focus {
+          outline-width: 3px;
+        }
+      }
+
+      .categoryBadge {
+        border: 1px solid currentColor;
+      }
+    }
+  }
+}
+
+// Focus improvements for keyboard navigation
+.faqAccordion {
+  .faqItem {
+    .faqHeader {
+      &:focus-visible {
+        outline: 2px solid $primary;
+        outline-offset: 2px;
+        background: $gray-100;
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+    }
+  }
+}

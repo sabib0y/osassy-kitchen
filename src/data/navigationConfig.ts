@@ -28,21 +28,21 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
+      id: 'how-it-works',
+      name: 'How It Works',
+      href: '/how-it-works',
+      type: 'link'
+    },
+    {
       id: 'menu',
       name: 'Our Menu',
       href: '/menu',
       type: 'link'
     },
     {
-      id: 'subscriptions',
-      name: 'Subscriptions',
-      href: '/subscriptions',
-      type: 'link'
-    },
-    {
-      id: 'how-it-works',
-      name: 'How It Works',
-      href: '/how-it-works',
+      id: 'meal-plans',
+      name: 'Meal Plans',
+      href: '/meal-plans',
       type: 'link'
     },
     {
@@ -68,9 +68,9 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
-      id: 'subscriptions',
-      name: 'Subscriptions',
-      href: '/subscriptions/create',
+      id: 'meal-plans',
+      name: 'Meal Plans',
+      href: '/meal-plans',
       type: 'link'
     },
     {
@@ -178,9 +178,9 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
-      id: 'subscriptions',
-      name: 'Subscriptions',
-      href: '/subscriptions/create',
+      id: 'meal-plans',
+      name: 'Meal Plans',
+      href: '/meal-plans',
       type: 'link'
     },
     {

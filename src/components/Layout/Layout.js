@@ -28,7 +28,7 @@ const Layout = ({ children, pageTitle }) => {
       <Preloader loading={loading} />
       <main
         id="wrapper"
-        style={{ opacity: loading ? 0 : 1, paddingTop: '80px' }}
+        style={{ opacity: loading ? 0 : 1 }}
         className="page-wrapper animated fadeIn"
       >
         <ModernHeader />

@@ -1,0 +1,607 @@
+/**
+ * HELP PAGE COMPONENT STYLES
+ * Main styles for the help page layout and sections
+ * 
+ * Brand Colors:
+ * - Primary: #C52D2F (Deep Red)
+ * - Secondary: #F1C40F (Warm Yellow) 
+ * - Accent: #FF6F3C (Bright Orange)
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// HELP PAGE LAYOUT
+// =============================================================================
+
+.helpPage {
+  min-height: 100vh;
+  background: var(--osassy-gray-50);
+  position: relative;
+  overflow-x: hidden;
+
+  // Hero Section
+  .heroSection {
+    position: relative;
+    background: var(--osassy-gradient-primary);
+    color: var(--osassy-white);
+    padding: $spacing-12 0 $spacing-16 0;
+    overflow: hidden;
+
+    // Decorative background pattern
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.3;
+      animation: patternMove 20s linear infinite;
+    }
+
+    // Animated background elements
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 200px;
+      height: 200px;
+      background: var(--osassy-accent);
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 15s ease-in-out infinite;
+    }
+
+    .heroContent {
+      @include container;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      
+      .heroText {
+        margin-bottom: $spacing-10;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+
+        .heroTitle {
+          font-family: $font-secondary;
+          font-size: $font-size-6xl;
+          font-weight: $font-weight-bold;
+          margin: 0 0 $spacing-6 0;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          letter-spacing: $letter-spacing-tight;
+          animation: fadeInUp 0.8s ease-out;
+
+          @include mobile-only {
+            font-size: $font-size-4xl;
+            margin-bottom: $spacing-4;
+          }
+        }
+
+        .heroSubtitle {
+          font-size: $font-size-xl;
+          margin: 0;
+          opacity: 0.95;
+          line-height: $line-height-relaxed;
+          font-weight: $font-weight-regular;
+          animation: fadeInUp 0.8s ease-out 0.2s both;
+
+          @include mobile-only {
+            font-size: $font-size-lg;
+          }
+        }
+      }
+
+      .searchSection {
+        max-width: 700px;
+        margin: 0 auto;
+        animation: fadeInUp 0.8s ease-out 0.4s both;
+
+        .heroSearch {
+          box-shadow: $shadow-xl;
+          border-radius: $radius-xl;
+          overflow: hidden;
+          transition: $transition-all;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: $shadow-2xl;
+          }
+        }
+      }
+    }
+
+    @include mobile-only {
+      padding: $spacing-8 0 $spacing-12 0;
+    }
+
+    @include tablet-up {
+      padding: $spacing-16 0 $spacing-20 0;
+    }
+  }
+
+  // Main Content Area
+  .mainContent {
+    padding: $spacing-12 0;
+    position: relative;
+
+    .contentContainer {
+      @include container;
+      
+      .section {
+        margin-bottom: $spacing-16;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .sectionHeader {
+          text-align: center;
+          margin-bottom: $spacing-10;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
+
+          .sectionTitle {
+            font-family: $font-secondary;
+            font-size: $font-size-4xl;
+            font-weight: $font-weight-bold;
+            color: var(--osassy-gray-900);
+            margin: 0 0 $spacing-4 0;
+            letter-spacing: $letter-spacing-tight;
+            position: relative;
+
+            // Decorative underline
+            &::after {
+              content: '';
+              position: absolute;
+              bottom: -$spacing-2;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 60px;
+              height: 4px;
+              background: var(--osassy-gradient-primary);
+              border-radius: $radius-full;
+            }
+
+            @include mobile-only {
+              font-size: $font-size-3xl;
+            }
+          }
+
+          .sectionSubtitle {
+            font-size: $font-size-lg;
+            color: var(--osassy-gray-600);
+            margin: 0;
+            line-height: $line-height-relaxed;
+            margin-top: $spacing-6;
+
+            @include mobile-only {
+              font-size: $font-size-base;
+            }
+          }
+        }
+      }
+    }
+
+    @include mobile-only {
+      padding: $spacing-8 0;
+    }
+  }
+
+  // FAQ Section Specific Styles
+  .faqSection {
+    .categoryTabs {
+      display: flex;
+      justify-content: center;
+      gap: $spacing-3;
+      margin-bottom: $spacing-10;
+      flex-wrap: wrap;
+      padding: 0 $spacing-4;
+
+      .categoryTab {
+        @include button-base;
+        background: var(--osassy-white);
+        color: var(--osassy-gray-700);
+        border: 2px solid var(--osassy-gray-200);
+        padding: $spacing-3 $spacing-6;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        border-radius: $radius-full;
+        transition: all $duration-normal $ease-out;
+        position: relative;
+        overflow: hidden;
+        min-height: 48px; // Accessibility: minimum touch target
+
+        // Hover effect overlay
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: var(--osassy-gradient-primary);
+          transition: left $duration-normal $ease-out;
+          z-index: 0;
+        }
+
+        // Content above overlay
+        > * {
+          position: relative;
+          z-index: 1;
+        }
+
+        &:hover {
+          color: var(--osassy-white);
+          border-color: var(--osassy-primary);
+          transform: translateY(-2px);
+          box-shadow: $shadow-primary;
+
+          &::before {
+            left: 0;
+          }
+        }
+
+        &:focus {
+          outline: 3px solid var(--osassy-primary-200);
+          outline-offset: 2px;
+        }
+
+        &.active {
+          background: var(--osassy-primary);
+          color: var(--osassy-white);
+          border-color: var(--osassy-primary);
+          box-shadow: $shadow-primary;
+
+          &::before {
+            left: 0;
+            background: var(--osassy-primary-dark);
+          }
+
+          &:hover {
+            background: var(--osassy-primary-dark);
+            border-color: var(--osassy-primary-dark);
+          }
+        }
+
+        .categoryCount {
+          background: rgba(255, 255, 255, 0.25);
+          padding: 2px 8px;
+          border-radius: $radius-full;
+          font-size: $font-size-xs;
+          font-weight: $font-weight-bold;
+          min-width: 20px;
+          text-align: center;
+          margin-left: $spacing-2;
+          transition: $transition-colors;
+        }
+
+        @include mobile-only {
+          padding: $spacing-2 $spacing-4;
+          font-size: $font-size-xs;
+          min-height: 40px;
+
+          .categoryCount {
+            padding: 1px 6px;
+            min-width: 16px;
+          }
+        }
+      }
+
+      @include mobile-only {
+        gap: $spacing-2;
+        padding: 0 $spacing-2;
+      }
+    }
+
+    .faqContent {
+      .searchResults {
+        margin-bottom: $spacing-8;
+        text-align: center;
+
+        .resultsText {
+          font-size: $font-size-base;
+          color: var(--osassy-gray-600);
+          margin: 0;
+          padding: $spacing-4 $spacing-6;
+          background: var(--osassy-white);
+          border-radius: $radius-lg;
+          border: 2px solid var(--osassy-gray-200);
+          display: inline-block;
+          box-shadow: $shadow-sm;
+
+          strong {
+            color: var(--osassy-primary);
+            font-weight: $font-weight-semibold;
+          }
+
+          @include mobile-only {
+            font-size: $font-size-sm;
+            padding: $spacing-3 $spacing-4;
+          }
+        }
+      }
+    }
+  }
+
+  // Contact Section Specific Styles
+  .contactSection {
+    .contactContent {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: $spacing-10;
+      align-items: flex-start;
+
+      @include mobile-only {
+        grid-template-columns: 1fr;
+        gap: $spacing-8;
+      }
+
+      .contactInfo {
+        @include mobile-only {
+          order: 2;
+        }
+      }
+
+      .contactFormWrapper {
+        @include mobile-only {
+          order: 1;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes patternMove {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(30px) translateY(-30px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+// Entrance animations for sections
+.helpPage {
+  .heroContent {
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .faqSection {
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+  }
+
+  .contactSection {
+    animation: fadeInUp 0.6s ease-out 0.5s both;
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY ENHANCEMENTS
+// =============================================================================
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+  .helpPage {
+    .heroSection {
+      &::before,
+      &::after {
+        animation: none;
+      }
+    }
+
+    .heroContent,
+    .faqSection,
+    .contactSection {
+      animation: none;
+    }
+
+    .categoryTabs {
+      .categoryTab {
+        transition: none;
+
+        &::before {
+          transition: none;
+        }
+
+        &:hover {
+          transform: none;
+        }
+      }
+    }
+
+    .heroSearch {
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .helpPage {
+    .heroSection {
+      &::before {
+        display: none;
+      }
+    }
+
+    .categoryTabs {
+      .categoryTab {
+        border-width: 3px;
+
+        &:focus {
+          outline-width: 4px;
+        }
+
+        &.active {
+          border-width: 4px;
+        }
+      }
+    }
+
+    .searchResults {
+      .resultsText {
+        border-width: 3px;
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .helpPage {
+    background: var(--osassy-gray-900);
+
+    .mainContent {
+      .sectionHeader {
+        .sectionTitle {
+          color: var(--osassy-white);
+        }
+
+        .sectionSubtitle {
+          color: var(--osassy-gray-300);
+        }
+      }
+    }
+
+    .categoryTabs {
+      .categoryTab {
+        background: var(--osassy-gray-800);
+        color: var(--osassy-gray-200);
+        border-color: var(--osassy-gray-600);
+
+        &:hover {
+          color: var(--osassy-white);
+        }
+      }
+    }
+
+    .searchResults {
+      .resultsText {
+        background: var(--osassy-gray-800);
+        color: var(--osassy-gray-200);
+        border-color: var(--osassy-gray-600);
+      }
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .helpPage {
+    .heroSection {
+      background: none !important;
+      color: var(--osassy-gray-900) !important;
+      padding: $spacing-4 0 !important;
+
+      &::before,
+      &::after {
+        display: none;
+      }
+
+      .searchSection {
+        display: none;
+      }
+    }
+
+    .categoryTabs {
+      display: none;
+    }
+
+    .contactSection {
+      page-break-before: always;
+    }
+  }
+}
+
+// Focus visible for keyboard navigation
+.helpPage {
+  .categoryTab:focus-visible {
+    outline: 3px solid var(--osassy-primary);
+    outline-offset: 3px;
+  }
+}
+
+// Loading states
+.helpPage {
+  &.loading {
+    .heroContent,
+    .faqSection,
+    .contactSection {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  }
+}
+
+// Error states
+.helpPage {
+  .errorMessage {
+    background: var(--osassy-error-50);
+    color: var(--osassy-error-dark);
+    padding: $spacing-4 $spacing-6;
+    border-radius: $radius-lg;
+    border: 2px solid var(--osassy-error-200);
+    text-align: center;
+    margin: $spacing-6 0;
+    font-weight: $font-weight-medium;
+
+    .errorIcon {
+      margin-right: $spacing-2;
+      color: var(--osassy-error);
+    }
+  }
+}
+
+// Success states
+.helpPage {
+  .successMessage {
+    background: var(--osassy-success-50);
+    color: var(--osassy-success-dark);
+    padding: $spacing-4 $spacing-6;
+    border-radius: $radius-lg;
+    border: 2px solid var(--osassy-success-200);
+    text-align: center;
+    margin: $spacing-6 0;
+    font-weight: $font-weight-medium;
+
+    .successIcon {
+      margin-right: $spacing-2;
+      color: var(--osassy-success);
+    }
+  }
+}

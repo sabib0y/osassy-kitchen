@@ -1,0 +1,337 @@
+@import '../../styles/unified-theme.scss';
+
+.contactForm {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .form {
+    .statusMessage {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+      padding: $spacing-4;
+      border-radius: $border-radius-lg;
+      margin-bottom: $spacing-6;
+      font-size: $font-size-base;
+      font-weight: $font-weight-medium;
+
+      &.success {
+        background: lighten($success, 40%);
+        color: darken($success, 10%);
+        border: 1px solid lighten($success, 30%);
+
+        i {
+          color: $success;
+        }
+      }
+
+      &.error {
+        background: lighten($error, 40%);
+        color: darken($error, 10%);
+        border: 1px solid lighten($error, 30%);
+
+        i {
+          color: $error;
+        }
+      }
+
+      i {
+        font-size: $font-size-lg;
+        flex-shrink: 0;
+      }
+
+      span {
+        flex: 1;
+      }
+    }
+
+    .formGroup {
+      margin-bottom: $spacing-6;
+
+      .label {
+        display: flex;
+        align-items: center;
+        gap: $spacing-2;
+        margin-bottom: $spacing-2;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        color: $gray-900;
+
+        i {
+          color: $primary;
+          width: 16px;
+          text-align: center;
+        }
+      }
+
+      .input,
+      .select,
+      .textarea {
+        @include input-base;
+        transition: all $transition-base;
+
+        &:hover {
+          border-color: lighten($primary, 20%);
+        }
+
+        &:focus {
+          border-color: $primary;
+          box-shadow: 0 0 0 3px lighten($primary, 30%);
+        }
+
+        &.error {
+          border-color: $error;
+          
+          &:focus {
+            border-color: $error;
+            box-shadow: 0 0 0 3px lighten($error, 30%);
+          }
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          background: $gray-100;
+        }
+      }
+
+      .select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right $spacing-3 center;
+        background-repeat: no-repeat;
+        background-size: 16px 12px;
+        padding-right: $spacing-10;
+        appearance: none;
+        cursor: pointer;
+
+        &:focus {
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C52D2F' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        }
+
+        option {
+          color: $gray-900;
+          background: $white;
+
+          &:disabled {
+            color: $gray-500;
+          }
+        }
+      }
+
+      .textarea {
+        min-height: 120px;
+        resize: vertical;
+        font-family: $font-family-body;
+        line-height: $line-height-relaxed;
+
+        @include mobile {
+          min-height: 100px;
+        }
+      }
+
+      .errorMessage {
+        display: block;
+        margin-top: $spacing-1;
+        font-size: $font-size-sm;
+        color: $error;
+        font-weight: $font-weight-medium;
+      }
+
+      .characterCount {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: $spacing-1;
+        font-size: $font-size-xs;
+        color: $gray-500;
+        font-weight: $font-weight-medium;
+      }
+    }
+
+    .formActions {
+      margin-top: $spacing-8;
+      text-align: center;
+
+      .submitButton {
+        @include button-base;
+        background: linear-gradient(135deg, $primary, darken($primary, 10%));
+        color: $white;
+        padding: $spacing-4 $spacing-8;
+        font-size: $font-size-base;
+        font-weight: $font-weight-semibold;
+        border-radius: $border-radius-lg;
+        box-shadow: $shadow;
+        transition: all $transition-base;
+        min-width: 160px;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: $shadow-lg;
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        &:focus {
+          outline: 2px solid $primary;
+          outline-offset: 2px;
+        }
+
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          transform: none !important;
+          box-shadow: $shadow;
+        }
+
+        .buttonContent {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: $spacing-2;
+
+          .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+
+          i {
+            font-size: $font-size-sm;
+          }
+        }
+      }
+
+      .helpText {
+        margin-top: $spacing-3;
+        font-size: $font-size-sm;
+        color: $gray-500;
+        line-height: $line-height-normal;
+      }
+    }
+
+    // Mobile responsive adjustments
+    @include mobile {
+      .formGroup {
+        margin-bottom: $spacing-5;
+
+        .label {
+          font-size: $font-size-xs;
+        }
+
+        .input,
+        .select,
+        .textarea {
+          font-size: $font-size-sm;
+          padding: $spacing-3;
+        }
+      }
+
+      .formActions {
+        .submitButton {
+          width: 100%;
+          padding: $spacing-4;
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Form field focus animation
+.input,
+.select,
+.textarea {
+  &:focus {
+    animation: fieldFocus 0.2s ease-out;
+  }
+}
+
+@keyframes fieldFocus {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .contactForm {
+    .form {
+      .input,
+      .select,
+      .textarea,
+      .submitButton {
+        transition: none;
+        animation: none;
+      }
+
+      .submitButton {
+        .spinner {
+          animation: none;
+        }
+
+        &:hover:not(:disabled) {
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .contactForm {
+    .form {
+      .input,
+      .select,
+      .textarea {
+        border-width: 2px;
+
+        &:focus {
+          border-width: 3px;
+        }
+
+        &.error {
+          border-width: 3px;
+        }
+      }
+
+      .submitButton {
+        border: 2px solid darken($primary, 15%);
+
+        &:focus {
+          outline-width: 3px;
+        }
+      }
+
+      .statusMessage {
+        border-width: 2px;
+      }
+    }
+  }
+}
+
+// Focus visible for better keyboard navigation
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible,
+.submitButton:focus-visible {
+  outline: 2px solid $primary;
+  outline-offset: 2px;
+}

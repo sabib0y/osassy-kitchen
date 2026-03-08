@@ -53,7 +53,7 @@ const footerData = {
     {
       id: 10,
       name: "Help",
-      href: "#",
+      href: "/help",
     },
     {
       id: 11,
@@ -68,7 +68,7 @@ const footerData = {
     {
       id: 13,
       name: "Contact",
-      href: "#",
+      href: "/help#contact",
     },
   ],
   socials: [

@@ -1,0 +1,894 @@
+/**
+ * CONTACT INFO CARD COMPONENT STYLES
+ * Contact information display card with interactive elements and hover effects
+ * 
+ * Brand Colors:
+ * - Primary: #C52D2F (Deep Red)
+ * - Secondary: #F1C40F (Warm Yellow) 
+ * - Accent: #FF6F3C (Bright Orange)
+ */
+
+@import '../../unified-theme.scss';
+
+// =============================================================================
+// CONTACT INFO CARD CONTAINER
+// =============================================================================
+
+.contactInfoCard {
+  background: var(--osassy-white);
+  padding: $spacing-8;
+  border-radius: $radius-xl;
+  border: 2px solid var(--osassy-gray-200);
+  box-shadow: $shadow-lg;
+  position: relative;
+  overflow: hidden;
+  transition: all $duration-normal $ease-out;
+
+  // Decorative gradient accent
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--osassy-gradient-sunset);
+    border-radius: $radius-xl $radius-xl 0 0;
+  }
+
+  // Subtle background pattern
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--osassy-primary-50) 0%, transparent 70%);
+    opacity: 0.6;
+    z-index: 0;
+    transition: $transition-opacity;
+  }
+
+  &:hover {
+    border-color: var(--osassy-primary-200);
+    box-shadow: $shadow-xl;
+    transform: translateY(-3px);
+
+    &::after {
+      opacity: 0.8;
+    }
+  }
+
+  // All content above background pattern
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .cardHeader {
+    text-align: center;
+    margin-bottom: $spacing-8;
+
+    .cardTitle {
+      font-family: $font-secondary;
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      color: var(--osassy-gray-900);
+      margin: 0 0 $spacing-3 0;
+
+      @include mobile-only {
+        font-size: $font-size-xl;
+      }
+    }
+
+    .cardSubtitle {
+      font-size: $font-size-base;
+      color: var(--osassy-gray-600);
+      margin: 0;
+      line-height: $line-height-relaxed;
+
+      @include mobile-only {
+        font-size: $font-size-sm;
+      }
+    }
+  }
+
+  @include mobile-only {
+    padding: $spacing-6;
+  }
+}
+
+// =============================================================================
+// CONTACT INFO ITEMS
+// =============================================================================
+
+.contactInfoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+
+  .contactInfoItem {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-4;
+    padding: $spacing-4;
+    border-radius: $radius-lg;
+    transition: all $duration-normal $ease-out;
+    position: relative;
+    overflow: hidden;
+
+    // Hover background effect
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--osassy-gray-50);
+      transition: left $duration-normal $ease-out;
+      z-index: 0;
+    }
+
+    &:hover {
+      transform: translateX(5px);
+
+      &::before {
+        left: 0;
+      }
+
+      .contactIcon {
+        transform: scale(1.1);
+        color: var(--osassy-primary);
+      }
+
+      .contactLink {
+        color: var(--osassy-primary-dark);
+      }
+    }
+
+    // All content above background effect
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .contactIcon {
+      width: 24px;
+      height: 24px;
+      color: var(--osassy-gray-500);
+      transition: all $duration-normal $ease-out;
+      flex-shrink: 0;
+      margin-top: 2px; // Align with text baseline
+
+      @include mobile-only {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .contactContent {
+      flex: 1;
+      min-width: 0; // Allows text to wrap
+
+      .contactLabel {
+        display: block;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        color: var(--osassy-gray-700);
+        margin-bottom: $spacing-1;
+        text-transform: uppercase;
+        letter-spacing: $letter-spacing-wide;
+
+        @include mobile-only {
+          font-size: $font-size-xs;
+        }
+      }
+
+      .contactValue {
+        font-size: $font-size-base;
+        color: var(--osassy-gray-900);
+        line-height: $line-height-normal;
+        margin: 0;
+
+        @include mobile-only {
+          font-size: $font-size-sm;
+        }
+      }
+
+      .contactLink {
+        @include button-base;
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--osassy-primary);
+        text-decoration: none;
+        font-weight: $font-weight-medium;
+        font-size: inherit;
+        transition: $transition-colors;
+        display: inline;
+        cursor: pointer;
+        border-bottom: 1px solid transparent;
+
+        &:hover {
+          color: var(--osassy-primary-dark);
+          border-bottom-color: var(--osassy-primary);
+        }
+
+        &:focus {
+          outline: 2px solid var(--osassy-primary);
+          outline-offset: 2px;
+          border-radius: 2px;
+        }
+
+        &:active {
+          color: var(--osassy-primary-dark);
+        }
+      }
+    }
+
+    .contactAction {
+      .actionButton {
+        @include button-base;
+        background: var(--osassy-primary-50);
+        color: var(--osassy-primary);
+        border: 1px solid var(--osassy-primary-200);
+        padding: $spacing-2 $spacing-3;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-semibold;
+        border-radius: $radius-base;
+        transition: all $duration-normal $ease-out;
+        text-transform: uppercase;
+        letter-spacing: $letter-spacing-wide;
+
+        &:hover {
+          background: var(--osassy-primary);
+          color: var(--osassy-white);
+          border-color: var(--osassy-primary);
+          transform: translateY(-1px);
+          box-shadow: $shadow-sm;
+        }
+
+        &:focus {
+          outline: 2px solid var(--osassy-primary);
+          outline-offset: 2px;
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        @include mobile-only {
+          padding: $spacing-1 $spacing-2;
+          font-size: 10px;
+        }
+      }
+    }
+
+    // Type-specific styling
+    &.email {
+      .contactIcon {
+        color: var(--osassy-accent);
+      }
+
+      &:hover .contactIcon {
+        color: var(--osassy-accent-dark);
+      }
+    }
+
+    &.phone {
+      .contactIcon {
+        color: var(--osassy-success);
+      }
+
+      &:hover .contactIcon {
+        color: var(--osassy-success-dark);
+      }
+    }
+
+    &.address {
+      .contactIcon {
+        color: var(--osassy-secondary);
+      }
+
+      &:hover .contactIcon {
+        color: var(--osassy-secondary-dark);
+      }
+    }
+
+    &.hours {
+      .contactIcon {
+        color: var(--osassy-info);
+      }
+
+      &:hover .contactIcon {
+        color: var(--osassy-info-dark);
+      }
+    }
+
+    @include mobile-only {
+      gap: $spacing-3;
+      padding: $spacing-3;
+    }
+  }
+}
+
+// =============================================================================
+// BUSINESS HOURS COMPONENT
+// =============================================================================
+
+.businessHours {
+  .hoursGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-2 $spacing-4;
+    margin-top: $spacing-3;
+
+    .hourItem {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: $font-size-sm;
+      padding: $spacing-1 0;
+
+      .dayLabel {
+        font-weight: $font-weight-medium;
+        color: var(--osassy-gray-700);
+      }
+
+      .timeLabel {
+        color: var(--osassy-gray-600);
+        font-variant-numeric: tabular-nums;
+      }
+
+      // Special styling for today
+      &.today {
+        .dayLabel {
+          color: var(--osassy-primary);
+          font-weight: $font-weight-semibold;
+        }
+
+        .timeLabel {
+          color: var(--osassy-primary-dark);
+          font-weight: $font-weight-semibold;
+        }
+      }
+
+      // Closed days
+      &.closed {
+        .timeLabel {
+          color: var(--osassy-gray-400);
+          font-style: italic;
+        }
+      }
+
+      @include mobile-only {
+        font-size: $font-size-xs;
+      }
+    }
+
+    @include mobile-only {
+      grid-template-columns: 1fr;
+      gap: $spacing-1;
+    }
+  }
+
+  .currentStatus {
+    margin-top: $spacing-4;
+    padding: $spacing-3 $spacing-4;
+    border-radius: $radius-lg;
+    text-align: center;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+
+    &.open {
+      background: var(--osassy-success-50);
+      color: var(--osassy-success-dark);
+      border: 1px solid var(--osassy-success-200);
+    }
+
+    &.closed {
+      background: var(--osassy-error-50);
+      color: var(--osassy-error-dark);
+      border: 1px solid var(--osassy-error-200);
+    }
+
+    &.closingSoon {
+      background: var(--osassy-warning-50);
+      color: var(--osassy-warning-dark);
+      border: 1px solid var(--osassy-warning-200);
+    }
+
+    @include mobile-only {
+      font-size: $font-size-xs;
+      padding: $spacing-2 $spacing-3;
+    }
+  }
+}
+
+// =============================================================================
+// SOCIAL MEDIA LINKS
+// =============================================================================
+
+.socialMediaSection {
+  margin-top: $spacing-8;
+  padding-top: $spacing-6;
+  border-top: 1px solid var(--osassy-gray-200);
+
+  .socialTitle {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-gray-900);
+    text-align: center;
+    margin: 0 0 $spacing-4 0;
+
+    @include mobile-only {
+      font-size: $font-size-base;
+    }
+  }
+
+  .socialLinks {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-4;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .socialLink {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: var(--osassy-gray-100);
+      color: var(--osassy-gray-600);
+      border-radius: 50%;
+      text-decoration: none;
+      transition: all $duration-normal $ease-out;
+      position: relative;
+      overflow: hidden;
+
+      // Platform-specific colors
+      &.facebook {
+        &:hover {
+          background: #1877F2;
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+        }
+      }
+
+      &.twitter {
+        &:hover {
+          background: #1DA1F2;
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(29, 161, 242, 0.3);
+        }
+      }
+
+      &.instagram {
+        &:hover {
+          background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4);
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(221, 42, 123, 0.3);
+        }
+      }
+
+      &.whatsapp {
+        &:hover {
+          background: #25D366;
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+      }
+
+      &:focus {
+        outline: 3px solid var(--osassy-primary);
+        outline-offset: 2px;
+      }
+
+      .socialIcon {
+        width: 20px;
+        height: 20px;
+        transition: $transition-transform;
+      }
+
+      &:hover .socialIcon {
+        transform: scale(1.1);
+      }
+
+      @include mobile-only {
+        width: 40px;
+        height: 40px;
+
+        .socialIcon {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    @include mobile-only {
+      gap: $spacing-3;
+    }
+  }
+}
+
+// =============================================================================
+// EMERGENCY CONTACT SECTION
+// =============================================================================
+
+.emergencyContact {
+  margin-top: $spacing-6;
+  padding: $spacing-4;
+  background: var(--osassy-error-50);
+  border: 1px solid var(--osassy-error-200);
+  border-radius: $radius-lg;
+  text-align: center;
+
+  .emergencyTitle {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--osassy-error-dark);
+    margin: 0 0 $spacing-2 0;
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+
+  .emergencyText {
+    font-size: $font-size-sm;
+    color: var(--osassy-error-dark);
+    margin: 0 0 $spacing-3 0;
+    line-height: $line-height-normal;
+  }
+
+  .emergencyButton {
+    @include button-base;
+    background: var(--osassy-error);
+    color: var(--osassy-white);
+    border: none;
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-base;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    &:hover {
+      background: var(--osassy-error-dark);
+      transform: translateY(-1px);
+      box-shadow: $shadow-sm;
+    }
+
+    &:focus {
+      outline: 3px solid var(--osassy-error-200);
+      outline-offset: 2px;
+    }
+
+    .emergencyIcon {
+      width: 16px;
+      height: 16px;
+    }
+
+    @include mobile-only {
+      font-size: $font-size-xs;
+      padding: $spacing-1 $spacing-3;
+
+      .emergencyIcon {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+
+  @include mobile-only {
+    padding: $spacing-3;
+
+    .emergencyTitle {
+      font-size: $font-size-xs;
+    }
+
+    .emergencyText {
+      font-size: $font-size-xs;
+    }
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Entrance animations
+.contactInfoCard {
+  animation: fadeInUp 0.6s ease-out;
+
+  .contactInfoItem {
+    animation: slideInLeft 0.5s ease-out;
+    animation-fill-mode: both;
+
+    @for $i from 1 through 8 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{($i - 1) * 0.1}s;
+      }
+    }
+  }
+
+  .socialMediaSection {
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+  }
+
+  .emergencyContact {
+    animation: fadeInUp 0.6s ease-out 0.5s both;
+  }
+}
+
+// =============================================================================
+// ACCESSIBILITY ENHANCEMENTS
+// =============================================================================
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+  .contactInfoCard {
+    animation: none;
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+
+    .contactInfoItem {
+      animation: none;
+      transition: none;
+
+      &:hover {
+        transform: none;
+
+        .contactIcon {
+          transform: none;
+        }
+      }
+    }
+
+    .socialLinks {
+      .socialLink {
+        transition: none;
+
+        &:hover {
+          transform: none;
+
+          .socialIcon {
+            transform: none;
+          }
+        }
+      }
+    }
+
+    .emergencyButton {
+      transition: none;
+
+      &:hover {
+        transform: none;
+      }
+    }
+
+    .socialMediaSection,
+    .emergencyContact {
+      animation: none;
+    }
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .contactInfoCard {
+    border-width: 3px;
+
+    .contactInfoItem {
+      .contactLink:focus {
+        outline-width: 3px;
+      }
+
+      .actionButton:focus {
+        outline-width: 3px;
+      }
+    }
+
+    .socialLinks {
+      .socialLink:focus {
+        outline-width: 4px;
+      }
+    }
+
+    .emergencyButton:focus {
+      outline-width: 3px;
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .contactInfoCard {
+    background: var(--osassy-gray-800);
+    border-color: var(--osassy-gray-600);
+
+    &::after {
+      background: radial-gradient(circle, var(--osassy-primary-200) 0%, transparent 70%);
+      opacity: 0.3;
+    }
+
+    .cardHeader {
+      .cardTitle {
+        color: var(--osassy-white);
+      }
+
+      .cardSubtitle {
+        color: var(--osassy-gray-300);
+      }
+    }
+
+    .contactInfoItem {
+      &::before {
+        background: var(--osassy-gray-700);
+      }
+
+      .contactContent {
+        .contactLabel {
+          color: var(--osassy-gray-300);
+        }
+
+        .contactValue {
+          color: var(--osassy-gray-100);
+        }
+
+        .contactLink {
+          color: var(--osassy-primary-light);
+
+          &:hover {
+            color: var(--osassy-primary);
+          }
+        }
+      }
+
+      .contactAction {
+        .actionButton {
+          background: var(--osassy-gray-700);
+          color: var(--osassy-primary-light);
+          border-color: var(--osassy-gray-500);
+
+          &:hover {
+            background: var(--osassy-primary-light);
+            color: var(--osassy-gray-900);
+          }
+        }
+      }
+    }
+
+    .businessHours {
+      .currentStatus {
+        &.open {
+          background: var(--osassy-gray-700);
+          color: var(--osassy-success-light);
+          border-color: var(--osassy-success-dark);
+        }
+
+        &.closed {
+          background: var(--osassy-gray-700);
+          color: var(--osassy-error-light);
+          border-color: var(--osassy-error-dark);
+        }
+
+        &.closingSoon {
+          background: var(--osassy-gray-700);
+          color: var(--osassy-warning-light);
+          border-color: var(--osassy-warning-dark);
+        }
+      }
+    }
+
+    .socialMediaSection {
+      border-color: var(--osassy-gray-600);
+
+      .socialTitle {
+        color: var(--osassy-white);
+      }
+
+      .socialLinks {
+        .socialLink {
+          background: var(--osassy-gray-700);
+          color: var(--osassy-gray-300);
+        }
+      }
+    }
+
+    .emergencyContact {
+      background: var(--osassy-gray-700);
+      border-color: var(--osassy-error-dark);
+
+      .emergencyTitle,
+      .emergencyText {
+        color: var(--osassy-error-light);
+      }
+
+      .emergencyButton {
+        background: var(--osassy-error-light);
+        color: var(--osassy-gray-900);
+
+        &:hover {
+          background: var(--osassy-error);
+          color: var(--osassy-white);
+        }
+      }
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .contactInfoCard {
+    box-shadow: none !important;
+    border: 1px solid var(--osassy-gray-400) !important;
+    page-break-inside: avoid;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    .socialMediaSection {
+      display: none;
+    }
+
+    .emergencyContact {
+      display: none;
+    }
+
+    .contactInfoItem {
+      .contactAction {
+        display: none;
+      }
+    }
+  }
+}
+
+// Focus visible for keyboard navigation
+.contactInfoCard {
+  .contactLink:focus-visible,
+  .actionButton:focus-visible,
+  .socialLink:focus-visible,
+  .emergencyButton:focus-visible {
+    outline: 3px solid var(--osassy-primary);
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,115 @@
+@import '../unified-theme.scss';
+
+.helpPage {
+  min-height: 100vh;
+  background: $gray-50;
+
+  .heroSection {
+    position: relative;
+    background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+    color: $white;
+    padding: $spacing-16 0;
+    text-align: center;
+
+    h1 {
+      font-size: $font-size-4xl;
+      font-weight: $font-weight-bold;
+      margin-bottom: $spacing-4;
+      
+      @include mobile {
+        font-size: $font-size-3xl;
+      }
+    }
+
+    p {
+      font-size: $font-size-lg;
+      opacity: 0.9;
+    }
+  }
+
+  .searchSection {
+    margin-top: -40px;
+    margin-bottom: $spacing-12;
+    position: relative;
+    z-index: 10;
+  }
+
+  .faqSection {
+    padding: $spacing-12 $spacing-4;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    h2 {
+      font-size: $font-size-3xl;
+      font-weight: $font-weight-bold;
+      text-align: center;
+      margin-bottom: $spacing-8;
+      color: $gray-900;
+    }
+
+    .categoryTabs {
+      display: flex;
+      gap: $spacing-2;
+      justify-content: center;
+      margin-bottom: $spacing-8;
+      flex-wrap: wrap;
+
+      button {
+        padding: $spacing-2 $spacing-4;
+        border: 2px solid $gray-200;
+        background: $white;
+        border-radius: $border-radius-lg;
+        font-size: $font-size-base;
+        cursor: pointer;
+        transition: all $transition-base;
+
+        &:hover {
+          border-color: $primary;
+          color: $primary;
+        }
+
+        &.active {
+          background: $primary;
+          border-color: $primary;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .contactSection {
+    background: $white;
+    padding: $spacing-16 $spacing-4;
+    border-top: 1px solid $gray-200;
+
+    .contactContainer {
+      max-width: 1200px;
+      margin: 0 auto;
+
+      h2 {
+        font-size: $font-size-3xl;
+        font-weight: $font-weight-bold;
+        text-align: center;
+        margin-bottom: $spacing-4;
+        color: $gray-900;
+      }
+
+      .contactSubtitle {
+        text-align: center;
+        color: $gray-600;
+        margin-bottom: $spacing-12;
+        font-size: $font-size-lg;
+      }
+
+      .contactContent {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-12;
+        
+        @include mobile {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}
