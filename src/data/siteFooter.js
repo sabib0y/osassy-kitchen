@@ -27,8 +27,8 @@ const footerData = {
     },
     {
       id: 5,
-      name: "How It Works",
-      href: "#",
+      name: "Our Process",
+      href: "/our-process",
     },
     {
       id: 6,

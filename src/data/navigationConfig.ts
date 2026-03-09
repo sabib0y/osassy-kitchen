@@ -28,9 +28,9 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
-      id: 'how-it-works',
-      name: 'How It Works',
-      href: '/how-it-works',
+      id: 'our-process',
+      name: 'Our Process',
+      href: '/our-process',
       type: 'link'
     },
     {
