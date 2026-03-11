@@ -8,55 +8,69 @@
 
 // Hero Section
 .hero {
-  background: linear-gradient(135deg, #C52D2F 0%, #FF6F3C 100%);
-  padding: 5rem 2rem 4rem;
-  text-align: center;
   position: relative;
+  padding: 6rem 2rem 5rem;
+  text-align: center;
   overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    animation: pulse 20s ease-in-out infinite;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    padding: 7rem 2rem 6rem;
+    min-height: 320px;
   }
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1;
 }
 
 .heroContent {
   position: relative;
+  z-index: 2;
   max-width: 800px;
   margin: 0 auto;
 }
 
 .heroTitle {
-  font-size: 3rem;
-  font-weight: 700;
+  font-family: "Fugaz One", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  font-style: italic;
   color: white;
   margin: 0 0 1rem 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  
-  @media (max-width: 768px) {
-    font-size: 2rem;
+  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.4);
+
+  @media (min-width: 768px) {
+    font-size: 3.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 4rem;
   }
 }
 
 .heroSubtitle {
-  font-size: 1.25rem;
-  color: white;
+  font-family: "Lato", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
-  opacity: 0.95;
-  
-  @media (max-width: 768px) {
-    font-size: 1rem;
+  text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
+
+  @media (min-width: 768px) {
+    font-size: 1.25rem;
   }
 }
 
