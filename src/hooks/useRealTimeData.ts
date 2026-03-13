@@ -87,8 +87,8 @@ export function useRealTimeData<T = any>(
     isStale: false
   });
 
-  const pollingTimerRef = useRef<NodeJS.Timeout>();
-  const cacheTimerRef = useRef<NodeJS.Timeout>();
+  const pollingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const cacheTimerRef = useRef<NodeJS.Timeout | null>(null);
   const mountedRef = useRef(true);
 
   // Load from cache

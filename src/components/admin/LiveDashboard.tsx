@@ -178,7 +178,7 @@ export function LiveDashboard() {
       setRecentOrders(prev => {
         const newOrder: RecentOrder = {
           id: payload.orderId,
-          orderNumber: payload.data.orderNumber || `#${payload.orderId.slice(-6)}`,
+          orderNumber: payload.orderNumber || `#${payload.orderId.slice(-6)}`,
           customerName: payload.data.customerName || 'Customer',
           amount: payload.data.totalAmount || 0,
           status: payload.data.status,
@@ -191,11 +191,13 @@ export function LiveDashboard() {
       });
 
       // Update order status counts
-      if (payload.previousStatus && payload.data.status) {
+      const prevStatus = payload.previousStatus;
+      const newStatus = payload.data.status;
+      if (prevStatus && newStatus) {
         setOrdersByStatus(prev => ({
           ...prev,
-          [payload.previousStatus.toLowerCase()]: Math.max(0, prev[payload.previousStatus.toLowerCase() as keyof OrdersByStatus] - 1),
-          [payload.data.status.toLowerCase()]: prev[payload.data.status.toLowerCase() as keyof OrdersByStatus] + 1
+          [prevStatus.toLowerCase()]: Math.max(0, prev[prevStatus.toLowerCase() as keyof OrdersByStatus] - 1),
+          [newStatus.toLowerCase()]: prev[newStatus.toLowerCase() as keyof OrdersByStatus] + 1
         }));
       }
 
@@ -215,7 +217,10 @@ export function LiveDashboard() {
       }));
       
       if (payload.recentOrders) {
-        setRecentOrders(payload.recentOrders);
+        setRecentOrders(payload.recentOrders.map(order => ({
+          ...order,
+          status: order.status as OrderStatus
+        })));
       }
       
       if (payload.ordersByStatus) {
@@ -272,7 +277,7 @@ export function LiveDashboard() {
   };
 
   const getStatusIcon = (status: OrderStatus) => {
-    const icons: Record<OrderStatus, JSX.Element> = {
+    const icons: Record<OrderStatus, React.ReactElement> = {
       [OrderStatus.PENDING]: <Clock className="w-4 h-4" />,
       [OrderStatus.CONFIRMED]: <CheckCircle className="w-4 h-4" />,
       [OrderStatus.PREPARING]: <Package className="w-4 h-4" />,

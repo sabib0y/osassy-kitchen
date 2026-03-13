@@ -32,6 +32,13 @@ import MenuItemSkeleton, { SkeletonStyles } from '@/components/MenuItemSkeleton'
 import MenuErrorBoundary from '@/components/MenuErrorBoundary';
 import { createCheckoutSession, redirectToCheckout } from '@/lib/stripe-client';
 
+// Stripe Price IDs from environment variables
+const STRIPE_PRICE_WEEKLY = process.env.NEXT_PUBLIC_STRIPE_PRICE_WEEKLY;
+const STRIPE_PRICE_MONTHLY = process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY;
+
+// localStorage key for cart persistence
+const CART_STORAGE_KEY = 'osassy_cart';
+
 // Map categories from database to UI display format
 const categoryMapping: { [key: string]: string } = {
   'rice-dishes': 'rice',
@@ -62,8 +69,21 @@ const CreateSubscriptionPage: React.FC = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // State management
-  const [cart, setCart] = useState<Cart>({});
+  // State management - initialise cart from localStorage if available
+  const [cart, setCart] = useState<Cart>(() => {
+    // Handle SSR - only access localStorage on client
+    if (typeof window !== 'undefined') {
+      try {
+        const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+        if (savedCart) {
+          return JSON.parse(savedCart) as Cart;
+        }
+      } catch (error) {
+        console.error('Failed to parse cart from localStorage:', error);
+      }
+    }
+    return {};
+  });
   const [filters, setFilters] = useState<FilterState>({
     category: 'all',
     searchTerm: ''
@@ -91,6 +111,22 @@ const CreateSubscriptionPage: React.FC = () => {
 
   // Convert query error to string for display
   const menuError = menuQueryError ? menuQueryError.message : null;
+
+  // Persist cart to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        if (Object.keys(cart).length > 0) {
+          localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+        } else {
+          // Clear storage when cart is empty
+          localStorage.removeItem(CART_STORAGE_KEY);
+        }
+      } catch (error) {
+        console.error('Failed to save cart to localStorage:', error);
+      }
+    }
+  }, [cart]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -189,6 +225,13 @@ const CreateSubscriptionPage: React.FC = () => {
       return;
     }
 
+    // Validate Stripe Price IDs are configured
+    if (!STRIPE_PRICE_WEEKLY || !STRIPE_PRICE_MONTHLY) {
+      console.error('Stripe Price IDs are not configured. Please check environment variables.');
+      setCheckoutError('Payment configuration error. Please contact support.');
+      return;
+    }
+
     setIsProcessingCheckout(true);
     setCheckoutError(null);
 
@@ -200,10 +243,9 @@ const CreateSubscriptionPage: React.FC = () => {
       }));
 
       // Determine the Stripe price ID based on billing interval
-      // These price IDs are created via scripts/setup-stripe-prices.js
-      const priceId = billingInterval === 'WEEKLY' 
-        ? 'price_1RtHViQcnp5UiDwRGeiN3oy0' // Weekly subscription price
-        : 'price_1RtHViQcnp5UiDwRQ8S4gxgG'; // Monthly subscription price
+      const priceId = billingInterval === 'WEEKLY'
+        ? STRIPE_PRICE_WEEKLY
+        : STRIPE_PRICE_MONTHLY;
 
       // Create Stripe checkout session using the utility function
       const { sessionId } = await createCheckoutSession({
@@ -212,6 +254,11 @@ const CreateSubscriptionPage: React.FC = () => {
         successUrl: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${window.location.origin}/cancel`
       });
+
+      // Clear cart from localStorage after successful checkout initiation
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      }
 
       // Redirect to Stripe Checkout
       await redirectToCheckout(sessionId);

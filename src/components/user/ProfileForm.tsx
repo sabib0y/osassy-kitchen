@@ -164,7 +164,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onUpdate, loading })
             )}
             <small className={styles.helpText}>
               <i className="fas fa-info-circle"></i>
-              We'll use this for order updates and delivery notifications.
+              We&apos;ll use this for order updates and delivery notifications.
             </small>
           </div>
         </div>

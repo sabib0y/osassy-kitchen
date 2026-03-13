@@ -417,7 +417,7 @@ export class WebSocketServer {
     this.metrics.errors++;
     
     socket.emit('error', {
-      type: WSErrorType.CONNECTION_ERROR,
+      type: WSErrorType.CONNECTION_FAILED,
       message: error.message
     });
   }

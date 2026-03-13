@@ -182,8 +182,8 @@ export function WebSocketProvider({
     connected,
     connecting,
     reconnecting,
-    error,
-    
+    error: error ?? null,
+
     // Methods
     send,
     subscribe,
@@ -209,11 +209,11 @@ export function WebSocketProvider({
       {children}
       {/* Connection status indicator for development */}
       {config.debug && (
-        <ConnectionStatusIndicator 
+        <ConnectionStatusIndicator
           connected={connected}
           connecting={connecting}
           reconnecting={reconnecting}
-          error={error}
+          error={error ?? null}
         />
       )}
     </WebSocketContext.Provider>

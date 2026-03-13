@@ -25,7 +25,7 @@ const WhySubscribe = () => {
   return (
     <section className="why-subscribe">
       <div className="why-subscribe__container">
-        <h2 className="why-subscribe__title">Why Choose Osassy's Kitchen?</h2>
+        <h2 className="why-subscribe__title">Why Choose Osassy&apos;s Kitchen?</h2>
         <p className="why-subscribe__subtitle">Experience the benefits of our meal subscription service</p>
 
         <div className="why-subscribe__benefits">

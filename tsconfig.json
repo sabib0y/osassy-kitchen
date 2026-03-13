@@ -30,6 +30,11 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "testing",
+    "tests",
+    "scripts",
+    "coverage",
+    ".next"
   ]
 }

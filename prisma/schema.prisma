@@ -50,6 +50,7 @@ model User {
   orders           Order[]
   sessions         Session[]
   subscriptions    Subscription[]
+  favourites       Favourite[]
 }
 
 model VerificationToken {
@@ -70,10 +71,13 @@ model MenuItem {
   thumbnailUrl      String?
   category          String
   available         Boolean            @default(true)
+  isVegetarian      Boolean            @default(false)
+  isSpicy           Boolean            @default(false)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   orderItems        OrderItem[]
   subscriptionItems SubscriptionItem[]
+  favourites        Favourite[]
 }
 
 model Subscription {
@@ -148,4 +152,15 @@ enum OrderStatus {
   IN_PROGRESS
   DELIVERED
   CANCELLED
+}
+
+model Favourite {
+  id         String   @id @default(cuid())
+  userId     String
+  menuItemId String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, menuItemId])
 }

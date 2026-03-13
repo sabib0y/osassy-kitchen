@@ -356,7 +356,7 @@ class WebSocketClient implements IWebSocketClient {
     const wsError: WSError = {
       name: 'WebSocketError',
       message: error.message || 'Unknown error',
-      type: error.type || WSErrorType.CONNECTION_ERROR,
+      type: error.type || WSErrorType.CONNECTION_FAILED,
       code: error.code,
       details: error.details,
       retryable: error.retryable !== false

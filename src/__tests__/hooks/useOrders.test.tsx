@@ -19,6 +19,7 @@ jest.mock('@/lib/api-client', () => ({
 const mockApi = api as jest.Mocked<typeof api>
 
 const createWrapper = (queryClient: QueryClient) => {
+  // eslint-disable-next-line react/display-name
   return ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )

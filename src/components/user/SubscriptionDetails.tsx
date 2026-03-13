@@ -128,7 +128,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscription 
             {formatDate(subscription.nextDeliveryDate!)}
           </p>
           <div className={styles.deliveryItems}>
-            <h4>You'll receive:</h4>
+            <h4>You&apos;ll receive:</h4>
             <ul>
               {subscription.items.map(item => (
                 <li key={item.id}>
@@ -255,7 +255,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscription 
         <div className={styles.noHistory}>
           <div className={styles.noHistoryIcon}>📦</div>
           <h4>No Orders Yet</h4>
-          <p>Orders from this subscription will appear here once they're generated.</p>
+          <p>Orders from this subscription will appear here once they&apos;re generated.</p>
         </div>
       )}
     </div>

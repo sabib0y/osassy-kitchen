@@ -156,8 +156,8 @@ export const loadModuleWithRetry = async (modulePath: string, maxRetries = 3) =>
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const module = require(modulePath)
-      return module
+      const loadedModule = require(modulePath)
+      return loadedModule
     } catch (error) {
       lastError = error as Error
       

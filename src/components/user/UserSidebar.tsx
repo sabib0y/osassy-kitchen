@@ -154,9 +154,9 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
 
           {/* Support Link */}
           <div className={styles.sidebarFooter}>
-            <Link 
-              href="/support" 
-              className={styles.supportLink} 
+            <Link
+              href="/help"
+              className={styles.supportLink}
               onClick={onClose}
             >
               <i className="fas fa-question-circle" aria-hidden="true"></i>

@@ -183,8 +183,8 @@ describe('Wave 1 Components Integration', () => {
       ]
 
       modules.forEach(modulePath => {
-        const module = require(modulePath)
-        expect(module).toBeDefined()
+        const loadedModule = require(modulePath)
+        expect(loadedModule).toBeDefined()
       })
     })
 
@@ -249,8 +249,8 @@ describe('Wave 1 Robustness Tests', () => {
 
       // Test each module can be loaded with retry logic
       for (const modulePath of modules) {
-        const module = await loadModuleWithRetry(modulePath)
-        expect(module).toBeDefined()
+        const loadedModule = await loadModuleWithRetry(modulePath)
+        expect(loadedModule).toBeDefined()
       }
     }, 15000) // 15 second timeout for this comprehensive test
   })

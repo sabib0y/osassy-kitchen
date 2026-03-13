@@ -104,6 +104,7 @@ export interface WSMessage<T = any> {
     room?: string;
     priority?: 'low' | 'normal' | 'high' | 'urgent';
     retryCount?: number;
+    timestamp?: string;
   };
 }
 

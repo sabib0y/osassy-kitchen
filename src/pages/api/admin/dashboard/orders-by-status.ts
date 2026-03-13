@@ -29,13 +29,13 @@ export default async function handler(
     }
 
     // Get order counts by status
-    const [pending, confirmed, preparing, delivered, cancelled] = await Promise.all([
+    const [pending, preparing, delivered, cancelled] = await Promise.all([
       prisma.order.count({ where: { status: 'PENDING' } }),
-      prisma.order.count({ where: { status: 'CONFIRMED' } }),
       prisma.order.count({ where: { status: 'IN_PROGRESS' } }),
       prisma.order.count({ where: { status: 'DELIVERED' } }),
       prisma.order.count({ where: { status: 'CANCELLED' } })
     ]);
+    const confirmed = 0; // CONFIRMED not in schema
 
     res.status(200).json({
       pending,

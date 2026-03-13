@@ -1,9 +1,127 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** March 8, 2026 - Night
+**Last Updated:** March 13, 2026 - Night (20:43)
 
 ## Overall Project Status
-The project is currently in **Phase 5: Contact/Help Page - 95% COMPLETE**. Phases 1-4 are fully complete. Major homepage redesign completed with new images and modern layouts.
+The project is currently in **Phase 5: Contact/Help Page - 95% COMPLETE**. Phases 1-4 are fully complete. Signup security hardening completed. Major site-wide fixes applied. Build has pre-existing TypeScript errors being fixed.
+
+---
+
+## 🔧 **SITE-WIDE FIXES & BUILD REPAIR**
+**March 13, 2026 - Night**
+
+### ✅ **Completed This Session:**
+
+#### **1. Comprehensive Site Audits (4 parallel agents)**
+- Subscription flow audit — functionally complete ✓
+- Dead links audit — 14 missing pages identified
+- Menu items verification — schema mismatch found
+- User dashboard audit — production-ready ✓
+
+#### **2. Navigation & Footer Fixes** ✅
+- Fixed UserSidebar support link (`/support` → `/help`)
+- Restructured footer with proper links (quickLinks, legalLinks)
+- Added social media links (facebook.com/osassyskitchen, instagram.com/osassyskitchen)
+- Removed irrelevant marketing placeholders
+
+#### **3. Stripe & Cart Improvements** ✅
+- Moved hardcoded Stripe Price IDs to environment variables
+- Created `.env.example` with all env vars documented
+- Added cart persistence with localStorage (`osassy_cart` key)
+- Cart clears on successful checkout
+
+#### **4. Database Schema Updates** ✅
+- Added `isVegetarian` and `isSpicy` fields to MenuItem model
+- Updated seed data (3 spicy items: Palm Oil Stew, Ayamashe, Isi-Ewu)
+- Migration applied: `20260313202819_add_vegetarian_spicy_fields`
+
+#### **5. New Pages Created** ✅
+- `/forgot-password` — password reset form (UI only)
+- `/terms` — Terms of Service placeholder
+- `/privacy` — Privacy Policy placeholder
+- Associated SCSS modules created
+
+#### **6. ESLint Errors Fixed** ✅
+- Fixed unescaped entities (`'` → `&apos;`)
+- Replaced `<a>` with `<Link>` for internal navigation
+- Added eslint-disable for test file display names
+- Renamed `module` variables to avoid reserved word conflict
+
+#### **7. TypeScript Errors Fixed** (Partial)
+- LiveDashboard.tsx — payload property access fixes
+- WebSocketProvider.tsx — error type null handling
+- websocket-usage.tsx — payload.data access patterns
+- useMenu.ts — imageUrl property mismatch
+- useRealTimeData.ts — useRef initial value
+- useWebSocket.ts — WSErrorType.CONNECTION_FAILED
+- websocket.ts — metadata timestamp, WSErrorType fix
+- rateLimit.ts — NextApiResponse type casting
+
+### 🔄 **In Progress:**
+- Build still failing with TypeScript errors in pre-existing code
+- Last error was in build process (exit code 137 — interrupted)
+
+### 📋 **Remaining Build Errors to Fix:**
+- May be more TypeScript errors — build was interrupted
+- Run `npm run build` to check remaining errors
+
+---
+
+## 🔐 **SIGNUP SECURITY HARDENING & UI FIXES**
+**March 13, 2026 - Evening**
+
+### ✅ **Security Fixes Applied:**
+
+#### **1. Rate Limiting** ✅
+- Created `/src/lib/rateLimit.ts` — reusable rate limiter with in-memory store
+- 5 attempts per IP per hour for signup
+- Proper headers (X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset)
+- Pre-configured limiters for login, password reset, and general API
+- 17 unit tests in `/src/__tests__/lib/rateLimit.test.ts`
+
+#### **2. Server-side Password Validation** ✅
+- Enforces: 8+ chars, uppercase, lowercase, number, special character
+- Clear error messages for each requirement
+
+#### **3. Email Enumeration Fix** ✅
+- Generic error message for existing users (no info leakage)
+- Changed from 409 to 400 status code
+
+#### **4. Response Sanitisation** ✅
+- Removed password hash from API response
+- Only returns safe fields: id, name, email, role, createdAt
+
+#### **5. Email Format Validation** ✅
+- Server-side regex validation added
+
+### ✅ **UI Fixes from Feedback:**
+
+#### **1. Heading Italics Removed** ✅
+- "Delivered Across London" — removed italic
+- "Ready to Eat Better This Week?" — removed italic
+
+#### **2. How It Works Page Revamp** ✅
+- `/our-process` page redesigned to match homepage style
+- Steps section: card-based with circular icons and number badges
+- Benefits section: dark theme (#1a1a1a) with red icon circles
+- FAQ section: light cards on white background
+- CTA section: solid red background
+- Hero section kept as-is per request
+
+### 📋 **Pending Security Items:**
+- [ ] CSRF protection for signup
+- [ ] Email verification flow
+
+### 📋 **Functional Validation Checklist:**
+1. [ ] Authentication flows (login, signup, logout)
+2. [ ] Subscription creation flow
+3. [ ] User dashboard
+4. [ ] Admin dashboard
+5. [ ] Order management
+6. [ ] Payment methods
+7. [ ] Profile updates
+
+**Status:** Ready for manual functional testing. Security score improved from 4/10 to ~7/10.
 
 ---
 

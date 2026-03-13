@@ -149,9 +149,11 @@ export default async function handler(
       const { fields, files } = await parseForm(req);
 
       // Extract upload options from fields
-      const folder = (fields.folder as string) || 'osassy-kitchen/user-uploads';
-      const tags = fields.tags 
-        ? (Array.isArray(fields.tags) ? fields.tags : [fields.tags]) as string[]
+      const rawFolder = Array.isArray(fields.folder) ? fields.folder[0] : fields.folder;
+      const folder = rawFolder || 'osassy-kitchen/user-uploads';
+      const rawTags = fields.tags;
+      const tags = rawTags
+        ? (Array.isArray(rawTags) ? rawTags : [rawTags]) as string[]
         : [`user-${session.user.id}`];
 
       const uploadOptions: CloudinaryUploadOptions = {
@@ -181,7 +183,10 @@ export default async function handler(
             processSingleFile(file, uploadOptions)
           );
           
-          const results = await Promise.all(uploadPromises);
+          const results = await Promise.all(uploadPromises) as Array<{
+            url: string; publicId: string; width: number; height: number;
+            format: string; size: number; thumbnailUrl?: string;
+          }>;
           
           return res.status(200).json({
             success: true,

@@ -112,5 +112,34 @@ model MenuItem { id, name, description, price, imageUrl, available }
 
 ---
 
-*Last updated: July 15, 2025*
+## 7. Current Focus (March 2026)
+
+### Priority 1: Functional Validation
+Ensure all buttons, flows, and interactions work correctly before any UI polish.
+
+**Areas to validate:**
+- [ ] Authentication flows (login, signup, logout)
+- [ ] Subscription creation flow (menu → cart → checkout → success)
+- [ ] User dashboard navigation and actions
+- [ ] Admin dashboard operations
+- [ ] Order management workflows
+- [ ] Payment methods management
+- [ ] Profile updates
+
+### Priority 2: UI Polish (Parked)
+Deferred until functional validation complete:
+- Replace placeholder hero images with custom photography
+- Fine-tune responsive behaviour on mobile
+- Test scroll behaviour across browsers
+- Visual consistency pass
+
+### Priority 3: Phase 5 Completion
+- Email sending service integration (Nodemailer/SendGrid)
+- Rate limiting middleware
+- Full E2E test suite run
+- Cross-browser testing
+
+---
+
+*Last updated: March 11, 2026*
 

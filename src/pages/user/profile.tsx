@@ -119,7 +119,7 @@ const UserProfile: React.FC = () => {
                 <div className={styles.tabPanel}>
                   <div className={styles.panelHeader}>
                     <h2>Notification Preferences</h2>
-                    <p>Choose how you'd like to receive updates about your orders and account.</p>
+                    <p>Choose how you&apos;d like to receive updates about your orders and account.</p>
                   </div>
                   <NotificationPreferences 
                     preferences={profile?.notificationPreferences} 

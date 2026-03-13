@@ -23,11 +23,11 @@ export function OrderTracker({ orderId }: { orderId: string }) {
     // Subscribe to order updates
     const unsubscribe = onOrderUpdate((payload: OrderEventPayload) => {
       if (payload.orderId === orderId) {
-        setOrderStatus(payload.status);
+        setOrderStatus(payload.data.status);
         setLastUpdate(new Date());
-        
+
         // Show notification
-        if (payload.status === 'DELIVERED') {
+        if (payload.data.status === 'DELIVERED') {
           alert(`Order ${orderId} has been delivered!`);
         }
       }
@@ -68,16 +68,16 @@ export function AdminDashboard() {
 
     // Subscribe to dashboard updates
     const unsubscribe = onDashboardUpdate((payload: DashboardStatsPayload) => {
-      if (payload.type === 'orders') {
+      if (payload.type === 'orders' && payload.stats) {
         setStats(prev => ({
           ...prev,
-          totalOrders: payload.stats.total || prev.totalOrders,
-          pendingOrders: payload.stats.pending || prev.pendingOrders
+          totalOrders: payload.stats?.total || prev.totalOrders,
+          pendingOrders: payload.stats?.pending || prev.pendingOrders
         }));
-      } else if (payload.type === 'revenue') {
+      } else if (payload.type === 'revenue' && payload.stats) {
         setStats(prev => ({
           ...prev,
-          revenue: payload.stats.total || prev.revenue
+          revenue: payload.stats?.total || prev.revenue
         }));
       }
     });
@@ -149,17 +149,17 @@ export function SubscriptionMonitor({ userId }: { userId: string }) {
           const index = prev.findIndex(s => s.id === payload.subscriptionId);
           if (index >= 0) {
             const updated = [...prev];
-            updated[index] = { ...updated[index], status: payload.status };
+            updated[index] = { ...updated[index], status: payload.data.status };
             return updated;
           }
           return prev;
         });
 
         // Show alerts for important events
-        if (payload.status === 'PAYMENT_FAILED') {
-          setAlerts(prev => [...prev, `Payment failed for ${payload.planName}`]);
-        } else if (payload.status === 'CANCELLED') {
-          setAlerts(prev => [...prev, `${payload.planName} has been cancelled`]);
+        if (payload.data.status === 'PAYMENT_FAILED') {
+          setAlerts(prev => [...prev, `Payment failed for ${payload.data.planName}`]);
+        } else if (payload.data.status === 'CANCELLED') {
+          setAlerts(prev => [...prev, `${payload.data.planName} has been cancelled`]);
         }
       }
     });

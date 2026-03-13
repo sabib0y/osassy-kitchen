@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GetStaticProps } from 'next';
+import Link from 'next/link';
 import Layout from '@/components/Layout/Layout';
 import prisma from '@/lib/prisma';
 import styles from '@/styles/pages/menu.module.scss';
@@ -200,14 +201,14 @@ const MenuPage: React.FC<MenuPageProps> = ({ menuItems, categories }) => {
               <h2>Ready to Order?</h2>
               <p>Create a subscription and enjoy our delicious meals delivered regularly</p>
               <div className={styles.ctaButtons}>
-                <a href="/subscriptions/create" className={styles.primaryBtn}>
+                <Link href="/subscriptions/create" className={styles.primaryBtn}>
                   <i className="fas fa-plus"></i>
                   Create Subscription
-                </a>
-                <a href="/how-it-works" className={styles.secondaryBtn}>
+                </Link>
+                <Link href="/how-it-works" className={styles.secondaryBtn}>
                   <i className="fas fa-info-circle"></i>
                   How It Works
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -227,7 +228,7 @@ export const getStaticProps: GetStaticProps = async () => {
     });
 
     // Extract unique categories
-    const categories = [...new Set(menuItems.map(item => item.category))].sort();
+    const categories = Array.from(new Set(menuItems.map(item => item.category))).sort();
 
     return {
       props: {

@@ -21,32 +21,28 @@ const HowItWorksPage: React.FC = () => {
 
   const steps = [
     {
-      number: '01',
+      number: '1',
       icon: 'fa-utensils',
       title: 'Choose Your Meals',
       description: 'Browse our authentic African menu and select your favourite dishes. From jollof rice to egusi soup, we have something for everyone.',
-      color: '#C52D2F'
     },
     {
-      number: '02',
+      number: '2',
       icon: 'fa-calendar-alt',
       title: 'Set Your Schedule',
       description: 'Choose between weekly or monthly deliveries. You can pause, skip, or modify your subscription anytime.',
-      color: '#F1C40F'
     },
     {
-      number: '03',
+      number: '3',
       icon: 'fa-credit-card',
       title: 'Secure Payment',
       description: 'Pay securely through our platform. We accept all major cards and process payments safely through Stripe.',
-      color: '#FF6F3C'
     },
     {
-      number: '04',
+      number: '4',
       icon: 'fa-truck',
       title: 'Fresh Delivery',
       description: 'Receive freshly prepared meals delivered to your door. All meals are made to order ensuring maximum freshness.',
-      color: '#27ae60'
     }
   ];
 
@@ -74,7 +70,7 @@ const HowItWorksPage: React.FC = () => {
     {
       icon: 'fa-leaf',
       title: 'Dietary Options',
-      description: 'Vegetarian, spicy, or mild - customize your meals to your preferences.'
+      description: 'Vegetarian, spicy, or mild - customise your meals to your preferences.'
     },
     {
       icon: 'fa-tags',
@@ -138,19 +134,14 @@ const HowItWorksPage: React.FC = () => {
             <div className={styles.stepsGrid}>
               {steps.map((step, index) => (
                 <div key={index} className={styles.stepCard}>
-                  <div className={styles.stepNumber} style={{ color: step.color }}>
-                    {step.number}
-                  </div>
-                  <div className={styles.stepIcon} style={{ background: step.color }}>
-                    <i className={`fas ${step.icon}`}></i>
+                  <div className={styles.stepHeader}>
+                    <div className={styles.stepIconWrapper}>
+                      <i className={`fas ${step.icon}`}></i>
+                      <span className={styles.stepNumber}>{step.number}</span>
+                    </div>
                   </div>
                   <h3 className={styles.stepTitle}>{step.title}</h3>
                   <p className={styles.stepDescription}>{step.description}</p>
-                  {index < steps.length - 1 && (
-                    <div className={styles.stepArrow}>
-                      <i className="fas fa-arrow-right"></i>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
@@ -160,8 +151,8 @@ const HowItWorksPage: React.FC = () => {
         {/* Benefits Section */}
         <section className={styles.benefitsSection}>
           <div className={styles.container}>
-            <div className={styles.sectionHeader}>
-              <h2>Why Choose Osassy's Kitchen?</h2>
+            <div className={styles.benefitsSectionHeader}>
+              <h2>Why Choose Osassy&apos;s Kitchen?</h2>
               <p>Experience the benefits of our meal subscription service</p>
             </div>
 
@@ -220,7 +211,7 @@ const HowItWorksPage: React.FC = () => {
           <div className={styles.container}>
             <div className={styles.sectionHeader}>
               <h2>Frequently Asked Questions</h2>
-              <p>Got questions? We've got answers</p>
+              <p>Got questions? We&apos;ve got answers</p>
             </div>
 
             <div className={styles.faqGrid}>
@@ -237,10 +228,10 @@ const HowItWorksPage: React.FC = () => {
 
             <div className={styles.moreQuestions}>
               <p>Still have questions?</p>
-              <a href="mailto:support@osassyskitchen.com" className={styles.contactLink}>
+              <Link href="/help" className={styles.contactLink}>
                 <i className="fas fa-envelope"></i>
                 Contact Support
-              </a>
+              </Link>
             </div>
           </div>
         </section>

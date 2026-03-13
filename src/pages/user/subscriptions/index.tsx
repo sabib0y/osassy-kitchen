@@ -138,8 +138,8 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
   return (
     <>
       <Head>
-        <title>My Subscriptions - Osassy's Kitchen</title>
-        <meta name="description" content="Manage your meal subscriptions at Osassy's Kitchen" />
+        <title>My Subscriptions - Osassy&apos;s Kitchen</title>
+        <meta name="description" content="Manage your meal subscriptions at Osassy&apos;s Kitchen" />
       </Head>
 
       <UserLayout pageTitle="My Subscriptions" activeTab="subscriptions">

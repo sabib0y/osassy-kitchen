@@ -56,7 +56,7 @@ const fetchMenuItem = async (id: string): Promise<MenuItem> => {
 const createMenuItem = async (data: CreateMenuItemData): Promise<MenuItem> => {
   // Mock implementation - replace with actual API call
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   // In real implementation, this would upload the image and create the menu item
   const newItem: MenuItem = {
     id: Date.now().toString(),
@@ -65,19 +65,19 @@ const createMenuItem = async (data: CreateMenuItemData): Promise<MenuItem> => {
     price: data.price,
     category: data.category,
     available: data.available,
-    imageUrl: data.image ? URL.createObjectURL(data.image) : undefined,
+    imageUrl: data.imageUrl,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     subscriptionUsage: 0
   };
-  
+
   return newItem;
 };
 
 const updateMenuItem = async (data: UpdateMenuItemData): Promise<MenuItem> => {
   // Mock implementation - replace with actual API call
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   const updatedItem: MenuItem = {
     id: data.id,
     name: data.name || 'Updated Item',
@@ -85,12 +85,12 @@ const updateMenuItem = async (data: UpdateMenuItemData): Promise<MenuItem> => {
     price: data.price || 0,
     category: data.category || 'main-dishes',
     available: data.available ?? true,
-    imageUrl: data.image ? URL.createObjectURL(data.image) : undefined,
+    imageUrl: data.imageUrl,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     subscriptionUsage: 5
   };
-  
+
   return updatedItem;
 };
 

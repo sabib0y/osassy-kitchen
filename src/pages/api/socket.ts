@@ -3,18 +3,17 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Server as HTTPServer } from 'http';
 import { getWebSocketServer } from '@/lib/websocket';
 
-// Extend Next.js types to include socket server
-declare module 'next' {
-  interface NextApiResponse {
-    socket: {
-      server: HTTPServer & {
-        io?: any;
-      };
+// Local extended type to include socket server — cannot augment NextApiResponse
+// because it's a type alias, not an interface
+type NextApiResponseWithSocket = NextApiResponse & {
+  socket: {
+    server: HTTPServer & {
+      io?: any;
     };
-  }
-}
+  };
+};
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponseWithSocket) => {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

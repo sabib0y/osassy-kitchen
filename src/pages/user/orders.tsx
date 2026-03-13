@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
+import Link from 'next/link';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import UserLayout from '../../components/user/UserLayout';
 import OrderList from '../../components/user/OrderList';
@@ -117,10 +118,10 @@ const UserOrdersPage: React.FC = () => {
               </p>
             </div>
             <div className={styles.headerActions}>
-              <a href="/menu" className={styles.newOrderBtn}>
+              <Link href="/menu" className={styles.newOrderBtn}>
                 <i className="fas fa-plus"></i>
                 Place New Order
-              </a>
+              </Link>
             </div>
           </div>
         </div>

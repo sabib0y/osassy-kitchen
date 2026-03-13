@@ -41,7 +41,7 @@ const SocialProof = () => {
                   <i key={i} className="fa-solid fa-star"></i>
                 ))}
               </div>
-              <p className="social-proof__text">"{testimonial.text}"</p>
+              <p className="social-proof__text">&quot;{testimonial.text}&quot;</p>
               <div className="social-proof__author-info">
                 <div
                   className="social-proof__avatar"

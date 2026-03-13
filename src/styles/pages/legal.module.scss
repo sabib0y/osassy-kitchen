@@ -1,0 +1,218 @@
+// Legal Pages Styles (Terms of Service & Privacy Policy)
+// Osassy's Kitchen Brand Design
+
+@import '../unified-theme.scss';
+
+.legalPage {
+  min-height: 100vh;
+  background: $gray-50;
+}
+
+// Hero Section
+.heroSection {
+  position: relative;
+  background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+  color: $white;
+  padding: $spacing-16 $spacing-4;
+  text-align: center;
+
+  .heroContent {
+    max-width: $container-max-width;
+    margin: 0 auto;
+  }
+
+  .heroTitle {
+    font-family: $font-family-heading;
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $spacing-4;
+
+    @include mobile {
+      font-size: $font-size-3xl;
+    }
+  }
+
+  .heroSubtitle {
+    font-size: $font-size-lg;
+    opacity: 0.9;
+    margin: 0;
+  }
+}
+
+// Content Section
+.contentSection {
+  padding: $spacing-16 $spacing-4;
+
+  .container {
+    @include container;
+  }
+}
+
+// Legal Content
+.legalContent {
+  @include card;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: $spacing-10;
+
+  @include mobile {
+    padding: $spacing-6;
+  }
+
+  .intro {
+    font-size: $font-size-lg;
+    color: $gray-700;
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-8;
+    padding-bottom: $spacing-8;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  .section {
+    margin-bottom: $spacing-10;
+
+    h2 {
+      font-family: $font-family-heading;
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      color: $gray-900;
+      margin: 0 0 $spacing-4;
+      padding-bottom: $spacing-3;
+      border-bottom: 2px solid $primary;
+      display: inline-block;
+
+      @include mobile {
+        font-size: $font-size-xl;
+      }
+    }
+
+    h3 {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $gray-800;
+      margin: $spacing-6 0 $spacing-3;
+    }
+
+    p {
+      font-size: $font-size-base;
+      color: $gray-700;
+      line-height: $line-height-relaxed;
+      margin: 0 0 $spacing-4;
+    }
+
+    ul {
+      margin: 0 0 $spacing-4;
+      padding-left: $spacing-6;
+
+      li {
+        font-size: $font-size-base;
+        color: $gray-700;
+        line-height: $line-height-relaxed;
+        margin-bottom: $spacing-3;
+        position: relative;
+
+        &::marker {
+          color: $primary;
+        }
+
+        strong {
+          color: $gray-900;
+        }
+      }
+    }
+  }
+
+  .contactInfo {
+    background: $gray-50;
+    border-radius: $border-radius-lg;
+    padding: $spacing-6;
+    margin-top: $spacing-4;
+
+    p {
+      margin: 0 0 $spacing-3;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      strong {
+        color: $gray-900;
+        display: inline-block;
+        min-width: 180px;
+
+        @include mobile {
+          display: block;
+          margin-bottom: $spacing-1;
+        }
+      }
+
+      a {
+        color: $primary;
+        text-decoration: none;
+        font-weight: $font-weight-medium;
+        transition: color $transition-base;
+
+        &:hover {
+          color: $accent;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .footer {
+    margin-top: $spacing-12;
+    padding-top: $spacing-8;
+    border-top: 1px solid $gray-200;
+    text-align: center;
+
+    p {
+      font-size: $font-size-sm;
+      color: $gray-600;
+      margin-bottom: $spacing-4;
+    }
+
+    .links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: $spacing-4;
+      flex-wrap: wrap;
+
+      a {
+        color: $primary;
+        text-decoration: none;
+        font-weight: $font-weight-medium;
+        font-size: $font-size-sm;
+        transition: color $transition-base;
+
+        &:hover {
+          color: $accent;
+          text-decoration: underline;
+        }
+      }
+
+      .divider {
+        color: $gray-300;
+      }
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .heroSection {
+    background: $white;
+    color: $gray-900;
+    padding: $spacing-4;
+  }
+
+  .legalContent {
+    box-shadow: none;
+    border: none;
+
+    .section h2 {
+      border-bottom-color: $gray-400;
+    }
+  }
+}

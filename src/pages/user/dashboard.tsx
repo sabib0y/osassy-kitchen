@@ -147,8 +147,8 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
   return (
     <>
       <Head>
-        <title>Dashboard Overview - Osassy's Kitchen</title>
-        <meta name="description" content="Manage your meal subscriptions and orders at Osassy's Kitchen" />
+        <title>Dashboard Overview - Osassy&apos;s Kitchen</title>
+        <meta name="description" content="Manage your meal subscriptions and orders at Osassy&apos;s Kitchen" />
       </Head>
 
       <UserLayout pageTitle="Dashboard Overview" activeTab="overview">

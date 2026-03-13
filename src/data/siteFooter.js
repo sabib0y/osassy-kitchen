@@ -2,85 +2,87 @@ import logo from "../assets/images/logo-dark.png";
 
 const footerData = {
   logo,
-  author: "Lums",
+  author: "Osassy's Kitchen",
   year: new Date().getFullYear(),
-  links: [
+  // Quick Links - main navigation
+  quickLinks: [
     {
       id: 1,
-      name: "About",
-      href: "#",
+      name: "Home",
+      href: "/",
     },
     {
       id: 2,
-      name: "Our Team",
-      href: "#",
+      name: "Menu",
+      href: "/menu",
     },
     {
       id: 3,
-      name: "Features",
-      href: "#",
-    },
-    {
-      id: 4,
-      name: "Blog",
-      href: "#",
-    },
-    {
-      id: 5,
-      name: "Our Process",
+      name: "How It Works",
       href: "/our-process",
     },
     {
-      id: 6,
-      name: "Speed Optimization",
-      href: "#",
+      id: 4,
+      name: "Help & Support",
+      href: "/help",
+    },
+  ],
+  // Legal links
+  legalLinks: [
+    {
+      id: 1,
+      name: "Terms of Service",
+      href: "/terms",
     },
     {
-      id: 7,
-      name: "Marketing Analysis",
-      href: "#",
+      id: 2,
+      name: "Privacy Policy",
+      href: "/privacy",
+    },
+  ],
+  // Legacy links array for backwards compatibility
+  links: [
+    {
+      id: 1,
+      name: "Home",
+      href: "/",
     },
     {
-      id: 8,
-      name: "SEO and Backlinks",
-      href: "#",
+      id: 2,
+      name: "Menu",
+      href: "/menu",
     },
     {
-      id: 9,
-      name: "Content Marketing",
-      href: "#",
+      id: 3,
+      name: "How It Works",
+      href: "/our-process",
     },
     {
-      id: 10,
-      name: "Help",
+      id: 4,
+      name: "Help & Support",
       href: "/help",
     },
     {
-      id: 11,
-      name: "Support",
-      href: "#",
+      id: 5,
+      name: "Terms of Service",
+      href: "/terms",
     },
     {
-      id: 12,
-      name: "Clients",
-      href: "#",
-    },
-    {
-      id: 13,
-      name: "Contact",
-      href: "/help#contact",
+      id: 6,
+      name: "Privacy Policy",
+      href: "/privacy",
     },
   ],
   socials: [
     {
       id: 1,
       icon: "fa fa-facebook-square",
-      href: "#",
+      href: "https://facebook.com/osassyskitchen",
     },
     {
-      id: 3,
+      id: 2,
       icon: "fa fa-instagram",
-      href: "#",
+      href: "https://instagram.com/osassyskitchen",
     },
   ],
 };
