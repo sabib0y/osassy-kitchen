@@ -1,9 +1,191 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** March 13, 2026 - Night (20:43)
+**Last Updated:** March 14, 2026 - Evening (20:16 GMT)
 
 ## Overall Project Status
-The project is currently in **Phase 5: Contact/Help Page - 95% COMPLETE**. Phases 1-4 are fully complete. Signup security hardening completed. Major site-wide fixes applied. Build has pre-existing TypeScript errors being fixed.
+The project is in **Phase 6: Subscription-First Architecture**. Meal plan wizard restored and unified with dashboard flow. FAQ page complete.
+
+---
+
+## 🏗️ **PHASE 6: SUBSCRIPTION-FIRST ARCHITECTURE**
+
+### Session: March 14, 2026 - Evening (20:16 GMT)
+
+#### ✅ **Completed:**
+
+1. **Restored `/meal-plans` Pages**
+   - `src/pages/meal-plans/index.tsx` — Subscription tiers landing page
+   - `src/pages/meal-plans/create.tsx` — 4-step wizard (Plan → Meals → Delivery → Payment)
+   - `src/styles/pages/mealPlans.module.scss` — Landing page styles
+   - `src/styles/pages/mealPlanCreate.module.scss` — Wizard styles
+
+2. **Created FAQ Page**
+   - `src/pages/faq.tsx` — Full FAQ with category filters, accordion items
+   - `src/styles/pages/faq.module.scss` — FAQ page styles
+   - Links from `/meal-plans` "View All FAQs" button
+
+3. **Unified Flow with Dashboard**
+   - Created `src/pages/user/subscriptions/create.tsx` — Wizard within UserLayout (left sidebar)
+   - Updated navigation: logged-in users clicking "Meal Plans" → `/user/subscriptions/create`
+   - Updated `src/data/navigationConfig.ts` for authenticated/admin users
+
+4. **Colour Theme Fixes**
+   - Changed blue step indicators → brand orange (#FF6F3C)
+   - Changed blue buttons → brand red (#C52D2F)
+   - Updated `src/styles/components/meal-plans/planCard.module.scss`
+
+5. **Meals Grid Layout Update**
+   - Two-column layout with vertical divider (restaurant menu style)
+   - Updated in `src/styles/pages/mealPlanCreate.module.scss`
+
+#### 🔗 **Flow Summary:**
+- **Logged-in users**: Nav "Meal Plans" → `/user/subscriptions/create` (dashboard with sidebar)
+- **Guests**: Nav "Meal Plans" → `/meal-plans` → `/meal-plans/create` (standalone wizard)
+
+---
+
+### Session: March 14, 2026 - Afternoon
+
+#### ⚠️ **Previous State (Now Resolved):**
+- `/meal-plans` pages were deleted during an architectural experiment
+- Need to restore `/meal-plans/index.tsx` and `/meal-plans/create.tsx`
+- `/meals` page was modified with builder mode but architecture spec reverted to separate pages
+
+#### ✅ **Enhancements Made:**
+- PlanCard: Added price per meal, value indicators, visual selection feedback
+- StepIndicator: Made completed steps clickable for back navigation
+- Added "Change Plan" back button in meal selection step
+
+---
+
+### Session: March 14, 2026 - Morning (09:52 GMT)
+
+#### ✅ **Completed:**
+
+1. **`/meals` Page** — Browse-only catalogue
+   - Horizontal card layout (circular image left, content middle, price right)
+   - 2-column grid on desktop, single column on mobile
+   - Sticky category filters with search
+   - Tags: Subscriber Favourite, Spicy, Vegetarian
+   - MealDetailModal for full dish details
+   - CTAs point to `/meal-plans`
+
+2. **`/meal-plans` Landing Page** — Subscription tiers
+   - 3 plan cards: 3 Meals, 5 Meals, Family Plan
+   - Pricing, features, and CTA to wizard
+
+3. **`/meal-plans/create` Wizard** — 4-step flow
+   - **Step 1: Plan Selection** — Choose subscription tier
+   - **Step 2: Meal Builder** — Select meals with progress counter
+   - **Step 3: Delivery** — UK address/phone validation
+   - **Step 4: Payment** — Order review + Stripe checkout
+   - **Success State** — Confirmation with next steps
+   - 32 unit tests (all passing)
+
+4. **Bug Fixes:**
+   - Fixed `handleRemoveItem` undefined error in `/subscriptions/create.tsx`
+   - Fixed delete button styling in SubscriptionSummary component
+
+5. **Planning Docs Updated:**
+   - `CLAUDE.md` — Added Google Doc reference
+   - `SITE_MAP.md` — New route structure
+   - `project-plan.md` — Phase 6 roadmap
+   - `PROGRESS_LOG.md` — This entry
+
+#### 📁 **New Files Created:**
+```
+src/pages/meals.tsx
+src/pages/meal-plans/index.tsx
+src/pages/meal-plans/create.tsx
+src/components/meals/MealDetailModal.tsx
+src/components/meal-plans/PlanCard.tsx
+src/components/meal-plans/StepIndicator.tsx
+src/components/meal-plans/MealBuilderCard.tsx
+src/components/meal-plans/PlanSummary.tsx
+src/components/meal-plans/DeliveryStep.tsx
+src/components/meal-plans/PaymentStep.tsx
+src/components/meal-plans/SuccessStep.tsx
+src/types/meal-plan.ts
+src/types/meal-plans.ts
+src/styles/pages/meals.module.scss
+src/styles/pages/mealPlans.module.scss
+src/styles/pages/mealPlanCreate.module.scss
+src/styles/components/meals/mealDetailModal.module.scss
+src/styles/components/meal-plans/*.module.scss
+src/__tests__/components/meal-plans/*.test.tsx (32 tests)
+```
+
+#### 🔴 **Remaining Tasks (Phase 6):**
+| Route | Status |
+|-------|--------|
+| `/meals` | ✅ Complete |
+| `/meal-plans` | ✅ Complete |
+| `/meal-plans/create` | ✅ Complete |
+| `/catering` | 🔴 Not started |
+| `/faq` | 🔴 Not started |
+| `/delivery-areas` | 🔴 Not started |
+| Navigation updates | 🔴 Not started |
+| Homepage refresh | 🔴 Not started |
+
+#### 📁 **Reference Documents:**
+- `/planning/misc/architectural -changes.md` — Architecture spec
+- `/planning/current-context/new-architecture/meal-plan.spec.md` — Wizard spec
+- `/planning/current-context/new-architecture/meals-spec.md` — Meals page spec
+
+---
+
+## 🍽️ **SUBSCRIPTION FLOW REDESIGN (Previous Session)**
+**March 13, 2026 - Night (Session 3)**
+
+### ✅ **New Subscription Flow Implemented:**
+
+#### **1. Menu Page Heart/Favourite Feature** ✅
+- Added heart icons to menu items for favouriting
+- `useFavourites` hook with dual persistence (localStorage + database)
+- API endpoint `/api/user/favourites` (GET/POST/DELETE)
+- Prisma `Favourite` model with migration applied
+- Hearts persist across sessions and sync when user logs in
+
+#### **2. Subscription Page Redesign** ✅
+- Shows only favourited dishes (not all menu items)
+- New horizontal card layout: image left, title/description/controls stacked right
+- Frequency selection per item (weekly/bi-weekly/monthly)
+- Quantity controls with +/- buttons
+- Real-time pricing calculation (weekly & monthly estimates)
+- Cart persisted to localStorage (`osassy_subscription_cart`)
+
+#### **3. Unified Subscription Navigation** ✅
+- Created `SubscriptionTabs` component
+- Two tabs: "My Subscriptions" | "Create New"
+- Both `/user/subscriptions` and `/subscriptions/create` now share the tab header
+- Consistent navigation between viewing and creating subscriptions
+
+#### **4. Bug Fix: Favourites SSR Hydration** ✅
+- Fixed issue where hearts weren't persisting on page refresh
+- Root cause: `useState` initialiser ran on server where `localStorage` undefined
+- Solution: Initialise empty, hydrate from localStorage in `useEffect`
+
+### 📁 **Files Created:**
+- `/src/hooks/useFavourites.ts` — Favourites hook
+- `/src/pages/api/user/favourites.ts` — Favourites API
+- `/src/components/subscription/SubscriptionTabs.tsx` — Tab navigation
+- `/src/components/subscription/FavouritedItemCard.tsx` — Item card component
+- `/src/components/subscription/SubscriptionSummary.tsx` — Cart summary
+- `/src/components/subscription/FrequencySelector.tsx` — Frequency dropdown
+- `/src/components/subscription/EmptyFavourites.tsx` — Empty state
+- `/src/styles/components/subscription/*.module.scss` — All styling
+- `/prisma/migrations/20260313214007_add_favourites/` — Migration
+
+### 📁 **Files Modified:**
+- `/src/pages/menu.tsx` — Added heart buttons
+- `/src/pages/subscriptions/create.tsx` — Complete redesign
+- `/src/pages/user/subscriptions/index.tsx` — Added tab navigation
+- `/src/pages/api/subscribe.ts` — Accept frequency per item
+- `/src/types/user.ts` — Added SubscriptionCartItem, SubscriptionFrequency
+- `/prisma/schema.prisma` — Added Favourite model
+
+### 🔄 **Uncommitted Changes:**
+All changes above are uncommitted and ready for review/commit.
 
 ---
 
@@ -57,15 +239,30 @@ The project is currently in **Phase 5: Contact/Help Page - 95% COMPLETE**. Phase
 - websocket.ts — metadata timestamp, WSErrorType fix
 - rateLimit.ts — NextApiResponse type casting
 
-### 🔄 **In Progress:**
-- Build still failing with TypeScript errors in pre-existing code
-- Last error was in build process (exit code 137 — interrupted)
+## 🔧 **BUILD REPAIR — COMPLETE**
+**March 13, 2026 - Night (Session 2)**
 
-### 📋 **Remaining Build Errors to Fix:**
-- May be more TypeScript errors — build was interrupted
-- Run `npm run build` to check remaining errors
+### ✅ All TypeScript Errors Fixed:
+
+#### **Root Cause Fixed: socket.ts module augmentation** ✅
+- `declare module 'next' { interface NextApiResponse }` was shadowing the `NextApiResponse` type alias with a non-generic interface — wiping out `.status()`, `.json()` etc. from every API route (200+ errors)
+- Fixed by replacing with a local `NextApiResponseWithSocket` type
+
+#### **Other Fixes:**
+- `admin/menu/[id].ts`, `index.ts`, `stats.ts` — named `{ prisma }` import → default `import prisma`
+- `menu.tsx` — `[...new Set()]` spread (es5 incompatible) → `Array.from(new Set())`
+- `orders-by-status.ts` — removed `'CONFIRMED'` status not in `OrderStatus` enum
+- `upload.ts` — fixed formidable `string[] | undefined` field handling; cast multi-upload results
+- `tsconfig.json` — added `testing/`, `tests/`, `scripts/`, `coverage/`, `.next/` to excludes (were pulling in Playwright scripts with TS errors)
+
+### ✅ Build Result:
+```
+✓ Compiled successfully
+✓ Generating static pages (21/21)
+```
 
 ---
+
 
 ## 🔐 **SIGNUP SECURITY HARDENING & UI FIXES**
 **March 13, 2026 - Evening**

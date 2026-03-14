@@ -2,6 +2,12 @@
 
 A Nigerian meal subscription service built with Next.js, TypeScript, Prisma, and Stripe.
 
+## Working Documents
+
+**Primary Planning Doc (Google Docs):** https://docs.google.com/document/d/1bR3tfq0WvNgYkKHg_dVxoovnVIbHOTWmKrkeL2oq92E/edit?tab=t.0
+
+Use `gws docs documents get --params '{"documentId": "1bR3tfq0WvNgYkKHg_dVxoovnVIbHOTWmKrkeL2oq92E"}'` to fetch contents.
+
 ## Project Overview
 
 **Status**: Production-ready (Phase 4 Complete)

@@ -1,0 +1,292 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.successIcon {
+  color: #27AE60;
+  animation: scaleIn 0.6s ease-out;
+
+  svg {
+    filter: drop-shadow(0 4px 12px rgba(39, 174, 96, 0.3));
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+
+  @media (max-width: 640px) {
+    font-size: 2rem;
+  }
+}
+
+.celebration {
+  display: inline-block;
+  animation: bounce 1s ease-out 0.8s;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+  75% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message {
+  font-size: 1.125rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 480px;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+/* Delivery Card */
+.deliveryCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #fff8f8 0%, #ffffff 100%);
+  border: 2px solid var(--primary);
+  border-radius: 16px;
+  text-align: left;
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.cardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: var(--primary);
+  border-radius: 16px;
+  color: white;
+  flex-shrink: 0;
+
+  @media (max-width: 640px) {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+.cardContent {
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deliveryDate {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 0.75rem 0;
+
+  @media (max-width: 640px) {
+    font-size: 1.25rem;
+  }
+}
+
+.cardSubtext {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+
+  svg {
+    flex-shrink: 0;
+    color: var(--primary);
+  }
+
+  @media (max-width: 640px) {
+    justify-content: center;
+  }
+}
+
+/* What's Next Section */
+.nextSteps {
+  width: 100%;
+  text-align: left;
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+.nextStepsTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 1.25rem 0;
+}
+
+.nextStepsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: var(--secondary);
+    }
+  }
+}
+
+.stepIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+/* Action Buttons */
+.actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+  }
+}
+
+.primaryButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #a52526;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(197, 45, 47, 0.35);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.secondaryButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background-color: white;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(197, 45, 47, 0.25);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .deliveryCard {
+    padding: 1.5rem;
+  }
+
+  .nextStepsList li {
+    font-size: 0.9rem;
+    padding: 0.875rem 1rem;
+  }
+}

@@ -70,7 +70,7 @@ export const navigationConfig: NavigationConfig = {
     {
       id: 'meal-plans',
       name: 'Meal Plans',
-      href: '/meal-plans',
+      href: '/user/subscriptions/create',
       type: 'link'
     },
     {
@@ -180,7 +180,7 @@ export const navigationConfig: NavigationConfig = {
     {
       id: 'meal-plans',
       name: 'Meal Plans',
-      href: '/meal-plans',
+      href: '/user/subscriptions/create',
       type: 'link'
     },
     {

@@ -98,12 +98,13 @@ model Subscription {
 }
 
 model SubscriptionItem {
-  id             String       @id @default(cuid())
+  id             String                      @id @default(cuid())
   subscriptionId String
   menuItemId     String
-  quantity       Int          @default(1)
-  menuItem       MenuItem     @relation(fields: [menuItemId], references: [id])
-  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  quantity       Int                         @default(1)
+  frequency      SubscriptionItemFrequency   @default(WEEKLY)
+  menuItem       MenuItem                    @relation(fields: [menuItemId], references: [id])
+  subscription   Subscription                @relation(fields: [subscriptionId], references: [id])
 }
 
 model Order {
@@ -152,6 +153,12 @@ enum OrderStatus {
   IN_PROGRESS
   DELIVERED
   CANCELLED
+}
+
+enum SubscriptionItemFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
 }
 
 model Favourite {

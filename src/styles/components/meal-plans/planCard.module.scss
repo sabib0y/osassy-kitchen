@@ -1,0 +1,197 @@
+/**
+ * PlanCard Component Styles
+ */
+
+.card {
+  position: relative;
+  background: white;
+  border: 3px solid transparent;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: rgba(197, 45, 47, 0.3);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary, #C52D2F);
+  }
+
+  &.selected {
+    border-color: var(--primary, #C52D2F);
+    background: rgba(197, 45, 47, 0.03);
+    box-shadow: 0 8px 24px rgba(197, 45, 47, 0.2);
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  &.popular {
+    border-color: var(--secondary, #F1C40F);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      background: linear-gradient(135deg, var(--secondary, #F1C40F), var(--accent, #FF6F3C));
+      border-radius: 16px;
+      z-index: -1;
+    }
+
+    &.selected {
+      border-color: var(--primary, #C52D2F);
+
+      &::before {
+        background: linear-gradient(135deg, var(--primary, #C52D2F), #a02326);
+      }
+    }
+  }
+}
+
+.popularBadge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: linear-gradient(135deg, var(--secondary, #F1C40F), var(--accent, #FF6F3C));
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.selectedBadge {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--primary, #C52D2F);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(197, 45, 47, 0.3);
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.planName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text, #333);
+  margin: 0;
+}
+
+.priceSection {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary, #C52D2F);
+}
+
+.period {
+  font-size: 1rem;
+  color: #666;
+}
+
+.pricePerMeal {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #666;
+  margin: -0.5rem 0 0;
+}
+
+.mealsCount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text, #333);
+  margin: 0;
+}
+
+.benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+
+    svg {
+      color: #51cf66;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.description {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.selectBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary, #C52D2F);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+
+  &:hover {
+    background: #a02326;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(197, 45, 47, 0.3);
+  }
+
+  &.selectedBtn {
+    background: var(--accent, #FF6F3C);
+    cursor: default;
+
+    &:hover {
+      background: var(--accent, #FF6F3C);
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}

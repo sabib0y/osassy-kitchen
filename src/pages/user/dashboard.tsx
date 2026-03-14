@@ -166,7 +166,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
               </div>
             </div>
             <div className={styles.quickActions}>
-              <Link href="/subscriptions/create" className={styles.createButton}>
+              <Link href="/user/subscriptions/create" className={styles.createButton}>
                 <i className="fas fa-plus"></i>
                 New Subscription
               </Link>
@@ -308,7 +308,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
               <div className={styles.emptyIcon}>🍽️</div>
               <h3>Welcome to Your Dashboard!</h3>
               <p>Start your meal subscription journey today</p>
-              <Link href="/subscriptions/create" className={styles.createButton}>
+              <Link href="/user/subscriptions/create" className={styles.createButton}>
                 <i className="fas fa-plus"></i>
                 Create Your First Subscription
               </Link>

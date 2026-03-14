@@ -1,0 +1,107 @@
+// SubscriptionTabs Component Styles
+// Unified navigation tabs for subscription pages
+
+.tabsContainer {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.tabsList {
+  display: flex;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text, #333333);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  i {
+    font-size: 1rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  span {
+    font-weight: 500;
+  }
+
+  &:hover {
+    background: rgba(245, 245, 245, 0.5);
+    color: var(--primary, #c52d2f);
+
+    i {
+      opacity: 1;
+    }
+  }
+
+  &.active {
+    color: var(--primary, #c52d2f);
+    border-bottom-color: var(--primary, #c52d2f);
+    background: rgba(197, 45, 47, 0.02);
+
+    i {
+      opacity: 1;
+      color: var(--primary, #c52d2f);
+    }
+
+    span {
+      font-weight: 600;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .tab {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+
+    i {
+      font-size: 0.875rem;
+    }
+
+    span {
+      display: none;
+    }
+  }
+
+  // Show icons only on mobile
+  .tab i {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabsList {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1;
+    justify-content: center;
+    padding: 0.875rem 0.5rem;
+
+    span {
+      display: inline;
+      font-size: 0.8rem;
+    }
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+}

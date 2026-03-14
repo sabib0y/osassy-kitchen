@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
+import { Heart } from 'lucide-react';
 import Layout from '@/components/Layout/Layout';
 import prisma from '@/lib/prisma';
+import { useFavourites } from '@/hooks/useFavourites';
 import styles from '@/styles/pages/menu.module.scss';
 
 interface MenuItem {
@@ -26,6 +28,7 @@ const MenuPage: React.FC<MenuPageProps> = ({ menuItems, categories }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredItems, setFilteredItems] = useState<MenuItem[]>(menuItems);
+  const { isFavourite, toggleFavourite } = useFavourites();
 
   useEffect(() => {
     let filtered = menuItems;
@@ -156,6 +159,22 @@ const MenuPage: React.FC<MenuPageProps> = ({ menuItems, categories }) => {
                           <span>Currently Unavailable</span>
                         </div>
                       )}
+                      {/* Favourite Heart Button */}
+                      <button
+                        className={`${styles.heartBtn} ${isFavourite(item.id) ? styles.favourited : ''}`}
+                        onClick={() => toggleFavourite(item.id)}
+                        aria-label={
+                          isFavourite(item.id)
+                            ? `Remove from favourites - ${item.name}`
+                            : `Add to favourites - ${item.name}`
+                        }
+                      >
+                        <Heart
+                          size={20}
+                          fill={isFavourite(item.id) ? 'currentColor' : 'none'}
+                          strokeWidth={2}
+                        />
+                      </button>
                     </div>
 
                     {/* Card Content */}

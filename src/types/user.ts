@@ -233,6 +233,21 @@ export interface AddressFormErrors {
   country?: string;
 }
 
+// Subscription Frequency Types
+export type SubscriptionFrequency = 'weekly' | 'biweekly' | 'monthly';
+
+// Subscription Cart Item with Frequency
+export interface SubscriptionCartItem {
+  id: string;
+  menuItemId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  frequency: SubscriptionFrequency;
+  imageUrl?: string;
+  category?: string;
+}
+
 // Subscription Creation Types
 export interface CartItem {
   id: string;

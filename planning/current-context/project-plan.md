@@ -1,145 +1,244 @@
-# Osassy's Kitchen – Context for Code Assistant LLM
+# Osassy's Kitchen — Project Plan
 
-Feed this document to your coding assistant to bring it up to speed on the project vision, current architecture, and the technical roadmap.
+## 1. Project Vision
 
----
+**Osassy's Kitchen** is a **subscription-first Nigerian meal delivery platform**. The site prioritises weekly meal plan subscriptions while supporting one-off orders and event catering.
 
-## 1. Project Purpose & Overview
+### Core Product Model
+- **Primary:** Weekly meal subscription plans
+- **Secondary:** One-off meal trays, bulk orders, event catering
 
-**Osassy’s Kitchen** is transitioning from a static restaurant site into a **subscription-based meal delivery platform**. Key objectives:
-
-- Enable users to **browse dishes** and **subscribe** to meal plans or individual dishes.
-- Manage **recurring billing** and **order generation** automatically.
-- Provide both **user-facing** and **admin-facing** UX for subscriptions, orders, and menu management.
-
----
-
-## 2. Existing Frontend Structure
-
-- **Framework:** Next.js 14 + React 18.
-- **UI & Styling:** Bootstrap 5, React-Bootstrap, Sass.
-- **Pages & Components:**
-  - `Layout`, `Header`, `Footer` wraps all pages.
-  - Homepage uses `BannerOne`, `ServiceOne`, `TestimonialsOne`, `PricingOne`, `CtaOne`, and `BrandOne`.
-  - Static pages for blog and details under `/blog` and `/blog-details`.
-- **Data & Hooks:** Static data in `/src/data/`, custom hooks (`useScroll`, `useActive`) for UI effects.
-
----
-
-## 3. Tech Stack & Integrations
-
-| Layer              | Technology                              |
-| ------------------ | --------------------------------------- |
-| Frontend           | Next.js, React                          |
-| Styling            | Bootstrap 5, React-Bootstrap, Sass      |
-| Carousel/Animation | Swiper, React-CountUp, VisibilitySensor |
-| Auth               | NextAuth.js (or Clerk/Auth0)            |
-| Database ORM       | Prisma                                  |
-| Database           | PostgreSQL (or Supabase)                |
-| Payments           | Stripe Billing & Checkout               |
-| Emails/SMS         | Postmark / Twilio / Resend              |
-| Hosting            | Vercel                                  |
-
----
-
-## 4. Backend Architecture & Database Schema
-
-### API Responsibilities:
-
-- **/api/auth**: User signup/login (NextAuth).
-- **/api/subscribe**: Create subscriptions via Stripe Checkout.
-- **/api/subscriptions/[id]**: Manage subscriptions (pause, cancel).
-- **/api/orders**: List and create orders from subscriptions.
-- **/api/webhooks/stripe**: Handle Stripe webhook events.
-- **/api/menu-items**: CRUD for dishes (admin-only).
-
-### Prisma Models (simplified):
-
-```prisma
-model User { id, name, email, passwordHash, stripeCustomerId, address?, phone? }
-model Subscription { id, userId, planName, interval, dishes, price, stripeSubscriptionId, status }
-enum SubscriptionInterval { WEEKLY MONTHLY }
-enum SubscriptionStatus { ACTIVE CANCELLED PAUSED }
-model Order { id, userId, subscriptionId?, dishes, totalPrice, deliveryDate, status }
-enum OrderStatus { PENDING IN_PROGRESS DELIVERED }
-model MenuItem { id, name, description, price, imageUrl, available }
+### Primary User Journey
+```
+Discover → Trust → Choose a Plan → Pick Meals → Checkout → Manage Subscription
 ```
 
 ---
 
-## 5. Security & Best Practices
+## 2. Tech Stack
 
-- **Transport:** HTTPS + HSTS; secure, HttpOnly, SameSite cookies.
-- **Auth:** Battle-tested library (NextAuth.js), MFA support, role-based access.
-- **Secrets:** Env vars; Stripe secret only on server.
-- **Data:** Hash passwords (bcrypt/argon2); no raw card data; DB encryption.
-- **API Safety:** Validate Stripe webhook signatures; rate-limit public endpoints.
-- **Monitoring:** Centralized logging, alerts on anomalies.
-
----
-
-## 6. Technical Roadmap (Living)
-
-### Week 1: Foundation & Authentication
-
-- Backend: Set up Prisma + PostgreSQL; configure NextAuth.js (user, admin roles).
-- Frontend: Scaffold `/signup`, `/login`, `/profile`; integrate auth hooks; protect routes.
-
-### Week 2: Subscription Flow & UI
-
-- Backend: Implement `/api/subscribe`; Stripe test & Checkout Sessions.
-- Frontend: Build `/subscribe` page; display `MenuItem` cards; integrate Stripe Checkout button.
-
-### Week 3: Stripe Webhooks & Order Generation
-
-- Backend: Webhook handler `/api/webhooks/stripe`; create `Order` on `invoice.paid`.
-- Frontend: Develop `/orders` page; list upcoming/past orders with status indicators.
-
-### Week 4: Admin & Menu Management
-
-- Backend: CRUD for `MenuItem` (`/api/menu-items`); secure with admin middleware.
-- Frontend: Admin dashboard: Menu Editor, Subscription Oversight, Order Monitor (tables/forms).
-
-### Week 5: Delivery Scheduling & Notifications
-
-- Backend: Calculate `deliveryDate`; integrate Postmark/Twilio.
-- Frontend: On `/dashboard`, allow users to view/modify upcoming delivery dates; notification settings.
-
-### Week 6: UI Refinements & Testing
-
-- Frontend: Polish subscription & order flows; add loading/error states.
-- Testing: E2E tests (Cypress/Playwright) for core flows.
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 14, React 18, TypeScript |
+| Styling | SCSS Modules, CSS Variables |
+| Auth | NextAuth.js |
+| Database | PostgreSQL, Prisma ORM |
+| Payments | Stripe Billing & Checkout |
+| Images | Cloudinary |
+| Real-time | Socket.IO |
+| Testing | Jest, Playwright |
+| Hosting | Vercel |
 
 ---
 
-## 7. Current Focus (March 2026)
+## 3. Architecture Principles
 
-### Priority 1: Functional Validation
-Ensure all buttons, flows, and interactions work correctly before any UI polish.
+### Subscription-First
+All primary CTAs guide users toward starting a meal plan. The homepage sells the service, the meals page inspires, the plan builder converts.
 
-**Areas to validate:**
-- [ ] Authentication flows (login, signup, logout)
-- [ ] Subscription creation flow (menu → cart → checkout → success)
-- [ ] User dashboard navigation and actions
-- [ ] Admin dashboard operations
-- [ ] Order management workflows
-- [ ] Payment methods management
-- [ ] Profile updates
+### Intent-Driven Navigation
+Navigation matches user intentions:
+- Understand the service (Homepage)
+- Browse meals (`/meals`)
+- Choose a plan (`/meal-plans`)
+- Order for events (`/catering`)
+- Manage account (User Dashboard)
 
-### Priority 2: UI Polish (Parked)
-Deferred until functional validation complete:
-- Replace placeholder hero images with custom photography
-- Fine-tune responsive behaviour on mobile
-- Test scroll behaviour across browsers
-- Visual consistency pass
-
-### Priority 3: Phase 5 Completion
-- Email sending service integration (Nodemailer/SendGrid)
-- Rate limiting middleware
-- Full E2E test suite run
-- Cross-browser testing
+### Separation of Layers
+1. **Marketing Pages** — Discover and convert
+2. **Conversion Flow** — Plan creation and checkout
+3. **User Dashboard** — Subscription management
 
 ---
 
-*Last updated: March 11, 2026*
+## 4. Current Phase: Architectural Refactor
 
+### Status: IN PROGRESS
+
+We are transitioning from the old favourites-based subscription flow to a **plan-first model**.
+
+### What's Changing
+
+| Old Flow | New Flow |
+|----------|----------|
+| `/menu` with cart | `/meals` (browse-only) |
+| Favourite dishes → Create subscription | Choose plan → Select meals |
+| Ad-hoc subscription creation | 4-step wizard |
+
+### New Routes to Build
+
+| Route | Status | Description |
+|-------|--------|-------------|
+| `/meals` | 🔴 TODO | Browse-only meal catalogue |
+| `/meal-plans` | 🔴 TODO | Subscription tiers overview |
+| `/meal-plans/create` | 🔴 TODO | 4-step subscription wizard |
+| `/catering` | 🔴 TODO | Event catering & bulk orders |
+| `/faq` | 🔴 TODO | Subscription FAQs |
+| `/delivery-areas` | 🔴 TODO | Delivery coverage info |
+
+### Routes to Deprecate/Modify
+
+| Route | Action |
+|-------|--------|
+| `/menu` | Convert to `/meals` (remove cart functionality) |
+| `/subscriptions/create` | Replace with `/meal-plans/create` |
+
+---
+
+## 5. Implementation Roadmap
+
+### Phase 6: Subscription-First Architecture
+
+#### Milestone 6.1: Public Marketing Pages
+- [ ] Create `/meals` page (browse-only catalogue)
+- [ ] Create `/meal-plans` page (subscription tiers)
+- [ ] Create `/catering` page
+- [ ] Create `/faq` page
+- [ ] Create `/delivery-areas` page
+- [ ] Update navigation (Header, Footer)
+
+#### Milestone 6.2: Subscription Wizard
+- [ ] Build `/meal-plans/create` with 4-step flow
+  - Step 1: Plan selection (3/5/10 meals per week)
+  - Step 2: Meal builder (select dishes for plan)
+  - Step 3: Delivery details (address, schedule)
+  - Step 4: Payment (review + Stripe checkout)
+- [ ] Create plan data model (if needed)
+- [ ] Update Stripe integration for plan-based billing
+
+#### Milestone 6.3: Homepage Refresh
+- [ ] Update hero section with subscription focus
+- [ ] Add "How it works" section
+- [ ] Add "Why subscribe" section
+- [ ] Update CTAs to point to `/meal-plans`
+
+#### Milestone 6.4: Cleanup
+- [ ] Remove old `/menu` cart functionality
+- [ ] Remove old `/subscriptions/create` page
+- [ ] Update all internal links
+- [ ] Run full E2E test suite
+
+---
+
+## 6. Completed Phases
+
+### Phase 1: Foundation ✅
+- Prisma + PostgreSQL setup
+- NextAuth.js authentication
+- User/Admin role system
+
+### Phase 2: Subscription Flow ✅
+- Stripe integration
+- Basic subscription creation
+- Checkout flow
+
+### Phase 3: Webhooks & Orders ✅
+- Stripe webhook handler
+- Order generation on payment
+- Order history
+
+### Phase 4: Admin & Menu ✅
+- Menu CRUD
+- Admin dashboard
+- Order management
+
+### Phase 5: Production Polish ✅
+- Help/Contact page
+- Footer/navigation fixes
+- E2E test suite (219+ tests)
+- Build optimisation
+
+---
+
+## 7. Database Schema (Key Models)
+
+```prisma
+model User {
+  id visibleId email name role
+  stripeCustomerId address phone
+  subscriptions orders favourites
+}
+
+model Subscription {
+  id userId status
+  planName interval price
+  stripeSubscriptionId
+  items → SubscriptionItem[]
+}
+
+model MenuItem {
+  id name description price
+  imageUrl category
+  isVegetarian isSpicy available
+}
+
+model Order {
+  id userId subscriptionId
+  items totalPrice
+  deliveryDate status
+}
+```
+
+---
+
+## 8. API Structure
+
+### Public
+- `GET /api/menu-items` — List meals
+
+### Auth
+- `POST /api/auth/[...nextauth]` — Authentication
+
+### User (Authenticated)
+- `GET/PATCH /api/user/profile`
+- `GET/POST/DELETE /api/user/favourites`
+- `GET /api/subscriptions`
+- `GET /api/orders`
+
+### Subscription
+- `POST /api/subscribe` — Create subscription
+- `PATCH /api/subscriptions/[id]` — Update subscription
+
+### Admin
+- `POST/PATCH/DELETE /api/admin/menu-items`
+- `GET /api/admin/orders`
+- `GET /api/admin/subscriptions`
+
+### Webhooks
+- `POST /api/webhooks/stripe`
+
+---
+
+## 9. Design System
+
+### Brand Colours
+```scss
+--primary: #C52D2F;      // Deep Red
+--secondary: #F1C40F;    // Warm Yellow
+--accent: #FF6F3C;       // Bright Orange
+--background: #F9F9F9;
+--text: #333333;
+```
+
+### Typography
+```scss
+font-family: Inter, system-ui, -apple-system, sans-serif;
+```
+
+---
+
+## 10. Testing Strategy
+
+- **Unit Tests:** Jest + React Testing Library
+- **E2E Tests:** Playwright
+- **Coverage Target:** 80%+
+
+### Key Test Flows
+- Authentication (login, signup, logout)
+- Subscription creation (plan → meals → delivery → payment)
+- User dashboard actions
+- Admin operations
+
+---
+
+*Last updated: March 14, 2026*

@@ -1,0 +1,395 @@
+// SubscriptionSummary - Dashboard-styled sidebar
+@import '../../variables';
+
+.summary {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dee2e6;
+  position: sticky;
+  top: 2rem;
+  max-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.header {
+  padding: 1.5rem;
+  border-bottom: 2px solid #dee2e6;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.titleIcon {
+  width: 24px;
+  height: 24px;
+  color: #C52D2F;
+}
+
+.itemCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: white;
+  background: #C52D2F;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.content {
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 56px;
+  height: 56px;
+  color: #dee2e6;
+  margin-bottom: 1rem;
+}
+
+.emptyText {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0 0 0.5rem 0;
+}
+
+.emptySubtext {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Items List */
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.removeButton {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #C52D2F;
+    border-color: #C52D2F;
+    color: white;
+  }
+
+  &:focus {
+    outline: 2px solid #C52D2F;
+    outline-offset: 1px;
+  }
+}
+
+.itemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.itemName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.itemActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.itemQuantity {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #495057;
+  padding: 0.25rem 0.625rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.removeItemButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #C52D2F;
+    border-color: #C52D2F;
+    color: white;
+  }
+
+  &:focus {
+    outline: 2px solid #C52D2F;
+    outline-offset: 1px;
+  }
+}
+
+.itemDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.itemFrequency {
+  font-size: 0.8125rem;
+  color: #6c757d;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.itemPrice {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #C52D2F;
+}
+
+/* Divider */
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, #dee2e6 0%, transparent 100%);
+  margin: 0.5rem 0;
+}
+
+/* Totals */
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  &:last-child {
+    padding-top: 0.75rem;
+    border-top: 2px solid #dee2e6;
+
+    .totalAmount {
+      font-size: 1.375rem;
+      color: #C52D2F;
+    }
+  }
+}
+
+.totalLabel {
+  font-size: 0.9375rem;
+  color: #495057;
+  font-weight: 600;
+}
+
+.totalAmount {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+/* Info Text */
+.info {
+  padding: 0.875rem;
+  background: #fff3cd;
+  border-radius: 8px;
+  border-left: 3px solid #F1C40F;
+}
+
+.infoText {
+  font-size: 0.8125rem;
+  color: #856404;
+  margin: 0;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Checkout Button */
+.checkoutButton {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #C52D2F 0%, #a02326 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(197, 45, 47, 0.25);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #a02326 0%, #8a1f21 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(197, 45, 47, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &:focus {
+    outline: 2px solid #C52D2F;
+    outline-offset: 2px;
+  }
+}
+
+.loadingIcon {
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+.arrowIcon {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .summary {
+    position: static;
+    max-height: none;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1.25rem;
+  }
+
+  .content {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.125rem;
+  }
+
+  .titleIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .itemName {
+    font-size: 0.875rem;
+  }
+
+  .totalAmount {
+    font-size: 1rem;
+
+    .totalRow:last-child & {
+      font-size: 1.25rem;
+    }
+  }
+
+  .checkoutButton {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9375rem;
+  }
+}

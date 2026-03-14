@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import UserLayout from '../../../components/user/UserLayout';
+import SubscriptionTabs from '../../../components/subscription/SubscriptionTabs';
 import { SubscriptionResponse } from '../../../lib/api-types';
 import styles from '../../../styles/components/user/subscriptions.module.scss';
 
@@ -144,17 +145,14 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
 
       <UserLayout pageTitle="My Subscriptions" activeTab="subscriptions">
         <div className={styles.subscriptionsPage}>
+          {/* Subscription Navigation Tabs */}
+          <SubscriptionTabs activeTab="list" />
+
           {/* Header */}
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <h1>My Subscriptions</h1>
               <p>Manage your meal delivery subscriptions</p>
-            </div>
-            <div className={styles.headerActions}>
-              <Link href="/subscriptions/create" className={styles.createButton}>
-                <i className="fas fa-plus"></i>
-                New Subscription
-              </Link>
             </div>
           </div>
 
