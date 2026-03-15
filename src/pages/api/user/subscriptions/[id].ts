@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { PrismaClient, SubscriptionStatus } from '@prisma/client';
+import { SubscriptionStatus } from '@prisma/client';
+import prisma from '../../../../lib/prisma';
 import stripe from '../../../../lib/stripe';
-
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
@@ -72,12 +71,22 @@ export default async function handler(
         }
       });
 
-      return res.status(200).json({ subscription: fullSubscription });
+      // Transform subscriptionItems to items for frontend compatibility
+      const transformedSubscription = fullSubscription ? {
+        ...fullSubscription,
+        items: fullSubscription.subscriptionItems.map(si => ({
+          id: si.id,
+          quantity: si.quantity,
+          menuItem: si.menuItem
+        }))
+      } : null;
+
+      return res.status(200).json({ subscription: transformedSubscription });
     }
 
     // Handle PATCH request (update subscription status or items)
     if (req.method === 'PATCH') {
-      const { action, items } = req.body;
+      const { action, items, deliveryDetails } = req.body;
 
       // Handle status actions (pause, resume, cancel)
       if (action) {
@@ -97,6 +106,10 @@ export default async function handler(
             if (subscription.status !== 'PAUSED') {
               return res.status(400).json({ message: 'Can only resume paused subscriptions' });
             }
+            // Require delivery details when resuming
+            if (!deliveryDetails || !deliveryDetails.nextDeliveryDate) {
+              return res.status(400).json({ message: 'Delivery details required to resume subscription' });
+            }
             newStatus = SubscriptionStatus.ACTIVE;
             break;
           case 'cancel':
@@ -109,13 +122,25 @@ export default async function handler(
             return res.status(400).json({ message: 'Invalid action' });
         }
 
+        // Build update data
+        const updateData: {
+          status: SubscriptionStatus;
+          updatedAt: Date;
+          nextDeliveryDate?: Date;
+        } = {
+          status: newStatus,
+          updatedAt: new Date()
+        };
+
+        // Add next delivery date if resuming
+        if (action === 'resume' && deliveryDetails?.nextDeliveryDate) {
+          updateData.nextDeliveryDate = new Date(deliveryDetails.nextDeliveryDate);
+        }
+
         // Update subscription status
         const updatedSubscription = await prisma.subscription.update({
           where: { id },
-          data: { 
-            status: newStatus,
-            updatedAt: new Date()
-          },
+          data: updateData,
           include: {
             subscriptionItems: {
               include: {
@@ -135,9 +160,19 @@ export default async function handler(
           }
         }
 
-        return res.status(200).json({ 
+        // Transform for frontend compatibility
+        const transformedSubscription = {
+          ...updatedSubscription,
+          items: updatedSubscription.subscriptionItems.map(si => ({
+            id: si.id,
+            quantity: si.quantity,
+            menuItem: si.menuItem
+          }))
+        };
+
+        return res.status(200).json({
           message: `Subscription ${action}d successfully`,
-          subscription: updatedSubscription 
+          subscription: transformedSubscription
         });
       }
 
@@ -211,9 +246,19 @@ export default async function handler(
           }
         }
 
-        return res.status(200).json({ 
+        // Transform for frontend compatibility
+        const transformedItemsSubscription = {
+          ...updatedSubscription,
+          items: updatedSubscription.subscriptionItems.map(si => ({
+            id: si.id,
+            quantity: si.quantity,
+            menuItem: si.menuItem
+          }))
+        };
+
+        return res.status(200).json({
           message: 'Subscription items updated successfully',
-          subscription: updatedSubscription 
+          subscription: transformedItemsSubscription
         });
       }
 
@@ -293,9 +338,19 @@ export default async function handler(
         }
       }
 
-      return res.status(200).json({ 
+      // Transform for frontend compatibility
+      const transformedPutSubscription = {
+        ...updatedSubscription,
+        items: updatedSubscription.subscriptionItems.map(si => ({
+          id: si.id,
+          quantity: si.quantity,
+          menuItem: si.menuItem
+        }))
+      };
+
+      return res.status(200).json({
         message: 'Subscription updated successfully',
-        subscription: updatedSubscription 
+        subscription: transformedPutSubscription
       });
     }
 

@@ -500,6 +500,14 @@ describe('/api/webhooks/stripe', () => {
             price: 50.48,
             status: 'ACTIVE',
             nextDeliveryDate: expect.any(Date),
+            // Delivery preferences (null when not provided in metadata)
+            preferredDeliveryDay: null,
+            preferredDeliveryTimeSlot: null,
+            deliveryAddress: null,
+            deliveryCity: null,
+            deliveryPostcode: null,
+            deliveryPhone: null,
+            deliveryInstructions: null,
           },
         });
       });
@@ -531,6 +539,237 @@ describe('/api/webhooks/stripe', () => {
         await handler(req as NextApiRequest, res as NextApiResponse);
 
         expect(mockPrisma.subscriptionItem.createMany).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('Delivery Preferences', () => {
+      const deliveryMetadata = {
+        userId: mockUserId,
+        items: JSON.stringify(mockItems),
+        deliveryAddress: '123 Lagos Street',
+        deliveryCity: 'London',
+        deliveryPostcode: 'E1 6AN',
+        deliveryPhone: '+44 7700 900123',
+        deliveryInstructions: 'Leave with neighbour',
+        preferredDay: 'wednesday',
+        preferredTimeSlot: '10:00-14:00',
+      };
+
+      it('should save all delivery preferences to subscription', async () => {
+        const sessionWithDelivery = {
+          ...mockSession,
+          metadata: deliveryMetadata,
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithDelivery },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        expect(mockPrisma.subscription.create).toHaveBeenCalledWith({
+          data: expect.objectContaining({
+            deliveryAddress: '123 Lagos Street',
+            deliveryCity: 'London',
+            deliveryPostcode: 'E1 6AN',
+            deliveryPhone: '+44 7700 900123',
+            deliveryInstructions: 'Leave with neighbour',
+            preferredDeliveryDay: 'wednesday',
+            preferredDeliveryTimeSlot: '10:00-14:00',
+          }),
+        });
+        expect(statusCode).toBe(200);
+      });
+
+      it('should calculate nextDeliveryDate correctly for Monday preference', async () => {
+        // mockDate is 2024-01-15 (Monday)
+        // 7 days later is 2024-01-22 (Monday)
+        // Next Monday from that is 2024-01-22 itself
+        const sessionWithMonday = {
+          ...mockSession,
+          metadata: {
+            ...deliveryMetadata,
+            preferredDay: 'monday',
+          },
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithMonday },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        const subscriptionCall = (mockPrisma.subscription.create as jest.Mock).mock.calls[0][0];
+        const deliveryDate = subscriptionCall.data.nextDeliveryDate as Date;
+
+        // Should be Monday (day 1)
+        expect(deliveryDate.getDay()).toBe(1);
+        // Should be at least 7 days from mockDate
+        const daysDiff = Math.floor((deliveryDate.getTime() - mockDate.getTime()) / (24 * 60 * 60 * 1000));
+        expect(daysDiff).toBeGreaterThanOrEqual(7);
+      });
+
+      it('should calculate nextDeliveryDate correctly for Wednesday preference', async () => {
+        // mockDate is 2024-01-15 (Monday)
+        // 7 days later is 2024-01-22 (Monday)
+        // Next Wednesday from that is 2024-01-24
+        const sessionWithWednesday = {
+          ...mockSession,
+          metadata: {
+            ...deliveryMetadata,
+            preferredDay: 'wednesday',
+          },
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithWednesday },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        const subscriptionCall = (mockPrisma.subscription.create as jest.Mock).mock.calls[0][0];
+        const deliveryDate = subscriptionCall.data.nextDeliveryDate as Date;
+
+        // Should be Wednesday (day 3)
+        expect(deliveryDate.getDay()).toBe(3);
+        // Should be at least 7 days from mockDate
+        const daysDiff = Math.floor((deliveryDate.getTime() - mockDate.getTime()) / (24 * 60 * 60 * 1000));
+        expect(daysDiff).toBeGreaterThanOrEqual(7);
+      });
+
+      it('should calculate nextDeliveryDate correctly for Saturday preference', async () => {
+        // mockDate is 2024-01-15 (Monday)
+        // 7 days later is 2024-01-22 (Monday)
+        // Next Saturday from that is 2024-01-27
+        const sessionWithSaturday = {
+          ...mockSession,
+          metadata: {
+            ...deliveryMetadata,
+            preferredDay: 'saturday',
+          },
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithSaturday },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        const subscriptionCall = (mockPrisma.subscription.create as jest.Mock).mock.calls[0][0];
+        const deliveryDate = subscriptionCall.data.nextDeliveryDate as Date;
+
+        // Should be Saturday (day 6)
+        expect(deliveryDate.getDay()).toBe(6);
+        // Should be at least 7 days from mockDate
+        const daysDiff = Math.floor((deliveryDate.getTime() - mockDate.getTime()) / (24 * 60 * 60 * 1000));
+        expect(daysDiff).toBeGreaterThanOrEqual(7);
+      });
+
+      it('should fall back to +7 days when no preferredDay provided', async () => {
+        const sessionWithoutPreferredDay = {
+          ...mockSession,
+          metadata: {
+            userId: mockUserId,
+            items: JSON.stringify(mockItems),
+            deliveryAddress: '123 Lagos Street',
+            deliveryCity: 'London',
+            deliveryPostcode: 'E1 6AN',
+          },
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithoutPreferredDay },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        const expectedDeliveryDate = new Date(mockDate);
+        expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
+
+        expect(mockPrisma.subscription.create).toHaveBeenCalledWith({
+          data: expect.objectContaining({
+            nextDeliveryDate: expectedDeliveryDate,
+            preferredDeliveryDay: null,
+          }),
+        });
+      });
+
+      it('should use calculated delivery date for initial Order', async () => {
+        const sessionWithWednesday = {
+          ...mockSession,
+          metadata: {
+            ...deliveryMetadata,
+            preferredDay: 'wednesday',
+          },
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithWednesday },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        // Get the delivery date from subscription
+        const subscriptionCall = (mockPrisma.subscription.create as jest.Mock).mock.calls[0][0];
+        const subscriptionDeliveryDate = subscriptionCall.data.nextDeliveryDate;
+
+        // Order should use the same calculated date
+        const orderCall = (mockPrisma.order.create as jest.Mock).mock.calls[0][0];
+        expect(orderCall.data.deliveryDate).toEqual(subscriptionDeliveryDate);
+      });
+
+      it('should handle missing/partial delivery metadata gracefully', async () => {
+        const sessionWithPartialDelivery = {
+          ...mockSession,
+          metadata: {
+            userId: mockUserId,
+            items: JSON.stringify(mockItems),
+            deliveryAddress: '123 Lagos Street',
+            // Missing: deliveryCity, deliveryPostcode, deliveryPhone, deliveryInstructions, preferredDay, preferredTimeSlot
+          },
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithPartialDelivery },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        expect(mockPrisma.subscription.create).toHaveBeenCalledWith({
+          data: expect.objectContaining({
+            deliveryAddress: '123 Lagos Street',
+            deliveryCity: null,
+            deliveryPostcode: null,
+            deliveryPhone: null,
+            deliveryInstructions: null,
+            preferredDeliveryDay: null,
+            preferredDeliveryTimeSlot: null,
+          }),
+        });
+        expect(statusCode).toBe(200);
+      });
+
+      it('should handle invalid preferredDay by falling back to +7 days', async () => {
+        const sessionWithInvalidDay = {
+          ...mockSession,
+          metadata: {
+            ...deliveryMetadata,
+            preferredDay: 'invalid-day',
+          },
+        };
+        (mockStripe.webhooks.constructEvent as jest.Mock).mockReturnValue({
+          type: 'checkout.session.completed',
+          data: { object: sessionWithInvalidDay },
+        });
+
+        await handler(req as NextApiRequest, res as NextApiResponse);
+
+        const expectedDeliveryDate = new Date(mockDate);
+        expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
+
+        const subscriptionCall = (mockPrisma.subscription.create as jest.Mock).mock.calls[0][0];
+        expect(subscriptionCall.data.nextDeliveryDate).toEqual(expectedDeliveryDate);
+        expect(statusCode).toBe(200);
       });
     });
   });

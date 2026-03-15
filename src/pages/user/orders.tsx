@@ -3,63 +3,15 @@
  * Features: Status filters, date range, search, order details, invoice download
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
-import Link from 'next/link';
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import UserLayout from '../../components/user/UserLayout';
 import OrderList from '../../components/user/OrderList';
-import { api } from '../../lib/api-client';
 import styles from '../../styles/components/user/orders.module.scss';
 
-// Order detail modal component
-interface OrderDetailModalProps {
-  orderId: string;
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ orderId, isOpen, onClose }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.modalHeader}>
-          <h3>Order Details</h3>
-          <button onClick={onClose} className={styles.modalClose}>
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
-        <div className={styles.modalBody}>
-          <p>Detailed order view for {orderId} - This could include order tracking, detailed items, etc.</p>
-          <p className={styles.modalNote}>
-            <i className="fas fa-info-circle"></i>
-            This is a placeholder. In a full implementation, this would show comprehensive order details, 
-            tracking information, and additional actions.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const UserOrdersPage: React.FC = () => {
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Handle order selection for detailed view
-  const handleOrderSelect = (orderId: string) => {
-    setSelectedOrderId(orderId);
-    setIsModalOpen(true);
-  };
-
-  // Handle modal close
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedOrderId(null);
-  };
 
   // Handle invoice download (placeholder)
   const handleDownloadInvoice = async (orderId: string) => {
@@ -117,31 +69,15 @@ const UserOrdersPage: React.FC = () => {
                 Track your order history and manage your purchases
               </p>
             </div>
-            <div className={styles.headerActions}>
-              <Link href="/menu" className={styles.newOrderBtn}>
-                <i className="fas fa-plus"></i>
-                Place New Order
-              </Link>
-            </div>
           </div>
         </div>
 
         {/* Orders List */}
         <div className={styles.ordersContent}>
           <OrderList
-            onOrderSelect={handleOrderSelect}
             onDownloadInvoice={handleDownloadInvoice}
           />
         </div>
-
-        {/* Order Detail Modal */}
-        {selectedOrderId && (
-          <OrderDetailModal
-            orderId={selectedOrderId}
-            isOpen={isModalOpen}
-            onClose={handleModalClose}
-          />
-        )}
       </div>
     </UserLayout>
   );

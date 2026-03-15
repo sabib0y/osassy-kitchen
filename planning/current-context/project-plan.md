@@ -51,37 +51,41 @@ Navigation matches user intentions:
 
 ---
 
-## 4. Current Phase: Architectural Refactor
+## 4. Current Phase: Subscription-First Architecture
 
-### Status: IN PROGRESS
+### Status: NEAR COMPLETE
 
-We are transitioning from the old favourites-based subscription flow to a **plan-first model**.
+The subscription-first architecture is largely implemented. Core flows are working end-to-end.
 
-### What's Changing
-
-| Old Flow | New Flow |
-|----------|----------|
-| `/menu` with cart | `/meals` (browse-only) |
-| Favourite dishes → Create subscription | Choose plan → Select meals |
-| Ad-hoc subscription creation | 4-step wizard |
-
-### New Routes to Build
+### Implemented Routes
 
 | Route | Status | Description |
 |-------|--------|-------------|
-| `/meals` | 🔴 TODO | Browse-only meal catalogue |
-| `/meal-plans` | 🔴 TODO | Subscription tiers overview |
-| `/meal-plans/create` | 🔴 TODO | 4-step subscription wizard |
+| `/meals` | ✅ Done | Browse-only meal catalogue |
+| `/meal-plans` | ✅ Done | Subscription tiers overview |
+| `/meal-plans/create` | ✅ Done | 4-step subscription wizard with delivery time slots |
+| `/user/subscriptions/create` | ✅ Done | Wizard within user dashboard |
+| `/user/subscriptions/[id]/resume` | ✅ Done | Resume paused subscription with new delivery schedule |
+| `/faq` | ✅ Done | Subscription FAQs |
+| `/our-process` | ✅ Done | How the service works |
 | `/catering` | 🔴 TODO | Event catering & bulk orders |
-| `/faq` | 🔴 TODO | Subscription FAQs |
 | `/delivery-areas` | 🔴 TODO | Delivery coverage info |
 
-### Routes to Deprecate/Modify
+### Authentication Routes
 
-| Route | Action |
-|-------|--------|
-| `/menu` | Convert to `/meals` (remove cart functionality) |
-| `/subscriptions/create` | Replace with `/meal-plans/create` |
+| Route | Status | Description |
+|-------|--------|-------------|
+| `/login` | ✅ Done | Email/password + Google OAuth |
+| `/signup` | ✅ Done | Email/password + Google OAuth |
+| `/forgot-password` | ✅ Done | Password reset flow |
+| `/verify-email` | ✅ Done | Email verification |
+
+### Legacy Routes (To Review)
+
+| Route | Status | Notes |
+|-------|--------|-------|
+| `/menu` | ⚠️ Legacy | Old cart-based menu, consider removing |
+| `/subscriptions/` | ⚠️ Legacy | Old subscription pages, may need cleanup |
 
 ---
 
@@ -89,33 +93,46 @@ We are transitioning from the old favourites-based subscription flow to a **plan
 
 ### Phase 6: Subscription-First Architecture
 
-#### Milestone 6.1: Public Marketing Pages
-- [ ] Create `/meals` page (browse-only catalogue)
-- [ ] Create `/meal-plans` page (subscription tiers)
+#### Milestone 6.1: Public Marketing Pages ✅ COMPLETE
+- [x] Create `/meals` page (browse-only catalogue)
+- [x] Create `/meal-plans` page (subscription tiers)
+- [x] Create `/faq` page
+- [x] Create `/our-process` page (how it works)
 - [ ] Create `/catering` page
-- [ ] Create `/faq` page
 - [ ] Create `/delivery-areas` page
-- [ ] Update navigation (Header, Footer)
+- [x] Update navigation (Header, Footer)
 
-#### Milestone 6.2: Subscription Wizard
-- [ ] Build `/meal-plans/create` with 4-step flow
+#### Milestone 6.2: Subscription Wizard ✅ COMPLETE
+- [x] Build `/meal-plans/create` with 4-step flow
   - Step 1: Plan selection (3/5/10 meals per week)
   - Step 2: Meal builder (select dishes for plan)
-  - Step 3: Delivery details (address, schedule)
+  - Step 3: Delivery details (address, schedule, **time slot**)
   - Step 4: Payment (review + Stripe checkout)
-- [ ] Create plan data model (if needed)
-- [ ] Update Stripe integration for plan-based billing
+- [x] Build `/user/subscriptions/create` (dashboard wizard)
+- [x] Add delivery time slot selection (day + time preferences)
+- [x] Update Stripe integration for plan-based billing
+- [x] Stripe webhook handles subscription creation + order generation
 
-#### Milestone 6.3: Homepage Refresh
-- [ ] Update hero section with subscription focus
-- [ ] Add "How it works" section
-- [ ] Add "Why subscribe" section
-- [ ] Update CTAs to point to `/meal-plans`
+#### Milestone 6.3: Subscription Management ✅ COMPLETE
+- [x] Subscription list page (`/user/subscriptions`)
+- [x] Subscription detail page (`/user/subscriptions/[id]`)
+- [x] Pause/resume functionality
+- [x] Resume flow with new delivery schedule (`/user/subscriptions/[id]/resume`)
+- [x] Cancel subscription
 
-#### Milestone 6.4: Cleanup
-- [ ] Remove old `/menu` cart functionality
-- [ ] Remove old `/subscriptions/create` page
-- [ ] Update all internal links
+#### Milestone 6.4: Authentication ✅ COMPLETE
+- [x] Google OAuth integration
+- [x] Email/password authentication
+- [x] Forgot password flow
+- [x] Email verification flow
+- [x] Address management (CRUD)
+
+#### Milestone 6.5: Remaining Work 🔴 TODO
+- [ ] Create `/catering` page
+- [ ] Create `/delivery-areas` page
+- [ ] Remove legacy `/menu` cart functionality
+- [ ] Clean up old `/subscriptions/` pages
+- [ ] Homepage refresh (subscription-focused hero)
 - [ ] Run full E2E test suite
 
 ---
@@ -150,20 +167,53 @@ We are transitioning from the old favourites-based subscription flow to a **plan
 
 ---
 
-## 7. Database Schema (Key Models)
+## 7. Deferred Features
+
+Features planned but not yet implemented:
+
+| Feature | Description | Blocked By |
+|---------|-------------|------------|
+| Email notifications | Send transactional emails (order confirmation, delivery reminders, etc.) | DNS verification for Resend |
+| Notification preferences persistence | Save user email preferences to database and check before sending | Email notifications |
+| `/catering` page | Event catering & bulk orders | — |
+| `/delivery-areas` page | Delivery coverage info | — |
+
+### Known Bugs
+
+See `planning/current-context/BUG_TRACKER.md` for active issues:
+- BUG-001: Sign-out not syncing across browser tabs (High)
+- BUG-002: Meal Plans nav link skips process explainer page (Low)
+- BUG-003: Delivery time slots need business validation (Medium)
+
+---
+
+## 8. Database Schema (Key Models)
 
 ```prisma
 model User {
   id visibleId email name role
-  stripeCustomerId address phone
+  stripeCustomerId phone
   subscriptions orders favourites
+  addresses → Address[]
+}
+
+model Address {
+  id userId
+  label street city state postcode country
+  isDefault
 }
 
 model Subscription {
-  id userId status
+  id visibleId userId status
   planName interval price
   stripeSubscriptionId
   items → SubscriptionItem[]
+
+  // Delivery preferences (new)
+  deliveryAddress deliveryInstructions
+  preferredDeliveryDay preferredDeliveryTime
+  deliveryTimeSlotStart deliveryTimeSlotEnd
+  nextDeliveryDate
 }
 
 model MenuItem {
@@ -173,43 +223,54 @@ model MenuItem {
 }
 
 model Order {
-  id userId subscriptionId
+  id visibleId userId subscriptionId
   items totalPrice
-  deliveryDate status
+  deliveryDate deliveryTimeSlot status
 }
 ```
 
 ---
 
-## 8. API Structure
+## 9. API Structure
 
 ### Public
 - `GET /api/menu-items` — List meals
 
 ### Auth
-- `POST /api/auth/[...nextauth]` — Authentication
+- `POST /api/auth/[...nextauth]` — Authentication (email/password + Google OAuth)
+- `POST /api/auth/forgot-password` — Request password reset
+- `POST /api/auth/reset-password` — Reset password with token
+- `POST /api/auth/verify-email` — Verify email address
 
 ### User (Authenticated)
-- `GET/PATCH /api/user/profile`
-- `GET/POST/DELETE /api/user/favourites`
-- `GET /api/subscriptions`
-- `GET /api/orders`
+- `GET/PATCH /api/user/profile` — User profile management
+- `GET/POST/DELETE /api/user/favourites` — Favourite meals
+- `GET/POST /api/user/addresses` — Address list and create
+- `GET/PATCH/DELETE /api/user/addresses/[id]` — Address CRUD
+- `GET /api/user/subscriptions` — List user subscriptions
+- `GET/PATCH /api/user/subscriptions/[id]` — Subscription detail + pause/resume/cancel
+- `GET /api/user/orders` — Order history
+- `GET/PATCH /api/user/notification-preferences` — Email preferences
 
 ### Subscription
-- `POST /api/subscribe` — Create subscription
-- `PATCH /api/subscriptions/[id]` — Update subscription
+- `POST /api/subscribe` — Create subscription (Stripe checkout)
 
 ### Admin
-- `POST/PATCH/DELETE /api/admin/menu-items`
-- `GET /api/admin/orders`
-- `GET /api/admin/subscriptions`
+- `POST/PATCH/DELETE /api/admin/menu-items` — Menu CRUD
+- `GET /api/admin/orders` — All orders
+- `GET /api/admin/subscriptions` — All subscriptions
 
 ### Webhooks
-- `POST /api/webhooks/stripe`
+- `POST /api/webhooks/stripe` — Stripe webhook (subscription created, payment succeeded, etc.)
+
+### Utility
+- `POST /api/contact` — Contact form submission
+- `POST /api/upload` — Image upload (Cloudinary)
+- `GET/POST /api/socket` — WebSocket connection
 
 ---
 
-## 9. Design System
+## 10. Design System
 
 ### Brand Colours
 ```scss
@@ -227,7 +288,7 @@ font-family: Inter, system-ui, -apple-system, sans-serif;
 
 ---
 
-## 10. Testing Strategy
+## 11. Testing Strategy
 
 - **Unit Tests:** Jest + React Testing Library
 - **E2E Tests:** Playwright
@@ -241,4 +302,16 @@ font-family: Inter, system-ui, -apple-system, sans-serif;
 
 ---
 
-*Last updated: March 14, 2026*
+## 12. Recent Test Coverage
+
+| Area | Tests | Status |
+|------|-------|--------|
+| DeliveryStep component | 66 | ✅ Passing |
+| Subscribe API | 40 | ✅ Passing |
+| Stripe webhook | 8+ | ✅ Passing |
+| Address API | 49 | ✅ Passing |
+| E2E suite | 219+ | ~80% passing |
+
+---
+
+*Last updated: March 15, 2026*

@@ -10,13 +10,11 @@ import { OrderFilters } from '../../lib/api-types';
 import styles from '../../styles/components/user/orders.module.scss';
 
 interface OrderListProps {
-  onOrderSelect?: (orderId: string) => void;
   onDownloadInvoice?: (orderId: string) => void;
   className?: string;
 }
 
 const OrderList: React.FC<OrderListProps> = ({
-  onOrderSelect,
   onDownloadInvoice,
   className,
 }) => {
@@ -312,7 +310,6 @@ const OrderList: React.FC<OrderListProps> = ({
             <OrderCard
               key={order.id}
               order={order}
-              onViewDetails={onOrderSelect}
               onDownloadInvoice={onDownloadInvoice}
               isExpanded={expandedOrders.has(order.id)}
               onToggleExpand={handleToggleExpand}

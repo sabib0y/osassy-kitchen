@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useRouter } from 'next/router';
-import SuccessStep from '../../../components/meal-plans/SuccessStep';
+import SuccessStep from '../../../components/meals/SuccessStep';
 
 // Mock Next.js router
 jest.mock('next/router', () => ({

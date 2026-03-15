@@ -16,7 +16,7 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
   const [subscriptions, setSubscriptions] = useState<SubscriptionResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'active' | 'paused' | 'cancelled'>('all');
+  const [filter, setFilter] = useState<'active' | 'paused'>('active');
 
   useEffect(() => {
     fetchSubscriptions();
@@ -58,34 +58,15 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
     }).format(amount);
   };
 
-  const getStatusConfig = (status: string) => {
-    switch (status.toUpperCase()) {
-      case 'ACTIVE':
-        return { className: 'active', icon: '✓', label: 'Active' };
-      case 'PAUSED':
-        return { className: 'paused', icon: '⏸️', label: 'Paused' };
-      case 'CANCELLED':
-        return { className: 'cancelled', icon: '❌', label: 'Cancelled' };
-      default:
-        return { className: 'unknown', icon: '❓', label: status };
-    }
-  };
 
-  const filteredSubscriptions = subscriptions.filter(subscription => {
-    if (filter === 'all') return true;
-    return subscription.status.toLowerCase() === filter;
-  });
-
-  const getFilterCounts = () => {
-    return {
-      all: subscriptions.length,
-      active: subscriptions.filter(s => s.status.toLowerCase() === 'active').length,
-      paused: subscriptions.filter(s => s.status.toLowerCase() === 'paused').length,
-      cancelled: subscriptions.filter(s => s.status.toLowerCase() === 'cancelled').length,
-    };
-  };
-
-  const filterCounts = getFilterCounts();
+  // Filter subscriptions by status (exclude cancelled)
+  const activeSubscriptions = subscriptions.filter(
+    subscription => subscription.status.toUpperCase() === 'ACTIVE'
+  );
+  const pausedSubscriptions = subscriptions.filter(
+    subscription => subscription.status.toUpperCase() === 'PAUSED'
+  );
+  const filteredSubscriptions = filter === 'active' ? activeSubscriptions : pausedSubscriptions;
 
   const handleQuickAction = async (subscriptionId: string, action: 'pause' | 'resume') => {
     try {
@@ -158,44 +139,33 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
 
           {/* Filter Tabs */}
           <div className={styles.filterTabs}>
-            {[
-              { key: 'all', label: 'All' },
-              { key: 'active', label: 'Active' },
-              { key: 'paused', label: 'Paused' },
-              { key: 'cancelled', label: 'Cancelled' }
-            ].map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key as any)}
-                className={`${styles.filterTab} ${filter === key ? styles.active : ''}`}
-              >
-                {label}
-                <span className={styles.count}>
-                  {filterCounts[key as keyof typeof filterCounts]}
-                </span>
-              </button>
-            ))}
+            <button
+              onClick={() => setFilter('active')}
+              className={`${styles.filterTab} ${filter === 'active' ? styles.active : ''}`}
+            >
+              Active
+              <span className={styles.count}>{activeSubscriptions.length}</span>
+            </button>
+            <button
+              onClick={() => setFilter('paused')}
+              className={`${styles.filterTab} ${filter === 'paused' ? styles.active : ''}`}
+            >
+              Paused
+              <span className={styles.count}>{pausedSubscriptions.length}</span>
+            </button>
           </div>
 
           {/* Content */}
           {filteredSubscriptions.length === 0 ? (
             <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>
-                {subscriptions.length === 0 ? '🍽️' : '📝'}
-              </div>
-              <h3>
-                {subscriptions.length === 0 
-                  ? 'No Subscriptions Yet' 
-                  : `No ${filter === 'all' ? '' : filter} subscriptions`
-                }
-              </h3>
+              <div className={styles.emptyIcon}>{filter === 'active' ? '🍽️' : '⏸️'}</div>
+              <h3>{filter === 'active' ? 'No Active Subscriptions' : 'No Paused Subscriptions'}</h3>
               <p>
-                {subscriptions.length === 0
+                {filter === 'active'
                   ? 'Start your meal subscription journey today!'
-                  : `You don't have any ${filter} subscriptions at the moment.`
-                }
+                  : 'You don\'t have any paused subscriptions.'}
               </p>
-              {subscriptions.length === 0 && (
+              {filter === 'active' && (
                 <Link href="/subscriptions/create" className={styles.createButton}>
                   <i className="fas fa-plus"></i>
                   Create Your First Subscription
@@ -205,18 +175,18 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
           ) : (
             <div className={styles.subscriptionGrid}>
               {filteredSubscriptions.map((subscription) => {
-                const statusConfig = getStatusConfig(subscription.status);
-                const totalItems = subscription.items.reduce((sum, item) => sum + item.quantity, 0);
-                
+                const totalItems = (subscription.items || []).reduce((sum, item) => sum + item.quantity, 0);
+                const isActive = subscription.status.toUpperCase() === 'ACTIVE';
+
                 return (
                   <div key={subscription.id} className={styles.subscriptionCard}>
                     {/* Card Header */}
                     <div className={styles.cardHeader}>
                       <div className={styles.planInfo}>
                         <h3 className={styles.planName}>{subscription.planName}</h3>
-                        <div className={`${styles.statusBadge} ${styles[statusConfig.className]}`}>
-                          <span className={styles.statusIcon}>{statusConfig.icon}</span>
-                          {statusConfig.label}
+                        <div className={`${styles.statusBadge} ${isActive ? styles.active : styles.paused}`}>
+                          <span className={styles.statusIcon}>{isActive ? '✓' : '⏸️'}</span>
+                          {isActive ? 'Active' : 'Paused'}
                         </div>
                       </div>
                       <div className={styles.pricing}>
@@ -232,14 +202,14 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
                           {totalItems} item{totalItems !== 1 ? 's' : ''}
                         </span>
                         <div className={styles.itemPreview}>
-                          {subscription.items.slice(0, 2).map(item => (
+                          {(subscription.items || []).slice(0, 2).map(item => (
                             <span key={item.id} className={styles.itemTag}>
                               {item.quantity}x {item.menuItem.name}
                             </span>
                           ))}
-                          {subscription.items.length > 2 && (
+                          {(subscription.items || []).length > 2 && (
                             <span className={styles.moreItems}>
-                              +{subscription.items.length - 2} more
+                              +{(subscription.items || []).length - 2} more
                             </span>
                           )}
                         </div>
@@ -261,15 +231,15 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
 
                     {/* Card Actions */}
                     <div className={styles.cardActions}>
-                      <Link 
-                        href={`/user/subscriptions/${subscription.id}`} 
+                      <Link
+                        href={`/user/subscriptions/${subscription.id}`}
                         className={styles.manageButton}
                       >
                         <i className="fas fa-edit"></i>
                         Manage
                       </Link>
-                      
-                      {subscription.status === 'ACTIVE' && (
+
+                      {isActive ? (
                         <button
                           onClick={() => handleQuickAction(subscription.id, 'pause')}
                           className={styles.pauseButton}
@@ -277,16 +247,14 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
                           <i className="fas fa-pause"></i>
                           Pause
                         </button>
-                      )}
-                      
-                      {subscription.status === 'PAUSED' && (
-                        <button
-                          onClick={() => handleQuickAction(subscription.id, 'resume')}
+                      ) : (
+                        <Link
+                          href={`/user/subscriptions/${subscription.id}/resume`}
                           className={styles.resumeButton}
                         >
                           <i className="fas fa-play"></i>
                           Resume
-                        </button>
+                        </Link>
                       )}
                     </div>
                   </div>
@@ -300,22 +268,20 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
             <div className={styles.summaryFooter}>
               <div className={styles.summaryStats}>
                 <div className={styles.stat}>
-                  <span className={styles.statValue}>{filterCounts.active}</span>
+                  <span className={styles.statValue}>{activeSubscriptions.length}</span>
                   <span className={styles.statLabel}>Active</span>
                 </div>
                 <div className={styles.stat}>
-                  <span className={styles.statValue}>{filterCounts.paused}</span>
+                  <span className={styles.statValue}>{pausedSubscriptions.length}</span>
                   <span className={styles.statLabel}>Paused</span>
                 </div>
                 <div className={styles.stat}>
                   <span className={styles.statValue}>
                     {formatCurrency(
-                      subscriptions
-                        .filter(s => s.status === 'ACTIVE')
-                        .reduce((sum, s) => sum + s.price, 0)
+                      activeSubscriptions.reduce((sum, s) => sum + s.price, 0)
                     )}
                   </span>
-                  <span className={styles.statLabel}>Monthly spend</span>
+                  <span className={styles.statLabel}>Weekly spend</span>
                 </div>
               </div>
             </div>

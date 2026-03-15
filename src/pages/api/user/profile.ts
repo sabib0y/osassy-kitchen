@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { PrismaClient } from '@prisma/client';
 import { hash, compare } from 'bcryptjs';
+import prisma from '../../../lib/prisma';
 import { NotificationPreferences } from '../../../types/user';
-
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,

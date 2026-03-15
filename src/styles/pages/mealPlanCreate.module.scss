@@ -808,6 +808,95 @@
   }
 }
 
+/* Delivery Schedule */
+.deliverySchedule {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    margin: 0 0 0.5rem;
+  }
+
+  .scheduleHint {
+    font-size: 0.9rem;
+    color: var(--text-secondary, #666);
+    margin: 0 0 1.5rem;
+  }
+}
+
+.daySelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dayButton {
+  padding: 0.625rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  &.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+}
+
+.timeSlotSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timeSlotButton {
+  padding: 0.75rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--primary);
+  }
+
+  &.selected {
+    background: rgba(197, 45, 47, 0.05);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+}
+
+@media (max-width: 768px) {
+  .daySelector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dayButton {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
 /* Payment Step */
 .paymentStep {
   max-width: 900px;

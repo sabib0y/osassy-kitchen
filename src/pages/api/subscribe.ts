@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../lib/prisma';
 import stripe from '../../lib/stripe';
-
-const prisma = new PrismaClient();
 
 interface SubscribeRequestBody {
   priceId?: string;
@@ -25,6 +23,7 @@ interface SubscribeRequestBody {
     phone: string;
     instructions?: string;
     preferredDay: string;
+    preferredTimeSlot: string;
   };
 }
 
@@ -191,7 +190,14 @@ export default async function handler(
         billingInterval: finalPriceId?.includes('GeiN3oy0') ? 'WEEKLY' : 'MONTHLY',
         monthlyTotal: monthlyTotal.toString(),
         planName: planName || 'Custom Subscription',
-        deliveryAddress: deliveryDetails ? JSON.stringify(deliveryDetails) : undefined,
+        // Delivery details as individual fields for easier webhook parsing
+        deliveryAddress: deliveryDetails?.address || '',
+        deliveryCity: deliveryDetails?.city || '',
+        deliveryPostcode: deliveryDetails?.postcode || '',
+        deliveryPhone: deliveryDetails?.phone || '',
+        deliveryInstructions: deliveryDetails?.instructions || '',
+        deliveryPreferredDay: deliveryDetails?.preferredDay || '',
+        deliveryPreferredTimeSlot: deliveryDetails?.preferredTimeSlot || '',
       },
       // Add subscription data to prefill customer email
       customer_email: !stripeCustomerId ? user.email || undefined : undefined,
@@ -206,6 +212,14 @@ export default async function handler(
           items: JSON.stringify(subscriptionItems),
           monthlyTotal: monthlyTotal.toString(),
           planName: planName || 'Custom Subscription',
+          // Delivery details for subscription-level access
+          deliveryAddress: deliveryDetails?.address || '',
+          deliveryCity: deliveryDetails?.city || '',
+          deliveryPostcode: deliveryDetails?.postcode || '',
+          deliveryPhone: deliveryDetails?.phone || '',
+          deliveryInstructions: deliveryDetails?.instructions || '',
+          deliveryPreferredDay: deliveryDetails?.preferredDay || '',
+          deliveryPreferredTimeSlot: deliveryDetails?.preferredTimeSlot || '',
         }
       }
     });

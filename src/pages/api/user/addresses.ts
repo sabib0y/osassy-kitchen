@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../lib/prisma';
 import { AddressFormData } from '../../../types/user';
-
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
@@ -91,7 +89,5 @@ export default async function handler(
       message: 'Failed to process addresses request',
       error: errorMessage
     });
-  } finally {
-    await prisma.$disconnect();
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import PaymentStep from '../../../components/meal-plans/PaymentStep';
+import PaymentStep from '../../../components/meals/PaymentStep';
 import { MealPlan, SelectedMeal, DeliveryDetails } from '../../../types/meal-plans';
 
 describe('PaymentStep Component', () => {
@@ -46,6 +46,7 @@ describe('PaymentStep Component', () => {
     phone: '07700900000',
     instructions: 'Ring the bell',
     preferredDay: 'Monday',
+    preferredTimeSlot: '9:00 AM - 12:00 PM',
   };
 
   const mockOnConfirm = jest.fn();

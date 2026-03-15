@@ -1,11 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { PrismaClient, SubscriptionStatus } from '@prisma/client';
+import { SubscriptionStatus } from '@prisma/client';
+import prisma from '../../../../../lib/prisma';
 import stripe from '../../../../../lib/stripe';
 import { broadcastSubscriptionUpdate } from '@/lib/websocket';
 import { EventType } from '@/types/websocket';
-
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,

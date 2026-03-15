@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, MapPin, Phone, Calendar, MessageSquare } from 'lucide-react';
-import { DeliveryDetails, DELIVERY_DAYS } from '../../types/meal-plans';
+import React, { useState, useMemo } from 'react';
+import { ArrowLeft, ArrowRight, MapPin, Phone, Calendar, MessageSquare, Clock } from 'lucide-react';
+import { DeliveryDetails, DELIVERY_DAYS, WEEKDAY_TIME_SLOTS, SATURDAY_TIME_SLOTS } from '../../types/meal-plans';
 import styles from '../../styles/components/meals/deliveryStep.module.scss';
 
 interface DeliveryStepProps {
@@ -15,6 +15,7 @@ interface ValidationErrors {
   postcode?: string;
   phone?: string;
   preferredDay?: string;
+  preferredTimeSlot?: string;
 }
 
 const DeliveryStep: React.FC<DeliveryStepProps> = ({
@@ -30,9 +31,16 @@ const DeliveryStep: React.FC<DeliveryStepProps> = ({
       phone: '',
       instructions: '',
       preferredDay: '',
+      preferredTimeSlot: '',
     }
   );
   const [errors, setErrors] = useState<ValidationErrors>({});
+
+  // Determine available time slots based on selected day
+  const availableTimeSlots = useMemo(() => {
+    if (!formData.preferredDay) return [];
+    return formData.preferredDay === 'Saturday' ? SATURDAY_TIME_SLOTS : WEEKDAY_TIME_SLOTS;
+  }, [formData.preferredDay]);
 
   const validatePostcode = (postcode: string): boolean => {
     // UK postcode validation
@@ -73,6 +81,10 @@ const DeliveryStep: React.FC<DeliveryStepProps> = ({
       newErrors.preferredDay = 'Please select a preferred delivery day';
     }
 
+    if (!formData.preferredTimeSlot) {
+      newErrors.preferredTimeSlot = 'Please select a preferred delivery time';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -88,6 +100,19 @@ const DeliveryStep: React.FC<DeliveryStepProps> = ({
       setErrors((prev) => {
         const updated = { ...prev };
         delete updated[field as keyof ValidationErrors];
+        return updated;
+      });
+    }
+
+    // Reset time slot when day changes
+    if (field === 'preferredDay' && formData.preferredTimeSlot) {
+      setFormData((prev) => ({
+        ...prev,
+        preferredTimeSlot: '',
+      }));
+      setErrors((prev) => {
+        const updated = { ...prev };
+        delete updated.preferredTimeSlot;
         return updated;
       });
     }
@@ -212,6 +237,39 @@ const DeliveryStep: React.FC<DeliveryStepProps> = ({
             <span className={styles.errorMessage}>{errors.preferredDay}</span>
           )}
         </div>
+
+        {/* Preferred Time Slot - Only show when day is selected */}
+        {formData.preferredDay && (
+          <div className={styles.formGroup}>
+            <label htmlFor="preferredTimeSlot" className={styles.label}>
+              <Clock size={16} className={styles.labelIcon} />
+              Preferred Delivery Time <span className={styles.required}>*</span>
+            </label>
+            <div className={styles.timeSlotGrid}>
+              {availableTimeSlots.map((slot) => (
+                <button
+                  key={slot}
+                  type="button"
+                  className={`${styles.timeSlotButton} ${
+                    formData.preferredTimeSlot === slot ? styles.timeSlotButtonActive : ''
+                  }`}
+                  onClick={() => handleFieldChange('preferredTimeSlot', slot)}
+                >
+                  <Clock size={16} className={styles.timeSlotIcon} />
+                  <span>{slot}</span>
+                </button>
+              ))}
+            </div>
+            {errors.preferredTimeSlot && (
+              <span className={styles.errorMessage}>{errors.preferredTimeSlot}</span>
+            )}
+            <span className={styles.helperText}>
+              {formData.preferredDay === 'Saturday'
+                ? 'Saturday delivery windows'
+                : 'Weekday delivery windows'}
+            </span>
+          </div>
+        )}
 
         {/* Delivery Instructions */}
         <div className={styles.formGroup}>

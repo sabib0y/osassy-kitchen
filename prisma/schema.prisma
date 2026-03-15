@@ -82,20 +82,27 @@ model MenuItem {
 }
 
 model Subscription {
-  id                   String               @id @default(cuid())
-  userId               String
-  planName             String
-  interval             SubscriptionInterval
-  price                Float
-  stripeSubscriptionId String               @unique
-  status               SubscriptionStatus   @default(ACTIVE)
-  startDate            DateTime             @default(now())
-  nextDeliveryDate     DateTime
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
-  orders               Order[]
-  user                 User                 @relation(fields: [userId], references: [id])
-  subscriptionItems    SubscriptionItem[]
+  id                        String               @id @default(cuid())
+  userId                    String
+  planName                  String
+  interval                  SubscriptionInterval
+  price                     Float
+  stripeSubscriptionId      String               @unique
+  status                    SubscriptionStatus   @default(ACTIVE)
+  startDate                 DateTime             @default(now())
+  nextDeliveryDate          DateTime
+  preferredDeliveryDay      String?
+  preferredDeliveryTimeSlot String?
+  deliveryAddress           String?
+  deliveryCity              String?
+  deliveryPostcode          String?
+  deliveryPhone             String?
+  deliveryInstructions      String?
+  createdAt                 DateTime             @default(now())
+  updatedAt                 DateTime             @updatedAt
+  orders                    Order[]
+  user                      User                 @relation(fields: [userId], references: [id])
+  subscriptionItems         SubscriptionItem[]
 }
 
 model SubscriptionItem {

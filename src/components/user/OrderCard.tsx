@@ -15,7 +15,6 @@ import styles from '../../styles/components/user/orders.module.scss';
 
 interface OrderCardProps {
   order: OrderResponse;
-  onViewDetails?: (orderId: string) => void;
   onDownloadInvoice?: (orderId: string) => void;
   isExpanded?: boolean;
   onToggleExpand?: (orderId: string) => void;
@@ -23,7 +22,6 @@ interface OrderCardProps {
 
 const OrderCard: React.FC<OrderCardProps> = ({
   order,
-  onViewDetails,
   onDownloadInvoice,
   isExpanded = false,
   onToggleExpand,
@@ -98,17 +96,6 @@ const OrderCard: React.FC<OrderCardProps> = ({
               aria-label={isExpanded ? 'Collapse order details' : 'Expand order details'}
             >
               <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'}`}></i>
-            </button>
-          )}
-          
-          {onViewDetails && (
-            <button
-              className={styles.viewBtn}
-              onClick={() => onViewDetails(order.id)}
-              aria-label="View order details"
-            >
-              <i className="fas fa-eye"></i>
-              View
             </button>
           )}
           

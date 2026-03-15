@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import DeliveryStep from '../../../components/meal-plans/DeliveryStep';
+import DeliveryStep from '../../../components/meals/DeliveryStep';
 import { DeliveryDetails } from '../../../types/meal-plans';
 
 describe('DeliveryStep Component', () => {
@@ -11,10 +11,11 @@ describe('DeliveryStep Component', () => {
     phone: '07700900000',
     instructions: 'Ring the bell',
     preferredDay: 'Monday',
+    preferredTimeSlot: '9:00 AM - 12:00 PM',
   };
 
-  const mockOnUpdate = jest.fn();
   const mockOnContinue = jest.fn();
+  const mockOnBack = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -23,13 +24,13 @@ describe('DeliveryStep Component', () => {
   it('renders all form fields correctly', () => {
     render(
       <DeliveryStep
-        deliveryDetails={mockDeliveryDetails}
-        onUpdate={mockOnUpdate}
+        initialData={mockDeliveryDetails}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 
-    expect(screen.getByLabelText(/delivery address/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/street address/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/city/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/postcode/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/phone number/i)).toBeInTheDocument();
@@ -40,9 +41,9 @@ describe('DeliveryStep Component', () => {
   it('displays pre-filled values when deliveryDetails are provided', () => {
     render(
       <DeliveryStep
-        deliveryDetails={mockDeliveryDetails}
-        onUpdate={mockOnUpdate}
+        initialData={mockDeliveryDetails}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 
@@ -53,25 +54,6 @@ describe('DeliveryStep Component', () => {
     expect(screen.getByDisplayValue('Ring the bell')).toBeInTheDocument();
   });
 
-  it('calls onUpdate when form fields change', () => {
-    render(
-      <DeliveryStep
-        deliveryDetails={mockDeliveryDetails}
-        onUpdate={mockOnUpdate}
-        onContinue={mockOnContinue}
-      />
-    );
-
-    const addressInput = screen.getByLabelText(/delivery address/i);
-    fireEvent.change(addressInput, { target: { value: '456 New Street' } });
-
-    expect(mockOnUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        address: '456 New Street',
-      })
-    );
-  });
-
   it('validates required fields before continuing', async () => {
     const emptyDetails: DeliveryDetails = {
       address: '',
@@ -79,13 +61,14 @@ describe('DeliveryStep Component', () => {
       postcode: '',
       phone: '',
       preferredDay: '',
+      preferredTimeSlot: '',
     };
 
     render(
       <DeliveryStep
-        deliveryDetails={emptyDetails}
-        onUpdate={mockOnUpdate}
+        initialData={emptyDetails}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 
@@ -107,9 +90,9 @@ describe('DeliveryStep Component', () => {
 
     render(
       <DeliveryStep
-        deliveryDetails={invalidPostcode}
-        onUpdate={mockOnUpdate}
+        initialData={invalidPostcode}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 
@@ -117,7 +100,7 @@ describe('DeliveryStep Component', () => {
     fireEvent.click(continueButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/invalid postcode format/i)).toBeInTheDocument();
+      expect(screen.getByText(/valid UK postcode/i)).toBeInTheDocument();
     });
   });
 
@@ -129,9 +112,9 @@ describe('DeliveryStep Component', () => {
 
     render(
       <DeliveryStep
-        deliveryDetails={invalidPhone}
-        onUpdate={mockOnUpdate}
+        initialData={invalidPhone}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 
@@ -139,16 +122,16 @@ describe('DeliveryStep Component', () => {
     fireEvent.click(continueButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/invalid phone number/i)).toBeInTheDocument();
+      expect(screen.getByText(/valid UK phone number/i)).toBeInTheDocument();
     });
   });
 
   it('calls onContinue when all validations pass', async () => {
     render(
       <DeliveryStep
-        deliveryDetails={mockDeliveryDetails}
-        onUpdate={mockOnUpdate}
+        initialData={mockDeliveryDetails}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 
@@ -163,9 +146,9 @@ describe('DeliveryStep Component', () => {
   it('shows all delivery day options in dropdown', () => {
     render(
       <DeliveryStep
-        deliveryDetails={mockDeliveryDetails}
-        onUpdate={mockOnUpdate}
+        initialData={mockDeliveryDetails}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 
@@ -185,9 +168,9 @@ describe('DeliveryStep Component', () => {
 
     render(
       <DeliveryStep
-        deliveryDetails={noInstructions}
-        onUpdate={mockOnUpdate}
+        initialData={noInstructions}
         onContinue={mockOnContinue}
+        onBack={mockOnBack}
       />
     );
 

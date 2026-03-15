@@ -37,6 +37,7 @@ interface OrderConfirmationProps {
   total?: number;
   billingInterval?: 'WEEKLY' | 'MONTHLY';
   nextDeliveryDate?: Date;
+  deliveryTimeSlot?: string;
   paymentMethod?: {
     brand?: string;
     last4?: string;
@@ -64,6 +65,7 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
   total = 0,
   billingInterval = 'WEEKLY',
   nextDeliveryDate,
+  deliveryTimeSlot,
   paymentMethod,
   deliveryAddress,
   isLoading = false,
@@ -201,6 +203,15 @@ const OrderConfirmation: React.FC<OrderConfirmationProps> = ({
                 Every {billingInterval === 'WEEKLY' ? 'week' : 'month'}
               </span>
             </div>
+            {deliveryTimeSlot && (
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>
+                  <Clock className="w-4 h-4 inline mr-1" />
+                  Time Slot:
+                </span>
+                <span className={styles.infoValue}>{deliveryTimeSlot}</span>
+              </div>
+            )}
             <div className={styles.addressSection}>
               <span className={styles.infoLabel}>
                 <MapPin className="w-4 h-4 inline mr-1" />

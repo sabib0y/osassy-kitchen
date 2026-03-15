@@ -7,6 +7,7 @@ export interface DeliveryDetails {
   phone: string;
   instructions?: string;
   preferredDay: string;
+  preferredTimeSlot: string;
 }
 
 export interface MealPlan {
@@ -42,6 +43,20 @@ export const DELIVERY_DAYS = [
 ] as const;
 
 export type DeliveryDay = typeof DELIVERY_DAYS[number];
+
+export const WEEKDAY_TIME_SLOTS = [
+  '9:00 AM - 12:00 PM',
+  '12:00 PM - 3:00 PM',
+  '3:00 PM - 6:00 PM',
+] as const;
+
+export const SATURDAY_TIME_SLOTS = [
+  '10:00 AM - 1:00 PM',
+  '1:00 PM - 4:00 PM',
+] as const;
+
+export type WeekdayTimeSlot = typeof WEEKDAY_TIME_SLOTS[number];
+export type SaturdayTimeSlot = typeof SATURDAY_TIME_SLOTS[number];
 
 // API Request/Response Types
 export interface CreateMealPlanSubscriptionRequest {

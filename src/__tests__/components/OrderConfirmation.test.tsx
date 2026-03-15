@@ -216,6 +216,13 @@ describe('OrderConfirmation', () => {
       expect(screen.getAllByText(/February 1, 2024/).length).toBeGreaterThan(0)
     })
 
+    it('should display delivery time slot when provided', () => {
+      render(<OrderConfirmation {...defaultProps} deliveryTimeSlot="12:00 PM - 2:00 PM" />)
+
+      expect(screen.getByText(/Time Slot/)).toBeInTheDocument()
+      expect(screen.getByText('12:00 PM - 2:00 PM')).toBeInTheDocument()
+    })
+
     it('should display payment method', () => {
       render(<OrderConfirmation {...defaultProps} />)
 
@@ -310,6 +317,12 @@ describe('OrderConfirmation', () => {
 
       expect(screen.getByText(/Delivery Address/)).toBeInTheDocument()
       expect(screen.getByText('Address will be confirmed')).toBeInTheDocument()
+    })
+
+    it('should not display time slot row when deliveryTimeSlot is not provided', () => {
+      render(<OrderConfirmation />)
+
+      expect(screen.queryByText(/Time Slot/)).not.toBeInTheDocument()
     })
 
     it('should format currency correctly', () => {

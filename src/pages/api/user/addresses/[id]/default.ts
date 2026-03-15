@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../../../../../lib/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -69,7 +67,5 @@ export default async function handler(
       message: 'Failed to set default address',
       error: errorMessage
     });
-  } finally {
-    await prisma.$disconnect();
   }
 }

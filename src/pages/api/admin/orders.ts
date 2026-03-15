@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../lib/prisma';
 import { broadcastOrderUpdate, getWebSocketServer } from '@/lib/websocket';
 import { EventType, EventCategory, OrderStatus } from '@/types/websocket';
-
-const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,

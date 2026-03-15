@@ -47,7 +47,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscription 
   };
 
   const getTotalItems = () => {
-    return subscription.items.reduce((sum, item) => sum + item.quantity, 0);
+    return (subscription.items || []).reduce((sum, item) => sum + item.quantity, 0);
   };
 
   const getNextDeliveryInfo = () => {
@@ -130,7 +130,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscription 
           <div className={styles.deliveryItems}>
             <h4>You&apos;ll receive:</h4>
             <ul>
-              {subscription.items.map(item => (
+              {(subscription.items || []).map(item => (
                 <li key={item.id}>
                   {item.quantity}x {item.menuItem.name}
                 </li>
@@ -170,7 +170,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscription 
       </div>
       
       <div className={styles.itemsList}>
-        {subscription.items.map(item => (
+        {(subscription.items || []).map(item => (
           <div key={item.id} className={styles.itemCard}>
             {item.menuItem.imageUrl && (
               <div className={styles.itemImage}>

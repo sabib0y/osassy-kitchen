@@ -18,6 +18,39 @@ When reporting a bug, add an entry under "Open Bugs" with:
 
 ## Open Bugs
 
+### BUG-003: Delivery time slots need business validation
+- **Reported:** March 14, 2026
+- **Severity:** Medium
+- **Status:** Open
+- **Affected Area:** Delivery step in subscription wizard
+
+**Description:**
+The delivery time slots currently shown to users may not reflect actual availability for the client (Osassy's Kitchen) to deliver food. Time slots need to be validated against business constraints such as:
+- Kitchen preparation times
+- Driver availability
+- Geographic delivery zones
+- Cut-off times for same-day/next-day orders
+
+**Steps to Reproduce:**
+1. Go through the meal plan wizard
+2. Reach the delivery step
+3. Note that time slots are shown without consideration of business availability
+
+**Expected:** Only show time slots that the business can actually fulfil
+**Actual:** Time slots may be displayed that aren't operationally feasible
+
+**Notes:**
+This requires business input to define:
+- Available delivery days (e.g., Tue/Wed/Thu only?)
+- Available time windows (e.g., 12pm-2pm, 6pm-8pm)
+- Lead time required (e.g., orders must be placed 48hrs in advance)
+- Geographic restrictions per time slot
+- Maximum orders per slot (capacity)
+
+Consider implementing a delivery slot configuration in admin dashboard.
+
+---
+
 ### BUG-002: Meal Plans nav link skips process explainer page
 - **Reported:** March 14, 2026
 - **Severity:** Low
@@ -130,7 +163,7 @@ Document created as reference template.
 
 | Status | Count |
 |--------|-------|
-| Open | 2 |
+| Open | 3 |
 | In Progress | 0 |
 | Fixed (This Phase) | 0 |
 | Total Closed | 0 |

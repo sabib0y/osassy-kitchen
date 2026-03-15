@@ -49,7 +49,14 @@ interface DeliveryDetails {
   postcode: string;
   phone: string;
   deliveryInstructions: string;
+  preferredDay: string;
+  preferredTimeSlot: string;
 }
+
+const DELIVERY_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+const WEEKDAY_TIME_SLOTS = ['9:00 AM - 12:00 PM', '12:00 PM - 3:00 PM', '3:00 PM - 6:00 PM'];
+const SATURDAY_TIME_SLOTS = ['10:00 AM - 1:00 PM', '1:00 PM - 4:00 PM'];
 
 interface CreateSubscriptionPageProps {
   menuItems: MenuItem[];
@@ -86,7 +93,9 @@ const CreateSubscriptionPage: React.FC<CreateSubscriptionPageProps> = ({
     city: '',
     postcode: '',
     phone: '',
-    deliveryInstructions: ''
+    deliveryInstructions: '',
+    preferredDay: '',
+    preferredTimeSlot: ''
   });
 
   // Filter state (for meals step)
@@ -223,8 +232,25 @@ const CreateSubscriptionPage: React.FC<CreateSubscriptionPageProps> = ({
       deliveryDetails.addressLine1.trim() !== '' &&
       deliveryDetails.city.trim() !== '' &&
       deliveryDetails.postcode.trim() !== '' &&
-      deliveryDetails.phone.trim() !== ''
+      deliveryDetails.phone.trim() !== '' &&
+      deliveryDetails.preferredDay.trim() !== '' &&
+      deliveryDetails.preferredTimeSlot.trim() !== ''
     );
+  };
+
+  const getAvailableTimeSlots = () => {
+    if (deliveryDetails.preferredDay === 'Saturday') {
+      return SATURDAY_TIME_SLOTS;
+    }
+    return WEEKDAY_TIME_SLOTS;
+  };
+
+  const handleDayChange = (day: string) => {
+    setDeliveryDetails(prev => ({
+      ...prev,
+      preferredDay: day,
+      preferredTimeSlot: '' // Reset time slot when day changes
+    }));
   };
 
   // Payment submission
@@ -257,6 +283,8 @@ const CreateSubscriptionPage: React.FC<CreateSubscriptionPageProps> = ({
             postcode: deliveryDetails.postcode,
             phone: deliveryDetails.phone,
             deliveryInstructions: deliveryDetails.deliveryInstructions,
+            preferredDay: deliveryDetails.preferredDay,
+            preferredTimeSlot: deliveryDetails.preferredTimeSlot,
           },
         }),
       });
@@ -723,6 +751,45 @@ const CreateSubscriptionPage: React.FC<CreateSubscriptionPageProps> = ({
                       placeholder="e.g., Ring doorbell, leave with neighbour..."
                       rows={3}
                     />
+                  </div>
+
+                  <div className={styles.deliverySchedule}>
+                    <h3>Delivery Schedule *</h3>
+                    <p className={styles.scheduleHint}>Choose your preferred delivery day and time slot</p>
+
+                    <div className={styles.formGroup}>
+                      <label>Preferred Day</label>
+                      <div className={styles.daySelector}>
+                        {DELIVERY_DAYS.map(day => (
+                          <button
+                            key={day}
+                            type="button"
+                            className={`${styles.dayButton} ${deliveryDetails.preferredDay === day ? styles.selected : ''}`}
+                            onClick={() => handleDayChange(day)}
+                          >
+                            {day}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {deliveryDetails.preferredDay && (
+                      <div className={styles.formGroup}>
+                        <label>Preferred Time Slot</label>
+                        <div className={styles.timeSlotSelector}>
+                          {getAvailableTimeSlots().map(slot => (
+                            <button
+                              key={slot}
+                              type="button"
+                              className={`${styles.timeSlotButton} ${deliveryDetails.preferredTimeSlot === slot ? styles.selected : ''}`}
+                              onClick={() => handleDeliveryChange('preferredTimeSlot', slot)}
+                            >
+                              {slot}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

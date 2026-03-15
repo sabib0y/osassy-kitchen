@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { buffer } from 'micro';
-import { PrismaClient } from '@prisma/client';
 import Stripe from 'stripe';
+import prisma from '../../../lib/prisma';
 import stripe from '../../../lib/stripe';
 
 // Disable body parsing to receive raw body for webhook verification
@@ -11,11 +11,65 @@ export const config = {
   },
 };
 
-const prisma = new PrismaClient();
-
 interface CheckoutSessionMetadata {
   userId: string;
   items: string;
+  // Delivery details
+  deliveryAddress?: string;
+  deliveryCity?: string;
+  deliveryPostcode?: string;
+  deliveryPhone?: string;
+  deliveryInstructions?: string;
+  preferredDay?: string;
+  preferredTimeSlot?: string;
+}
+
+/**
+ * Calculate the next delivery date based on the preferred day.
+ * Finds the next occurrence of the preferred day that is at least 7 days from now.
+ * @param preferredDay - Day of the week (e.g., 'monday', 'tuesday', etc.)
+ * @returns Date object for the next delivery
+ */
+function calculateNextDeliveryDate(preferredDay?: string): Date {
+  const now = new Date();
+  const minimumDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+
+  if (!preferredDay) {
+    // No preference - just return 7 days from now
+    return minimumDate;
+  }
+
+  const dayMap: Record<string, number> = {
+    sunday: 0,
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
+  };
+
+  const targetDay = dayMap[preferredDay.toLowerCase()];
+
+  if (targetDay === undefined) {
+    // Invalid day - return 7 days from now
+    console.log(`[Webhook] Invalid preferredDay: ${preferredDay}, defaulting to 7 days from now`);
+    return minimumDate;
+  }
+
+  // Start from the minimum date (7 days from now)
+  const result = new Date(minimumDate);
+  const currentDay = result.getDay();
+
+  // Calculate days until the next occurrence of the target day
+  let daysUntilTarget = targetDay - currentDay;
+  if (daysUntilTarget < 0) {
+    daysUntilTarget += 7; // Move to next week
+  }
+
+  result.setDate(result.getDate() + daysUntilTarget);
+
+  return result;
 }
 
 interface SubscriptionItem {
@@ -81,7 +135,19 @@ export default async function handler(
           return res.status(400).json({ error: 'User not found' });
         }
 
-        // Create subscription record
+        // Calculate next delivery date based on preferred day
+        const nextDeliveryDate = calculateNextDeliveryDate(metadata.preferredDay);
+
+        console.log('[Webhook] Delivery preferences:', {
+          preferredDay: metadata.preferredDay,
+          preferredTimeSlot: metadata.preferredTimeSlot,
+          address: metadata.deliveryAddress,
+          city: metadata.deliveryCity,
+          postcode: metadata.deliveryPostcode,
+          calculatedDeliveryDate: nextDeliveryDate.toISOString(),
+        });
+
+        // Create subscription record with delivery preferences
         const subscription = await prisma.subscription.create({
           data: {
             userId: metadata.userId,
@@ -90,7 +156,15 @@ export default async function handler(
             interval: 'WEEKLY', // Default, can be enhanced later
             price: (session.amount_total || 0) / 100,
             status: 'ACTIVE',
-            nextDeliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
+            nextDeliveryDate: nextDeliveryDate,
+            // Delivery preferences
+            preferredDeliveryDay: metadata.preferredDay || null,
+            preferredDeliveryTimeSlot: metadata.preferredTimeSlot || null,
+            deliveryAddress: metadata.deliveryAddress || null,
+            deliveryCity: metadata.deliveryCity || null,
+            deliveryPostcode: metadata.deliveryPostcode || null,
+            deliveryPhone: metadata.deliveryPhone || null,
+            deliveryInstructions: metadata.deliveryInstructions || null,
           },
         });
 
@@ -120,15 +194,13 @@ export default async function handler(
           return total + ((menuItem?.price || 0) * item.quantity);
         }, 0);
 
-        const deliveryDate = new Date();
-        deliveryDate.setDate(deliveryDate.getDate() + 7); // 1 week from now
-
+        // Use the same calculated delivery date as the subscription
         const order = await prisma.order.create({
           data: {
             userId: metadata.userId,
             subscriptionId: subscription.id,
             totalPrice: totalPrice,
-            deliveryDate: deliveryDate,
+            deliveryDate: nextDeliveryDate,
             status: 'PENDING',
             notes: `Initial order from subscription: ${subscription.planName}`,
           },

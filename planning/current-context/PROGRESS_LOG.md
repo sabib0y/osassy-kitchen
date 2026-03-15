@@ -1,13 +1,129 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** March 15, 2026 - Afternoon (15:24 GMT)
+**Last Updated:** March 14, 2026 - Evening (20:44 GMT)
 
 ## Overall Project Status
-The project is in **Phase 6: Subscription-First Architecture**. Authentication fully implemented with Google OAuth and email flows. Subscription checkout flow working end-to-end with Stripe. User profile with addresses now functional.
+The project is in **Phase 6: Subscription-First Architecture**. Authentication fully implemented with Google OAuth and email flows. Subscription checkout flow working end-to-end with Stripe. User profile with addresses now functional. **Delivery time slot selection added to subscription creation flow.** Bug tracker established for issue tracking.
 
 ---
 
 ## 🏗️ **PHASE 6: SUBSCRIPTION-FIRST ARCHITECTURE**
+
+### Session: March 14, 2026 - Evening (20:44 GMT)
+
+#### ✅ **Completed:**
+
+1. **Bug Tracker Created**
+   - `planning/current-context/BUG_TRACKER.md` — centralised bug tracking document
+   - Severity guide, statistics, and templates
+   - Added reference to `CLAUDE.md` for future sessions
+
+2. **Global TDD Requirement**
+   - Updated `~/.claude/CLAUDE.md` to make TDD mandatory by default
+   - All coding tasks must write tests first unless explicitly opted out
+
+3. **OrderConfirmation Component Enhancement**
+   - Added `deliveryTimeSlot` prop to display selected time slot
+   - Shows in Delivery Information section with Clock icon
+   - TDD approach: wrote failing tests first, then implemented
+
+4. **My Orders Page Cleanup**
+   - Removed "View" button — users now use expand/collapse chevron
+   - Removed "Place New Order" button — orders created via subscriptions
+   - Removed unused modal component and state
+
+#### 🐛 **Bugs Logged:**
+- BUG-001: Sign-out not syncing across browser tabs (High)
+- BUG-002: Meal Plans nav link skips process explainer page (Low)
+- BUG-003: Delivery time slots need business validation (Medium)
+
+---
+
+### Session: March 15, 2026 - Evening (18:28 GMT)
+
+#### ✅ **Completed:**
+
+1. **Subscription List Page Simplified**
+   - Removed "All" and "Cancelled" tabs — now only shows Active and Paused subscriptions
+   - Cancelled subscriptions hidden from user view
+   - Updated summary footer to show Active/Paused counts
+
+2. **Resume Subscription Flow**
+   - Created `/user/subscriptions/[id]/resume` page
+   - Users must select new delivery schedule when resuming (7+ days notice for chef)
+   - Includes first delivery date picker, preferred day, and time slot selection
+   - Updated API to require delivery details when resuming
+
+3. **Delivery Time Slot Selection (New Feature)**
+   - Added to both `/user/subscriptions/create` and `/meal-plans/create` wizards
+   - Day selector: Monday-Saturday
+   - Time slots: Weekdays (9AM-12PM, 12PM-3PM, 3PM-6PM), Saturday (10AM-1PM, 1PM-4PM)
+   - Required fields before proceeding to payment
+   - Prisma migration: Added 7 delivery preference fields to Subscription model
+
+4. **API & Webhook Updates**
+   - Subscribe API now passes all delivery fields to Stripe metadata
+   - Webhook calculates `nextDeliveryDate` based on preferred day (next occurrence 7+ days out)
+   - Delivery preferences saved to Subscription record
+
+5. **Test Coverage**
+   - 66 tests for DeliveryStep component
+   - 40 tests for subscribe API
+   - 8 new tests for webhook delivery preferences
+
+#### 📝 **Uncommitted Changes:**
+
+25 files modified, ~985 additions:
+- Prisma schema + migration for delivery preferences
+- Both subscription create pages with time slot UI
+- Resume subscription page and styles
+- API and webhook updates
+- Test files
+
+---
+
+### Session: March 15, 2026 - Evening (16:42 GMT)
+
+#### ✅ **Completed:**
+
+1. **Test Coverage for Recent Work**
+   - Added 49 tests for Address API CRUD endpoints (`src/__tests__/api/user/addresses.test.ts`)
+   - Added 27 tests for Stripe webhook Order creation (`src/__tests__/api/webhooks/stripe.test.ts`)
+   - Updated NotificationPreferences tests (removed push/SMS notifications)
+   - All 88 new tests passing
+
+2. **Committed & Pushed All Changes**
+   - Commit `ed9993b`: Google OAuth, email flows, address management, test coverage
+   - Commit `30710eb`: Removed SMS notifications from notification preferences
+   - Both pushed to `creating-subscription-app` branch
+
+3. **Removed SMS Notifications**
+   - Removed SMS section from `NotificationPreferences.tsx`
+   - Updated tests accordingly
+   - Only Email Notifications remain (as designed)
+
+4. **Updated Project Plan**
+   - Added "Deferred Features" section to `project-plan.md`
+   - Documented: Email notifications (blocked on DNS), notification preferences persistence, `/meals`, `/catering`, `/delivery-areas`
+   - Updated route status table (marked `/meal-plans`, `/faq`, `/user/subscriptions/create` as ✅ Done)
+
+5. **Fixed Subscription Details Page**
+   - Fixed crash when clicking "Manage" on subscription (TypeError: undefined items)
+   - Added safety checks for `subscription.items || []` in `SubscriptionDetails.tsx`
+   - Fixed API to transform `subscriptionItems` → `items` for frontend compatibility (`/api/user/subscriptions/[id].ts`)
+
+#### ⏳ **In Progress:**
+
+- Subscription items not displaying in "Manage" view — API fix applied but not yet tested
+
+#### 📝 **Uncommitted Changes:**
+
+3 files modified:
+- `planning/current-context/project-plan.md` — Added deferred features section
+- `src/components/user/SubscriptionDetails.tsx` — Safety checks for undefined items
+- `src/pages/api/user/subscriptions/[id].ts` — Transform subscriptionItems to items
+
+---
 
 ### Session: March 15, 2026 - Afternoon (15:24 GMT)
 
