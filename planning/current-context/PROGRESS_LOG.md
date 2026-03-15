@@ -1,13 +1,37 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** March 14, 2026 - Evening (20:44 GMT)
+**Last Updated:** March 15, 2026 - Evening (20:00 GMT)
 
 ## Overall Project Status
-The project is in **Phase 6: Subscription-First Architecture**. Authentication fully implemented with Google OAuth and email flows. Subscription checkout flow working end-to-end with Stripe. User profile with addresses now functional. **Delivery time slot selection added to subscription creation flow.** Bug tracker established for issue tracking.
+The project is in **Phase 6: Subscription-First Architecture**. Authentication fully implemented with Google OAuth and email flows. Subscription checkout flow working end-to-end with Stripe. User profile with addresses now functional. Delivery time slot selection added to subscription creation flow. **Critical fix: Prisma singleton now used across all API files to prevent database connection exhaustion.** Project plan updated to reflect current implementation status.
 
 ---
 
 ## 🏗️ **PHASE 6: SUBSCRIPTION-FIRST ARCHITECTURE**
+
+### Session: March 15, 2026 - Evening (20:00 GMT)
+
+#### ✅ **Completed:**
+
+1. **Prisma Singleton Fix (Critical)**
+   - Fixed database connection exhaustion issue ("too many clients already")
+   - Updated 20+ API files to use singleton from `@/lib/prisma`
+   - Removed harmful `prisma.$disconnect()` calls in finally blocks
+   - Files fixed: all `/api/user/*`, `/api/admin/*`, `/api/webhooks/*`, `/api/subscribe.ts`, etc.
+
+2. **Project Plan Update**
+   - Updated `planning/current-context/project-plan.md` to reflect actual implementation state
+   - Marked Milestones 6.1-6.4 as complete
+   - Added new routes: `/meals`, `/our-process`, `/user/subscriptions/[id]/resume`
+   - Updated API structure documentation with new endpoints
+   - Updated database schema with delivery preference fields
+
+#### 📝 **Committed:**
+- Commit `389c371`: fix: use Prisma singleton to prevent database connection exhaustion
+- 50 files changed, +3575/-389 lines
+- Pushed to `creating-subscription-app` branch
+
+---
 
 ### Session: March 14, 2026 - Evening (20:44 GMT)
 
