@@ -22,7 +22,7 @@ const NotificationPreferencesComponent: React.FC<NotificationPreferencesProps> =
   }, [preferences]);
 
   const handleToggle = (
-    category: 'emailNotifications' | 'smsNotifications',
+    category: 'emailNotifications',
     setting: string,
     value: boolean
   ) => {
@@ -206,73 +206,6 @@ const NotificationPreferencesComponent: React.FC<NotificationPreferencesProps> =
             </div>
           </div>
         </div>
-
-        {/* SMS Notifications */}
-        <div className={styles.notificationSection}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionIcon}>
-              <i className="fas fa-sms"></i>
-            </div>
-            <div className={styles.sectionInfo}>
-              <h3>SMS Notifications</h3>
-              <p>Receive important updates via text message.</p>
-            </div>
-          </div>
-
-          <div className={styles.notificationList}>
-            <div className={styles.notificationItem}>
-              <div className={styles.itemInfo}>
-                <label htmlFor="smsOrderConfirmation">Order Confirmation</label>
-                <small>Get SMS when your order is confirmed</small>
-              </div>
-              <label className={styles.toggleSwitch}>
-                <input
-                  id="smsOrderConfirmation"
-                  type="checkbox"
-                  checked={localPreferences.smsNotifications.orderConfirmation}
-                  onChange={(e) => handleToggle('smsNotifications', 'orderConfirmation', e.target.checked)}
-                  disabled={isSubmitting}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
-
-            <div className={styles.notificationItem}>
-              <div className={styles.itemInfo}>
-                <label htmlFor="smsDeliveryReminders">Delivery Reminders</label>
-                <small>Get SMS reminders before delivery</small>
-              </div>
-              <label className={styles.toggleSwitch}>
-                <input
-                  id="smsDeliveryReminders"
-                  type="checkbox"
-                  checked={localPreferences.smsNotifications.deliveryReminders}
-                  onChange={(e) => handleToggle('smsNotifications', 'deliveryReminders', e.target.checked)}
-                  disabled={isSubmitting}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
-
-            <div className={styles.notificationItem}>
-              <div className={styles.itemInfo}>
-                <label htmlFor="smsOrderStatus">Order Status Updates</label>
-                <small>Get SMS updates about order changes</small>
-              </div>
-              <label className={styles.toggleSwitch}>
-                <input
-                  id="smsOrderStatus"
-                  type="checkbox"
-                  checked={localPreferences.smsNotifications.orderStatusUpdates}
-                  onChange={(e) => handleToggle('smsNotifications', 'orderStatusUpdates', e.target.checked)}
-                  disabled={isSubmitting}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
       </div>
 
       {/* Save Button */}

@@ -18,11 +18,6 @@ const mockPreferences: NotificationPreferencesType = {
     promotionsAndOffers: false,
     newsletter: false
   },
-  smsNotifications: {
-    orderConfirmation: false,
-    deliveryReminders: false,
-    orderStatusUpdates: false
-  },
   createdAt: '2023-01-01T00:00:00Z',
   updatedAt: '2023-01-01T00:00:00Z'
 };
@@ -58,7 +53,6 @@ describe('NotificationPreferences', () => {
     );
 
     expect(screen.getByText('Email Notifications')).toBeInTheDocument();
-    expect(screen.getByText('SMS Notifications')).toBeInTheDocument();
 
     // Check if switches are in correct states
     const emailOrderConfirmationInput = document.getElementById('emailOrderConfirmation') as HTMLInputElement;
@@ -83,25 +77,6 @@ describe('NotificationPreferences', () => {
 
     await user.click(promotionsToggle);
     expect(promotionsToggle.checked).toBe(true);
-  });
-
-  it('toggles SMS notification settings', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <NotificationPreferences
-        preferences={mockPreferences}
-        onUpdate={mockOnUpdate}
-      />
-    );
-
-    // Find SMS order confirmation toggle
-    const smsOrderToggle = document.getElementById('smsOrderConfirmation') as HTMLInputElement;
-
-    expect(smsOrderToggle.checked).toBe(false);
-
-    await user.click(smsOrderToggle);
-    expect(smsOrderToggle.checked).toBe(true);
   });
 
   it('saves preferences when Save button is clicked', async () => {
@@ -252,7 +227,6 @@ describe('NotificationPreferences', () => {
     );
 
     expect(screen.getByText('Receive updates via email about your orders and account.')).toBeInTheDocument();
-    expect(screen.getByText('Receive important updates via text message.')).toBeInTheDocument();
   });
 
   it('displays correct notification item descriptions', () => {
@@ -269,26 +243,4 @@ describe('NotificationPreferences', () => {
     expect(screen.getByText('Get notified about subscription changes and renewals')).toBeInTheDocument();
   });
 
-  it('maintains toggle state consistency across sections', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <NotificationPreferences
-        preferences={mockPreferences}
-        onUpdate={mockOnUpdate}
-      />
-    );
-
-    // Email order confirmation should be enabled, SMS should be disabled
-    const emailToggle = document.getElementById('emailOrderConfirmation') as HTMLInputElement;
-    const smsToggle = document.getElementById('smsOrderConfirmation') as HTMLInputElement;
-
-    expect(emailToggle.checked).toBe(true);
-    expect(smsToggle.checked).toBe(false);
-
-    // Toggle SMS and verify it changes independently
-    await user.click(smsToggle);
-    expect(smsToggle.checked).toBe(true);
-    expect(emailToggle.checked).toBe(true); // Should remain unchanged
-  });
 });
