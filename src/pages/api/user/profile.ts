@@ -33,9 +33,14 @@ export default async function handler(
 
     // Handle GET request
     if (req.method === 'GET') {
-      // In a real implementation, you would fetch addresses and notification preferences from separate tables
-      // For now, we'll include mock data that matches our enhanced profile structure
-      const addresses: any[] = []; // This would come from a separate addresses table
+      // Fetch user's addresses from the database
+      const addresses = await prisma.address.findMany({
+        where: { userId: user.id },
+        orderBy: [
+          { isDefault: 'desc' },
+          { createdAt: 'desc' }
+        ]
+      });
       
       const defaultNotificationPreferences: NotificationPreferences = {
         id: `notif_${user.id}`,

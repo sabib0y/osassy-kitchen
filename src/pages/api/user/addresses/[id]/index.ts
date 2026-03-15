@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { PrismaClient } from '@prisma/client';
-import { AddressFormData } from '../../../types/user';
+import { AddressFormData } from '../../../../types/user';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +9,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== 'GET' && req.method !== 'POST') {
+  const { id } = req.query;
+
+  if (!id || typeof id !== 'string') {
+    return res.status(400).json({ message: 'Address ID is required' });
+  }
+
+  if (!['GET', 'PUT', 'DELETE', 'PATCH'].includes(req.method || '')) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
@@ -30,21 +36,22 @@ export default async function handler(
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Handle GET request - fetch user addresses
-    if (req.method === 'GET') {
-      const addresses = await prisma.address.findMany({
-        where: { userId: user.id },
-        orderBy: [
-          { isDefault: 'desc' },
-          { createdAt: 'desc' }
-        ]
-      });
+    // Verify the address belongs to this user
+    const existingAddress = await prisma.address.findFirst({
+      where: { id, userId: user.id }
+    });
 
-      return res.status(200).json({ addresses });
+    if (!existingAddress) {
+      return res.status(404).json({ message: 'Address not found' });
     }
 
-    // Handle POST request - create new address
-    if (req.method === 'POST') {
+    // Handle GET request - fetch single address
+    if (req.method === 'GET') {
+      return res.status(200).json({ address: existingAddress });
+    }
+
+    // Handle PUT request - update address
+    if (req.method === 'PUT') {
       const addressData: AddressFormData = req.body;
 
       // Validate required fields
@@ -54,17 +61,16 @@ export default async function handler(
       }
 
       // If this address is set as default, unset other defaults first
-      if (addressData.isDefault) {
+      if (addressData.isDefault && !existingAddress.isDefault) {
         await prisma.address.updateMany({
           where: { userId: user.id, isDefault: true },
           data: { isDefault: false }
         });
       }
 
-      // Create the address in the database
-      const newAddress = await prisma.address.create({
+      const updatedAddress = await prisma.address.update({
+        where: { id },
         data: {
-          userId: user.id,
           type: addressData.type || 'HOME',
           label: addressData.label,
           street: addressData.street,
@@ -77,18 +83,47 @@ export default async function handler(
         }
       });
 
-      return res.status(201).json({
-        message: 'Address created successfully',
-        address: newAddress
+      return res.status(200).json({
+        message: 'Address updated successfully',
+        address: updatedAddress
+      });
+    }
+
+    // Handle DELETE request - delete address
+    if (req.method === 'DELETE') {
+      await prisma.address.delete({
+        where: { id }
+      });
+
+      return res.status(200).json({ message: 'Address deleted successfully' });
+    }
+
+    // Handle PATCH request - used for setting default
+    if (req.method === 'PATCH') {
+      // Unset all other defaults for this user
+      await prisma.address.updateMany({
+        where: { userId: user.id, isDefault: true },
+        data: { isDefault: false }
+      });
+
+      // Set this address as default
+      const updatedAddress = await prisma.address.update({
+        where: { id },
+        data: { isDefault: true }
+      });
+
+      return res.status(200).json({
+        message: 'Default address updated',
+        address: updatedAddress
       });
     }
 
   } catch (error) {
-    console.error('Addresses API error:', error);
+    console.error('Address API error:', error);
 
     const errorMessage = error instanceof Error ? error.message : 'Failed to process request';
     res.status(500).json({
-      message: 'Failed to process addresses request',
+      message: 'Failed to process address request',
       error: errorMessage
     });
   } finally {

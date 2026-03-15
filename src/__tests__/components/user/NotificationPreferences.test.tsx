@@ -23,12 +23,6 @@ const mockPreferences: NotificationPreferencesType = {
     deliveryReminders: false,
     orderStatusUpdates: false
   },
-  pushNotifications: {
-    orderConfirmation: true,
-    orderStatusUpdates: true,
-    deliveryReminders: true,
-    promotions: false
-  },
   createdAt: '2023-01-01T00:00:00Z',
   updatedAt: '2023-01-01T00:00:00Z'
 };
@@ -65,7 +59,6 @@ describe('NotificationPreferences', () => {
 
     expect(screen.getByText('Email Notifications')).toBeInTheDocument();
     expect(screen.getByText('SMS Notifications')).toBeInTheDocument();
-    expect(screen.getByText('Push Notifications')).toBeInTheDocument();
 
     // Check if switches are in correct states
     const emailOrderConfirmationInput = document.getElementById('emailOrderConfirmation') as HTMLInputElement;
@@ -109,23 +102,6 @@ describe('NotificationPreferences', () => {
 
     await user.click(smsOrderToggle);
     expect(smsOrderToggle.checked).toBe(true);
-  });
-
-  it('toggles push notification settings', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <NotificationPreferences
-        preferences={mockPreferences}
-        onUpdate={mockOnUpdate}
-      />
-    );
-
-    const pushPromotionsToggle = document.getElementById('pushPromotions') as HTMLInputElement;
-    expect(pushPromotionsToggle.checked).toBe(false);
-
-    await user.click(pushPromotionsToggle);
-    expect(pushPromotionsToggle.checked).toBe(true);
   });
 
   it('saves preferences when Save button is clicked', async () => {
@@ -277,7 +253,6 @@ describe('NotificationPreferences', () => {
 
     expect(screen.getByText('Receive updates via email about your orders and account.')).toBeInTheDocument();
     expect(screen.getByText('Receive important updates via text message.')).toBeInTheDocument();
-    expect(screen.getByText('Get real-time notifications on your device.')).toBeInTheDocument();
   });
 
   it('displays correct notification item descriptions', () => {

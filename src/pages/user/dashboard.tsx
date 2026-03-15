@@ -27,7 +27,6 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
   const [stats, setStats] = useState<DashboardStats>({
     activeSubscriptions: 0,
     totalOrders: 0,
-    upcomingDeliveries: 0,
     totalSpent: 0
   });
 
@@ -64,18 +63,13 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
       setOrders(orderData.orders || []);
       
       // Calculate order stats
-      const upcoming = orderData.orders?.filter((o) => 
-        o.status === 'PENDING' || o.status === 'IN_PROGRESS'
-      ).length || 0;
-      
-      const totalSpent = orderData.orders?.reduce((sum, o) => 
+      const totalSpent = orderData.orders?.reduce((sum, o) =>
         sum + (o.totalPrice || 0), 0
       ) || 0;
-      
-      setStats(prev => ({ 
-        ...prev, 
+
+      setStats(prev => ({
+        ...prev,
         totalOrders: orderData.orders?.length || 0,
-        upcomingDeliveries: upcoming,
         totalSpent
       }));
     } catch (error) {
@@ -191,15 +185,6 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
               <div className={styles.statContent}>
                 <h3>{stats.totalOrders}</h3>
                 <p>Total Orders</p>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statIcon}>
-                <i className="fas fa-truck"></i>
-              </div>
-              <div className={styles.statContent}>
-                <h3>{stats.upcomingDeliveries}</h3>
-                <p>Upcoming Deliveries</p>
               </div>
             </div>
             <div className={styles.statCard}>

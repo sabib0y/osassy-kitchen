@@ -346,8 +346,17 @@ git push origin feature/feature-name
 - **Planning**: `/planning/` directory
 - **Progress Log**: `/planning/current-context/PROGRESS_LOG.md`
 - **Site Map**: `/planning/current-context/SITE_MAP.md`
+- **Bug Tracker**: `/planning/current-context/BUG_TRACKER.md`
 - **API Docs**: See individual API route files
 - **Design System**: `/src/styles/unified-theme.scss`
+
+## Bug Reporting
+
+When a user mentions logging a bug or reports an issue, check and update the Bug Tracker at `/planning/current-context/BUG_TRACKER.md`:
+1. Assign the next available BUG-XXX ID
+2. Fill in severity, affected area, steps to reproduce
+3. Update the statistics table
+4. When a bug is fixed, move it to the "Fixed Bugs" section with resolution notes
 
 ---
 

@@ -22,12 +22,32 @@ const ForgotPasswordPage: NextPage = () => {
       return;
     }
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email.toLowerCase().trim() })
+      });
 
-    // For now, just show success message (no actual email sending)
-    setIsSubmitted(true);
-    setIsLoading(false);
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle rate limiting
+        if (response.status === 429) {
+          throw new Error(data.error || 'Too many attempts. Please try again later.');
+        }
+        throw new Error(data.message || 'An error occurred. Please try again.');
+      }
+
+      // Always show success message (prevents email enumeration)
+      setIsSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

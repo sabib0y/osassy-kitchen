@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import prisma from '@/lib/prisma';
 import { signupRateLimiter } from '@/lib/rateLimit';
+import { sendVerificationEmail } from '@/lib/email';
 
 /**
  * Validates email format using a standard regex pattern
@@ -87,9 +89,31 @@ export default async function handler(
       },
     });
 
-    // Only return safe fields, exclude password hash
+    // Generate verification token
+    const verificationToken = crypto.randomUUID();
+    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Store verification token
+    await prisma.verificationToken.create({
+      data: {
+        identifier: email,
+        token: verificationToken,
+        expires: tokenExpiry,
+      },
+    });
+
+    // Send verification email (don't block signup on email failure)
+    try {
+      await sendVerificationEmail(email, name, verificationToken);
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError);
+      // Continue with signup even if email fails
+    }
+
+    // Return success with email verification pending
     res.status(201).json({
-      message: 'User created successfully',
+      message: 'Account created successfully. Please check your email to verify your account.',
+      requiresVerification: true,
       user: {
         id: user.id,
         name: user.name,

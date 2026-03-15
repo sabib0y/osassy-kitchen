@@ -73,6 +73,7 @@
     "react-scroll": "^1.9.0",
     "react-visibility-sensor": "^5.1.1",
     "recharts": "^3.1.0",
+    "resend": "^6.9.3",
     "sass": "^1.77.8",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",

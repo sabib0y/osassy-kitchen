@@ -1,13 +1,78 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** March 14, 2026 - Evening (20:16 GMT)
+**Last Updated:** March 15, 2026 - Afternoon (15:24 GMT)
 
 ## Overall Project Status
-The project is in **Phase 6: Subscription-First Architecture**. Meal plan wizard restored and unified with dashboard flow. FAQ page complete.
+The project is in **Phase 6: Subscription-First Architecture**. Authentication fully implemented with Google OAuth and email flows. Subscription checkout flow working end-to-end with Stripe. User profile with addresses now functional.
 
 ---
 
 ## 🏗️ **PHASE 6: SUBSCRIPTION-FIRST ARCHITECTURE**
+
+### Session: March 15, 2026 - Afternoon (15:24 GMT)
+
+#### ✅ **Completed:**
+
+1. **Google OAuth Integration**
+   - Added GoogleProvider to NextAuth config (`src/pages/api/auth/[...nextauth].ts`)
+   - Removed PrismaAdapter conflict with JWT strategy
+   - Manual user creation in `signIn` callback for OAuth users
+   - "Continue with Google" button on login and signup pages
+   - Fixed session persistence issue (old session showing wrong user)
+
+2. **Email Service Setup (Resend)**
+   - Created `src/lib/email.ts` — Resend client with helper functions
+   - Created `src/lib/emailTemplates.ts` — Branded HTML/text templates
+   - Updated `.env.example` with `RESEND_API_KEY` and `EMAIL_FROM`
+   - **Note:** Awaiting domain DNS verification from client
+
+3. **Email Verification Flow**
+   - `src/pages/api/auth/verify-email.ts` — Token validation endpoint
+   - `src/pages/api/auth/resend-verification.ts` — Resend email endpoint
+   - `src/pages/verify-email.tsx` — "Check your email" page
+   - `src/pages/auth/verify.tsx` — Verification link handler
+   - Updated signup to send verification email and redirect
+
+4. **Password Reset Flow**
+   - `src/pages/api/auth/forgot-password.ts` — Send reset email
+   - `src/pages/api/auth/reset-password.ts` — Process new password
+   - `src/pages/auth/reset-password.tsx` — Reset password form
+   - Connected forgot-password page to API
+
+5. **Subscription Flow — End-to-End Working**
+   - Fixed Stripe CLI account mismatch (was logged into wrong account)
+   - Webhook secret synchronised between Stripe CLI and `.env.local`
+   - `checkout.session.completed` webhook creating subscriptions AND initial Order
+   - Fixed: Orders now created on initial payment (not waiting for `invoice.paid`)
+   - "Total Spent" now correctly reflects subscription payments
+   - Subscription appearing in user dashboard
+
+6. **Dashboard Cleanup**
+   - Removed redundant "Upcoming Deliveries" stat card
+   - Now shows 3 cards: Active Subscriptions, Total Orders, Total Spent
+   - Updated grid layout from 4 to 3 columns
+
+7. **Address Management — Fully Functional**
+   - Added `Address` model to Prisma schema with migration
+   - Created `/api/user/addresses` — GET (list) and POST (create)
+   - Created `/api/user/addresses/[id]` — GET, PUT, DELETE
+   - Created `/api/user/addresses/[id]/default` — PATCH (set default)
+   - Updated `/api/user/profile` to fetch addresses from database
+   - Fixed modal form styling (inputs now properly aligned in grid)
+
+8. **UI Fixes**
+   - Fixed "Create New" subscription tab link (was 404, now `/user/subscriptions/create`)
+   - Removed Push Notifications section from profile notifications
+
+#### ⏳ **Blocked/Waiting:**
+
+- **Email functionality** — Waiting for client to provide domain DNS access for Resend verification
+
+#### 📝 **Uncommitted Changes:**
+
+All changes are uncommitted. ~45 files modified/created. Ready for commit.
+
+---
 
 ### Session: March 14, 2026 - Evening (20:16 GMT)
 
@@ -38,9 +103,14 @@ The project is in **Phase 6: Subscription-First Architecture**. Meal plan wizard
    - Two-column layout with vertical divider (restaurant menu style)
    - Updated in `src/styles/pages/mealPlanCreate.module.scss`
 
+6. **Redesigned `/meal-plans` as Process Explainer Page**
+   - Transformed from generic marketing to behind-the-scenes deep-dive
+   - Sections: How We Prepare, Ingredient Sourcing, Packaging, Delivery, Flexibility
+   - Plan selection cards at bottom → redirect to dashboard wizard
+
 #### 🔗 **Flow Summary:**
 - **Logged-in users**: Nav "Meal Plans" → `/user/subscriptions/create` (dashboard with sidebar)
-- **Guests**: Nav "Meal Plans" → `/meal-plans` → `/meal-plans/create` (standalone wizard)
+- **Guests**: Nav "Meal Plans" → `/meal-plans` (process explainer) → select plan → `/meal-plans/create`
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * Meal Plans Landing Page Styles
+ * Meal Plans Process Explainer Page Styles
  */
 
 .mealPlansPage {
@@ -37,35 +37,149 @@
 .heroSubtitle {
   font-size: 1.125rem;
   opacity: 0.95;
-  max-width: 600px;
+  max-width: 650px;
   margin: 0 auto;
+  line-height: 1.6;
 
   @media (min-width: 768px) {
     font-size: 1.25rem;
   }
 }
 
-/* Benefits Bar */
-.benefitsBar {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  padding: 1.5rem;
-  background: var(--background);
-  border-bottom: 1px solid #eee;
+/* Process Sections */
+.processSection {
+  padding: 4rem 1.5rem;
+  background: white;
+
+  &.altBackground {
+    background: var(--background);
+  }
 }
 
-.benefitItem {
+.processHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sectionIcon {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.leadText {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #555;
+  max-width: 800px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+.feature {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text);
+  gap: 1rem;
+  align-items: flex-start;
 
   svg {
-    color: var(--primary);
+    color: #22c55e;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+
+  p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+/* Delivery Info */
+.deliveryInfo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto 2rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.infoCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+}
+
+.deliveryNote {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: #f0fdf4;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #bbf7d0;
+  max-width: 900px;
+  margin: 0 auto;
+
+  svg {
+    color: #22c55e;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  p {
+    color: #166534;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+
+    strong {
+      font-weight: 600;
+    }
   }
 }
 
@@ -127,144 +241,3 @@
   }
 }
 
-/* How It Works */
-.howItWorks {
-  padding: 4rem 1.5rem;
-  background: var(--background);
-}
-
-.stepsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.step {
-  text-align: center;
-  padding: 1.5rem;
-}
-
-.stepNumber {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  font-size: 1.25rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-}
-
-.step h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text);
-}
-
-.step p {
-  color: #666;
-  font-size: 0.95rem;
-}
-
-/* CTA Section */
-.ctaSection {
-  padding: 4rem 1.5rem;
-  background: linear-gradient(135deg, var(--primary) 0%, #a12325 100%);
-  color: white;
-  text-align: center;
-}
-
-.ctaContent {
-  max-width: 600px;
-  margin: 0 auto;
-
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-  }
-
-  p {
-    margin-bottom: 1.5rem;
-    opacity: 0.95;
-  }
-}
-
-.ctaButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: white;
-  color: var(--primary);
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-}
-
-/* FAQ Preview */
-.faqPreview {
-  padding: 4rem 1.5rem;
-  background: white;
-}
-
-.faqGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  margin-top: 2rem;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.faqItem {
-  padding: 1.5rem;
-  background: var(--background);
-  border-radius: 12px;
-  border: 1px solid #eee;
-
-  h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--text);
-  }
-
-  p {
-    color: #666;
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-}
-
-.viewAllFaq {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
-  color: var(--primary);
-  font-weight: 600;
-  text-decoration: none;
-  transition: gap 0.2s;
-
-  &:hover {
-    gap: 0.75rem;
-  }
-}

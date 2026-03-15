@@ -22,7 +22,7 @@ const NotificationPreferencesComponent: React.FC<NotificationPreferencesProps> =
   }, [preferences]);
 
   const handleToggle = (
-    category: 'emailNotifications' | 'smsNotifications' | 'pushNotifications',
+    category: 'emailNotifications' | 'smsNotifications',
     setting: string,
     value: boolean
   ) => {
@@ -273,88 +273,6 @@ const NotificationPreferencesComponent: React.FC<NotificationPreferencesProps> =
           </div>
         </div>
 
-        {/* Push Notifications */}
-        <div className={styles.notificationSection}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionIcon}>
-              <i className="fas fa-bell"></i>
-            </div>
-            <div className={styles.sectionInfo}>
-              <h3>Push Notifications</h3>
-              <p>Get real-time notifications on your device.</p>
-            </div>
-          </div>
-
-          <div className={styles.notificationList}>
-            <div className={styles.notificationItem}>
-              <div className={styles.itemInfo}>
-                <label htmlFor="pushOrderConfirmation">Order Confirmation</label>
-                <small>Get push notifications for order confirmations</small>
-              </div>
-              <label className={styles.toggleSwitch}>
-                <input
-                  id="pushOrderConfirmation"
-                  type="checkbox"
-                  checked={localPreferences.pushNotifications.orderConfirmation}
-                  onChange={(e) => handleToggle('pushNotifications', 'orderConfirmation', e.target.checked)}
-                  disabled={isSubmitting}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
-
-            <div className={styles.notificationItem}>
-              <div className={styles.itemInfo}>
-                <label htmlFor="pushOrderStatus">Order Status Updates</label>
-                <small>Get push notifications for order updates</small>
-              </div>
-              <label className={styles.toggleSwitch}>
-                <input
-                  id="pushOrderStatus"
-                  type="checkbox"
-                  checked={localPreferences.pushNotifications.orderStatusUpdates}
-                  onChange={(e) => handleToggle('pushNotifications', 'orderStatusUpdates', e.target.checked)}
-                  disabled={isSubmitting}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
-
-            <div className={styles.notificationItem}>
-              <div className={styles.itemInfo}>
-                <label htmlFor="pushDeliveryReminders">Delivery Reminders</label>
-                <small>Get push notifications before delivery</small>
-              </div>
-              <label className={styles.toggleSwitch}>
-                <input
-                  id="pushDeliveryReminders"
-                  type="checkbox"
-                  checked={localPreferences.pushNotifications.deliveryReminders}
-                  onChange={(e) => handleToggle('pushNotifications', 'deliveryReminders', e.target.checked)}
-                  disabled={isSubmitting}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
-
-            <div className={styles.notificationItem}>
-              <div className={styles.itemInfo}>
-                <label htmlFor="pushPromotions">Promotions</label>
-                <small>Get notified about special offers and deals</small>
-              </div>
-              <label className={styles.toggleSwitch}>
-                <input
-                  id="pushPromotions"
-                  type="checkbox"
-                  checked={localPreferences.pushNotifications.promotions}
-                  onChange={(e) => handleToggle('pushNotifications', 'promotions', e.target.checked)}
-                  disabled={isSubmitting}
-                />
-                <span className={styles.toggleSlider}></span>
-              </label>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Save Button */}

@@ -56,12 +56,18 @@ export default async function handler(
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
+        console.log('[Webhook] checkout.session.completed received');
+        console.log('[Webhook] Session ID:', session.id);
+        console.log('[Webhook] Session metadata:', JSON.stringify(session.metadata));
+
         const metadata = session.metadata as CheckoutSessionMetadata | null;
-        
+
         if (!metadata?.userId || !metadata?.items) {
-          console.error('Missing metadata in checkout session:', session.metadata);
+          console.error('[Webhook] Missing metadata in checkout session:', session.metadata);
           return res.status(400).json({ error: 'Missing required metadata' });
         }
+
+        console.log('[Webhook] Processing for userId:', metadata.userId);
 
         const parsedItems: SubscriptionItem[] = JSON.parse(metadata.items);
         
@@ -99,7 +105,49 @@ export default async function handler(
           });
         }
 
-        console.log('Subscription created successfully:', subscription.id);
+        console.log('[Webhook] Subscription created successfully:', subscription.id);
+
+        // Create the initial Order for the first payment
+        // (invoice.paid doesn't have subscription ID for initial payment)
+        const menuItems = await prisma.menuItem.findMany({
+          where: {
+            id: { in: parsedItems.map(item => item.menuItemId) }
+          }
+        });
+
+        const totalPrice = parsedItems.reduce((total, item) => {
+          const menuItem = menuItems.find(mi => mi.id === item.menuItemId);
+          return total + ((menuItem?.price || 0) * item.quantity);
+        }, 0);
+
+        const deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + 7); // 1 week from now
+
+        const order = await prisma.order.create({
+          data: {
+            userId: metadata.userId,
+            subscriptionId: subscription.id,
+            totalPrice: totalPrice,
+            deliveryDate: deliveryDate,
+            status: 'PENDING',
+            notes: `Initial order from subscription: ${subscription.planName}`,
+          },
+        });
+
+        // Create order items
+        await prisma.orderItem.createMany({
+          data: parsedItems.map(item => {
+            const menuItem = menuItems.find(mi => mi.id === item.menuItemId);
+            return {
+              orderId: order.id,
+              menuItemId: item.menuItemId,
+              quantity: item.quantity,
+              price: menuItem?.price || 0,
+            };
+          }),
+        });
+
+        console.log('[Webhook] Initial order created:', order.id);
         break;
       }
 
@@ -107,29 +155,64 @@ export default async function handler(
         const invoice = event.data.object as Stripe.Invoice;
         // Handle subscription property - it can be string, Subscription object, or null
         const invoiceAny = invoice as any;
-        const stripeSubscriptionId = invoiceAny.subscription 
-          ? (typeof invoiceAny.subscription === 'string' 
-              ? invoiceAny.subscription 
+        const stripeSubscriptionId = invoiceAny.subscription
+          ? (typeof invoiceAny.subscription === 'string'
+              ? invoiceAny.subscription
               : invoiceAny.subscription.id)
           : null;
 
+        console.log('[Webhook] invoice.paid received');
+        console.log('[Webhook] Invoice ID:', invoice.id);
+        console.log('[Webhook] stripeSubscriptionId from invoice:', stripeSubscriptionId);
+
         // Only process for subscription invoices (not one-time payments)
         if (stripeSubscriptionId) {
-          console.log('Processing invoice.paid for subscription:', stripeSubscriptionId);
+          console.log('[Webhook] Processing invoice.paid for subscription:', stripeSubscriptionId);
 
-          // Find the subscription in our database
-          const subscription = await prisma.subscription.findUnique({
-            where: { stripeSubscriptionId },
-            include: { 
-              subscriptionItems: {
-                include: {
-                  menuItem: true
+          // Race condition fix: wait briefly for checkout.session.completed to finish creating subscription
+          // This handles cases where invoice.paid arrives before subscription is saved
+          let subscription = null;
+          let retries = 0;
+          const maxRetries = 3;
+
+          while (!subscription && retries < maxRetries) {
+            subscription = await prisma.subscription.findUnique({
+              where: { stripeSubscriptionId },
+              include: {
+                subscriptionItems: {
+                  include: {
+                    menuItem: true
+                  }
                 }
-              }
-            },
-          });
+              },
+            });
+
+            if (!subscription && retries < maxRetries - 1) {
+              console.log(`[Webhook] Subscription not found, retry ${retries + 1}/${maxRetries}...`);
+              await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+            }
+            retries++;
+          }
+
+          console.log('[Webhook] Subscription lookup result:', subscription ? `Found (${subscription.id})` : 'Not found');
+          console.log('[Webhook] Subscription items count:', subscription?.subscriptionItems?.length ?? 0);
 
           if (subscription && subscription.subscriptionItems.length > 0) {
+            // Check if this is a recurring payment (not the initial one)
+            // by seeing if an order was created recently (within last hour) for this subscription
+            const recentOrder = await prisma.order.findFirst({
+              where: {
+                subscriptionId: subscription.id,
+                createdAt: {
+                  gte: new Date(Date.now() - 60 * 60 * 1000) // Last hour
+                }
+              }
+            });
+
+            if (recentOrder) {
+              console.log('[Webhook] Skipping - recent order already exists:', recentOrder.id);
+              break;
+            }
             // Calculate delivery date based on subscription interval
             const deliveryDate = new Date();
             if (subscription.interval === 'WEEKLY') {
@@ -174,10 +257,13 @@ export default async function handler(
               },
             });
 
-            console.log('Order created successfully from subscription:', order.id);
+            console.log('[Webhook] Order created successfully:', order.id);
           } else {
-            console.log('No subscription found or no items for subscription:', stripeSubscriptionId);
+            console.log('[Webhook] FAILED: No subscription found or no items');
+            console.log('[Webhook] stripeSubscriptionId was:', stripeSubscriptionId);
           }
+        } else {
+          console.log('[Webhook] invoice.paid skipped - no stripeSubscriptionId (one-time payment)');
         }
         break;
       }

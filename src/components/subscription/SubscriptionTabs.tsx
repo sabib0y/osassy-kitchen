@@ -22,7 +22,7 @@ const SubscriptionTabs: React.FC<SubscriptionTabsProps> = ({ activeTab }) => {
         </Link>
 
         <Link
-          href="/subscriptions/create"
+          href="/user/subscriptions/create"
           className={`${styles.tab} ${activeTab === 'create' ? styles.active : ''}`}
         >
           <i className="fas fa-plus-circle"></i>

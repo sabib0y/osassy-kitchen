@@ -1,0 +1,467 @@
+// Verify Email Page Styles - Osassy's Kitchen Brand Design
+// Primary: #C52D2F (Deep Red)
+// Secondary: #F1C40F (Warm Yellow)
+// Accent: #FF6F3C (Bright Orange)
+
+@import '../variables.scss';
+
+.verifyEmailPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff5f5 0%, #fff9f5 50%, #fffbf7 100%);
+  position: relative;
+  padding: var(--spacing-lg);
+
+  // Subtle food pattern background
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      radial-gradient(circle at 25% 25%, rgba(197, 45, 47, 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(255, 111, 60, 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(241, 196, 15, 0.01) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  @include mobile-only {
+    padding: var(--spacing-md);
+    align-items: flex-start;
+    padding-top: var(--spacing-xl);
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 520px;
+  position: relative;
+  z-index: 1;
+}
+
+// Brand Header
+.brandHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+
+  .logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-primary);
+
+    i {
+      font-size: 32px;
+      color: white;
+    }
+  }
+
+  .brandName {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    margin: 0;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  @include mobile-only {
+    margin-bottom: var(--spacing-lg);
+
+    .logo {
+      width: 70px;
+      height: 70px;
+
+      i {
+        font-size: 28px;
+      }
+    }
+
+    .brandName {
+      font-size: var(--font-size-2xl);
+    }
+  }
+}
+
+// Card
+.card {
+  @include card-base;
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(197, 45, 47, 0.06);
+  backdrop-filter: blur(10px);
+  position: relative;
+  text-align: center;
+  animation: fadeInUp 0.6s var(--ease-out);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  @include mobile-only {
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+  }
+}
+
+.iconWrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto var(--spacing-xl);
+  background: linear-gradient(135deg, rgba(197, 45, 47, 0.1) 0%, rgba(255, 111, 60, 0.1) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  @include mobile-only {
+    width: 80px;
+    height: 80px;
+
+    i {
+      font-size: 36px;
+    }
+  }
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+
+  @include mobile-only {
+    font-size: var(--font-size-xl);
+  }
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  margin: 0 0 var(--spacing-xl) 0;
+
+  .email {
+    color: var(--color-primary);
+    word-break: break-word;
+  }
+}
+
+.instructions {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  text-align: left;
+
+  h3 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+  }
+
+  ol {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+
+    li {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      margin-bottom: var(--spacing-xs);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.tips {
+  margin-bottom: var(--spacing-xl);
+
+  p {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    margin: 0;
+    text-align: left;
+
+    i {
+      color: var(--color-accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  }
+}
+
+// Resend Section
+.resendSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.successMessage,
+.errorMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-md);
+}
+
+.successMessage {
+  background: rgba(39, 174, 96, 0.1);
+  color: var(--color-success);
+  border: 1px solid rgba(39, 174, 96, 0.2);
+}
+
+.errorMessage {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--color-error);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.resendButton {
+  @include button-base;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: transparent;
+  color: var(--color-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: var(--font-size-base);
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+// Icon status variants
+.iconSuccess {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.15) 100%);
+
+  i {
+    color: var(--color-success);
+    -webkit-text-fill-color: var(--color-success);
+  }
+}
+
+.iconWarning {
+  background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, rgba(241, 196, 15, 0.15) 100%);
+
+  i {
+    color: var(--color-warning);
+    -webkit-text-fill-color: var(--color-warning);
+  }
+}
+
+.iconError {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.15) 100%);
+
+  i {
+    color: var(--color-error);
+    -webkit-text-fill-color: var(--color-error);
+  }
+}
+
+// Action Section
+.actionSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.primaryButton {
+  @include button-base;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  color: white;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: var(--radius-button);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  box-shadow: var(--shadow-button);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-button-hover);
+  }
+
+  i {
+    font-size: var(--font-size-lg);
+  }
+}
+
+// Resend Form for verify page
+.resendPrompt {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.resendForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.emailInput {
+  @include input-base;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--border-color-light);
+  border-radius: var(--radius-input);
+  background: var(--bg-secondary);
+  transition: all var(--duration-normal) var(--ease-out);
+  text-align: center;
+
+  &:focus {
+    border-color: var(--color-accent);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 111, 60, 0.1);
+    outline: none;
+  }
+
+  &:hover {
+    border-color: var(--color-accent);
+    background: white;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Footer
+.footer {
+  p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin: 0 0 var(--spacing-sm) 0;
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: var(--font-weight-semibold);
+      border-bottom: 1px solid transparent;
+      transition: all var(--duration-normal);
+
+      &:hover {
+        color: var(--color-primary);
+        border-bottom-color: var(--color-primary);
+      }
+    }
+  }
+
+  .secondaryLink {
+    color: var(--text-muted);
+    font-size: var(--font-size-xs);
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid var(--color-primary);
+  }
+
+  .resendButton {
+    border-width: 3px;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .verifyEmailPage {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 50%, #2d1f1a 100%);
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+  }
+}

@@ -51,6 +51,7 @@ model User {
   sessions         Session[]
   subscriptions    Subscription[]
   favourites       Favourite[]
+  addresses        Address[]
 }
 
 model VerificationToken {
@@ -170,4 +171,27 @@ model Favourite {
   menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
 
   @@unique([userId, menuItemId])
+}
+
+model Address {
+  id                   String      @id @default(cuid())
+  userId               String
+  type                 AddressType @default(HOME)
+  label                String
+  street               String
+  city                 String
+  state                String
+  postalCode           String
+  country              String      @default("United Kingdom")
+  isDefault            Boolean     @default(false)
+  deliveryInstructions String?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  user                 User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum AddressType {
+  HOME
+  WORK
+  OTHER
 }

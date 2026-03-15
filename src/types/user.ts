@@ -82,7 +82,6 @@ export interface Order {
 export interface DashboardStats {
   activeSubscriptions: number;
   totalOrders: number;
-  upcomingDeliveries: number;
   totalSpent: number;
 }
 

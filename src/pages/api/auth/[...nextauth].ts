@@ -1,12 +1,17 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
+import GoogleProvider from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
 import prisma from "@/lib/prisma"
 
 export const authOptions: NextAuthOptions = {
-  // adapter: PrismaAdapter(prisma), // Removed because it can conflict with CredentialsProvider
+  // Note: Not using PrismaAdapter with JWT strategy - we handle user creation manually in signIn callback
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true, // Allows linking OAuth accounts to existing email accounts
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -48,21 +53,91 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt"
   },
   callbacks: {
-    async jwt({ token, user }) {
-      // This is the initial sign-in
-      if (user) {
-        token.id = user.id;
-        token.role = (user as any).role;
+    async signIn({ user, account, profile }) {
+      // For Google OAuth sign-ins, ensure user exists in database
+      if (account?.provider === "google" && user.email) {
+        try {
+          let dbUser = await prisma.user.findUnique({
+            where: { email: user.email }
+          })
+
+          if (!dbUser) {
+            // Create new user for Google sign-in
+            dbUser = await prisma.user.create({
+              data: {
+                email: user.email,
+                name: user.name || null,
+                image: user.image || null,
+                emailVerified: new Date(), // Google emails are pre-verified
+                role: "USER",
+              }
+            })
+            console.log("[NextAuth] Created new Google user:", dbUser.email)
+          } else if (!dbUser.name && user.name) {
+            // Update existing user's name from Google if not set
+            await prisma.user.update({
+              where: { email: user.email },
+              data: { name: user.name }
+            })
+          }
+
+          // Ensure Account record exists for OAuth
+          const existingAccount = await prisma.account.findFirst({
+            where: {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+            }
+          })
+
+          if (!existingAccount) {
+            await prisma.account.create({
+              data: {
+                userId: dbUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+              }
+            })
+            console.log("[NextAuth] Created Account link for:", dbUser.email)
+          }
+
+          // Attach the database user ID to the user object for JWT callback
+          user.id = dbUser.id
+          ;(user as any).role = dbUser.role
+        } catch (error) {
+          console.error("[NextAuth] Google signIn error:", error)
+          return false
+        }
       }
-      return token;
+      return true
+    },
+    async jwt({ token, user, account }) {
+      // On sign-in, user object is populated - update token with fresh data
+      if (user) {
+        token.id = user.id
+        token.email = user.email
+        token.name = user.name
+        token.picture = user.image
+        token.role = (user as any).role || "USER"
+        console.log("[NextAuth] JWT updated for user:", user.email)
+      }
+
+      return token
     },
     async session({ session, token }) {
-      // The token has the id and role from the jwt callback
+      // Always use token data for session (token is refreshed on sign-in)
       if (token && session.user) {
-        session.user.id = token.id as string;
-        (session.user as any).role = token.role;
+        session.user.id = token.id as string
+        session.user.role = token.role as string
+        session.user.name = token.name as string | null
+        session.user.email = token.email as string
       }
-      return session;
+      return session
     },
   },
   pages: {

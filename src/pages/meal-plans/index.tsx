@@ -1,13 +1,22 @@
 /**
- * Meal Plans Landing Page
- * Displays subscription tiers with CTAs to the wizard
+ * Meal Plans Process Explainer Page
+ * Shows the behind-the-scenes journey from kitchen to table
  */
 
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { ArrowRight, Check, Clock, Truck, RefreshCw } from 'lucide-react';
+import {
+  ChefHat,
+  ShoppingBasket,
+  Package,
+  Truck,
+  Calendar,
+  CheckCircle,
+  Leaf,
+  Clock,
+  Thermometer
+} from 'lucide-react';
 import Layout from '@/components/Layout/Layout';
 import PlanCard from '@/components/meal-plans/PlanCard';
 import { MealPlan, MEAL_PLANS } from '@/types/meal-plan';
@@ -17,7 +26,6 @@ const MealPlansPage: React.FC = () => {
   const { data: session } = useSession();
 
   const handlePlanSelect = (plan: MealPlan) => {
-    // Redirect logged-in users to dashboard flow, others to standalone wizard
     const targetUrl = session
       ? `/user/subscriptions/create?plan=${plan.id}`
       : `/meal-plans/create?plan=${plan.id}`;
@@ -27,53 +35,262 @@ const MealPlansPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Meal Plans - Osassy&apos;s Kitchen</title>
+        <title>From Our Kitchen to Your Table - Osassy&apos;s Kitchen</title>
         <meta
           name="description"
-          content="Choose your weekly Nigerian meal subscription plan. Fresh, authentic dishes delivered to your door."
+          content="Discover how we prepare and deliver authentic Nigerian meals with care, quality, and tradition."
         />
       </Head>
 
-      <Layout pageTitle="Meal Plans">
+      <Layout pageTitle="How We Work">
         <div className={styles.mealPlansPage}>
           {/* Hero Section */}
           <section className={styles.hero}>
             <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>
-                Authentic Nigerian Meals,
+                From Our Kitchen
                 <br />
-                <span className={styles.highlight}>Delivered Weekly</span>
+                <span className={styles.highlight}>to Your Table</span>
               </h1>
               <p className={styles.heroSubtitle}>
-                Choose your plan and enjoy freshly cooked traditional dishes
-                without the hassle of cooking.
+                Every meal is prepared with care, using traditional methods and the finest ingredients.
+                Here&apos;s how we bring authentic Nigerian cuisine to your door.
               </p>
             </div>
           </section>
 
-          {/* Benefits Bar */}
-          <section className={styles.benefitsBar}>
-            <div className={styles.benefitItem}>
-              <Clock size={24} />
-              <span>Fresh Every Week</span>
-            </div>
-            <div className={styles.benefitItem}>
-              <Truck size={24} />
-              <span>Free Delivery</span>
-            </div>
-            <div className={styles.benefitItem}>
-              <RefreshCw size={24} />
-              <span>Skip or Pause Anytime</span>
+          {/* How We Prepare */}
+          <section className={styles.processSection}>
+            <div className={styles.container}>
+              <div className={styles.processHeader}>
+                <ChefHat className={styles.sectionIcon} size={40} />
+                <h2 className={styles.sectionTitle}>How We Prepare</h2>
+              </div>
+              <div className={styles.processContent}>
+                <p className={styles.leadText}>
+                  Our kitchen is the heart of everything we do. Led by experienced chefs who grew up
+                  cooking these dishes, we use traditional techniques passed down through generations.
+                </p>
+                <div className={styles.featureGrid}>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Small Batch Cooking</h3>
+                      <p>We cook in small batches to ensure freshness and quality in every portion</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Traditional Methods</h3>
+                      <p>Authentic cooking techniques that bring out the true flavours of Nigerian cuisine</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Made Fresh Daily</h3>
+                      <p>Meals are cooked on the morning of delivery, never frozen or reheated</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>No Preservatives</h3>
+                      <p>Just real food, real ingredients, and real care in every dish</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
-          {/* Plan Cards Section */}
+          {/* Ingredient Sourcing */}
+          <section className={styles.processSection + ' ' + styles.altBackground}>
+            <div className={styles.container}>
+              <div className={styles.processHeader}>
+                <ShoppingBasket className={styles.sectionIcon} size={40} />
+                <h2 className={styles.sectionTitle}>Ingredient Sourcing</h2>
+              </div>
+              <div className={styles.processContent}>
+                <p className={styles.leadText}>
+                  Quality starts with ingredients. We source fresh, authentic ingredients to ensure
+                  every meal tastes just like home.
+                </p>
+                <div className={styles.featureGrid}>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Fresh & Quality</h3>
+                      <p>Fresh vegetables, quality proteins, and the best ingredients we can find</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Authentic Spices</h3>
+                      <p>Genuine Nigerian spices and seasonings imported directly from trusted suppliers</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Local Partners</h3>
+                      <p>We work with local suppliers for fresh produce whenever possible</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Speciality Imports</h3>
+                      <p>Hard-to-find ingredients imported to ensure authenticity in every bite</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Packaging & Freshness */}
+          <section className={styles.processSection}>
+            <div className={styles.container}>
+              <div className={styles.processHeader}>
+                <Package className={styles.sectionIcon} size={40} />
+                <h2 className={styles.sectionTitle}>Packaging & Freshness</h2>
+              </div>
+              <div className={styles.processContent}>
+                <p className={styles.leadText}>
+                  After cooking, every meal is carefully packaged to lock in freshness and flavour
+                  whilst being kind to the environment.
+                </p>
+                <div className={styles.featureGrid}>
+                  <div className={styles.feature}>
+                    <Leaf size={24} />
+                    <div>
+                      <h3>Eco-Friendly Containers</h3>
+                      <p>Recyclable, microwave-safe containers that keep meals fresh</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <Thermometer size={24} />
+                    <div>
+                      <h3>Temperature Controlled</h3>
+                      <p>Insulated delivery bags maintain optimal temperature during transit</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <Clock size={24} />
+                    <div>
+                      <h3>Fridge for 5 Days</h3>
+                      <p>Meals stay fresh in your fridge for up to 5 days after delivery</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <Package size={24} />
+                    <div>
+                      <h3>Sealed & Secure</h3>
+                      <p>Each meal is individually sealed to preserve quality and prevent spills</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Delivery Logistics */}
+          <section className={styles.processSection + ' ' + styles.altBackground}>
+            <div className={styles.container}>
+              <div className={styles.processHeader}>
+                <Truck className={styles.sectionIcon} size={40} />
+                <h2 className={styles.sectionTitle}>Delivery Logistics</h2>
+              </div>
+              <div className={styles.processContent}>
+                <p className={styles.leadText}>
+                  We deliver twice a week to ensure you always have fresh meals ready.
+                  Here&apos;s what to expect when your order arrives.
+                </p>
+                <div className={styles.deliveryInfo}>
+                  <div className={styles.infoCard}>
+                    <h3>Delivery Days</h3>
+                    <p>Tuesday and Saturday</p>
+                  </div>
+                  <div className={styles.infoCard}>
+                    <h3>Delivery Window</h3>
+                    <p>Between 9am and 6pm</p>
+                  </div>
+                  <div className={styles.infoCard}>
+                    <h3>Cooked Fresh</h3>
+                    <p>On the morning of delivery</p>
+                  </div>
+                  <div className={styles.infoCard}>
+                    <h3>Tracking</h3>
+                    <p>SMS and email notifications</p>
+                  </div>
+                </div>
+                <div className={styles.deliveryNote}>
+                  <CheckCircle size={20} />
+                  <p>
+                    <strong>Not home?</strong> We can leave your order in a safe place or with a neighbour.
+                    Just add delivery instructions when you place your order.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Flexibility & Control */}
+          <section className={styles.processSection}>
+            <div className={styles.container}>
+              <div className={styles.processHeader}>
+                <Calendar className={styles.sectionIcon} size={40} />
+                <h2 className={styles.sectionTitle}>Flexibility & Control</h2>
+              </div>
+              <div className={styles.processContent}>
+                <p className={styles.leadText}>
+                  Life is unpredictable. That&apos;s why we give you complete control over your subscription
+                  with no commitments or penalties.
+                </p>
+                <div className={styles.featureGrid}>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Change Meals Weekly</h3>
+                      <p>Update your meal selection every week before the cutoff</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Skip or Pause Anytime</h3>
+                      <p>Going on holiday? Skip a delivery or pause your subscription</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>No Minimum Commitment</h3>
+                      <p>Subscribe week by week with no long-term contract</p>
+                    </div>
+                  </div>
+                  <div className={styles.feature}>
+                    <CheckCircle size={24} />
+                    <div>
+                      <h3>Cancel Whenever</h3>
+                      <p>Cancel your subscription at any time, no questions asked</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Plan Selection */}
           <section className={styles.plansSection}>
             <div className={styles.container}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>Choose Your Plan</h2>
                 <p className={styles.sectionSubtitle}>
-                  Select how many meals you would like delivered each week
+                  Select how many meals you&apos;d like delivered each week
                 </p>
               </div>
 
@@ -88,102 +305,9 @@ const MealPlansPage: React.FC = () => {
               </div>
 
               <p className={styles.reassurance}>
-                <Check size={18} />
-                You&apos;ll choose your meals on the next step. Skip or pause your plan anytime.
+                <CheckCircle size={18} />
+                You&apos;ll choose your specific meals on the next step. Skip or pause your plan anytime.
               </p>
-            </div>
-          </section>
-
-          {/* How It Works Section */}
-          <section className={styles.howItWorks}>
-            <div className={styles.container}>
-              <h2 className={styles.sectionTitle}>How It Works</h2>
-
-              <div className={styles.stepsGrid}>
-                <div className={styles.step}>
-                  <div className={styles.stepNumber}>1</div>
-                  <h3>Choose Your Plan</h3>
-                  <p>Select how many meals you want each week</p>
-                </div>
-
-                <div className={styles.step}>
-                  <div className={styles.stepNumber}>2</div>
-                  <h3>Pick Your Meals</h3>
-                  <p>Browse our menu and select your favourites</p>
-                </div>
-
-                <div className={styles.step}>
-                  <div className={styles.stepNumber}>3</div>
-                  <h3>We Cook & Deliver</h3>
-                  <p>Fresh meals arrive at your door each week</p>
-                </div>
-
-                <div className={styles.step}>
-                  <div className={styles.stepNumber}>4</div>
-                  <h3>Heat & Enjoy</h3>
-                  <p>Ready in minutes, taste like home</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* CTA Section */}
-          <section className={styles.ctaSection}>
-            <div className={styles.container}>
-              <div className={styles.ctaContent}>
-                <h2>Ready to Start?</h2>
-                <p>Join hundreds of happy subscribers enjoying authentic Nigerian cuisine.</p>
-                <Link href="/meal-plans/create" className={styles.ctaButton}>
-                  Start Your Meal Plan
-                  <ArrowRight size={20} />
-                </Link>
-              </div>
-            </div>
-          </section>
-
-          {/* FAQ Preview */}
-          <section className={styles.faqPreview}>
-            <div className={styles.container}>
-              <h2 className={styles.sectionTitle}>Common Questions</h2>
-
-              <div className={styles.faqGrid}>
-                <div className={styles.faqItem}>
-                  <h3>Can I change my meals each week?</h3>
-                  <p>
-                    Yes! You can update your meal selection each week before the
-                    cutoff time.
-                  </p>
-                </div>
-
-                <div className={styles.faqItem}>
-                  <h3>What if I need to skip a week?</h3>
-                  <p>
-                    No problem. You can pause or skip any delivery from your
-                    dashboard.
-                  </p>
-                </div>
-
-                <div className={styles.faqItem}>
-                  <h3>Where do you deliver?</h3>
-                  <p>
-                    We currently deliver across London and surrounding areas.
-                    Check your postcode at checkout.
-                  </p>
-                </div>
-
-                <div className={styles.faqItem}>
-                  <h3>How are the meals packaged?</h3>
-                  <p>
-                    All meals are freshly cooked and packaged in eco-friendly
-                    containers to stay fresh.
-                  </p>
-                </div>
-              </div>
-
-              <Link href="/faq" className={styles.viewAllFaq}>
-                View All FAQs
-                <ArrowRight size={18} />
-              </Link>
             </div>
           </section>
         </div>

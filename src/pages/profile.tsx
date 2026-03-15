@@ -11,11 +11,11 @@ const ProfilePage: NextPage = () => {
   }, [router]);
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh' 
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh'
     }}>
       <p>Redirecting to your profile...</p>
     </div>
