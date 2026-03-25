@@ -50,8 +50,8 @@ const BannerOne = () => {
 
         {/* CTA */}
         <div className="hero-carousel__ctas">
-          <Link href="/meal-plans" className="hero-carousel__cta hero-carousel__cta--primary">
-            Start Your Meal Plan
+          <Link href="/our-process" className="hero-carousel__cta hero-carousel__cta--primary">
+            Get Started
           </Link>
         </div>
       </div>

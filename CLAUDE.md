@@ -32,6 +32,11 @@ Use `gws docs documents get --params '{"documentId": "1bR3tfq0WvNgYkKHg_dVxoovnV
 
 ## Build & Development Commands
 
+**IMPORTANT:** Always run the dev server on port 3000. If port 3000 is in use, kill the process first:
+```bash
+lsof -ti:3000 | xargs kill -9 2>/dev/null; npm run dev
+```
+
 ```bash
 # Development
 npm run dev          # Start dev server on http://localhost:3000

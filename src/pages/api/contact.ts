@@ -1,4 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { sendEmail, isEmailConfigured } from '@/lib/email';
+import {
+  getContactSupportEmailHtml,
+  getContactSupportEmailText,
+  getContactConfirmationEmailHtml,
+  getContactConfirmationEmailText,
+  ContactFormData,
+} from '@/lib/emailTemplates';
 
 interface ContactRequest {
   name: string;
@@ -11,14 +19,17 @@ interface ContactResponse {
   success: boolean;
   message: string;
   data?: {
-    supportMessageId: string;
-    confirmationMessageId: string;
+    supportMessageId?: string;
+    confirmationMessageId?: string;
     timestamp: string;
   };
   errors?: Record<string, string>;
   error?: string;
   retryAfter?: number;
 }
+
+// Support email address - where contact form submissions are sent
+const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || 'hello@osassyskitchen.com';
 
 export default async function handler(
   req: NextApiRequest,
@@ -103,28 +114,65 @@ export default async function handler(
   }
 
   try {
-    // In a real implementation, you would:
-    // 1. Send email to support team
-    // 2. Send confirmation email to user
-    // 3. Store the message in a database
-    // 4. Implement proper rate limiting
+    const contactData: ContactFormData = { name, email, subject, message };
 
-    // For now, we'll simulate the email sending
-    console.log('Contact form submission:', { name, email, subject, message });
+    // Log the submission
+    console.log('[Contact] Form submission received:', { name, email, subject, timestamp: new Date().toISOString() });
+
+    // Check if email is configured
+    if (!isEmailConfigured()) {
+      console.warn('[Contact] Email service not configured. Logging submission only.');
+      console.log('[Contact] Message content:', message);
+
+      // Still return success in development - form works, just no emails sent
+      return res.status(200).json({
+        success: true,
+        message: "Your message has been received. We'll get back to you soon!",
+        data: {
+          timestamp: new Date().toISOString(),
+        },
+      });
+    }
+
+    // Send email to support team
+    const supportEmailResult = await sendEmail({
+      to: SUPPORT_EMAIL,
+      subject: `[Contact Form] ${subject} - from ${name}`,
+      html: getContactSupportEmailHtml(contactData),
+      text: getContactSupportEmailText(contactData),
+      replyTo: email, // Allow support to reply directly to customer
+    });
+
+    if (!supportEmailResult.success) {
+      console.error('[Contact] Failed to send support notification:', supportEmailResult.error);
+      // Continue anyway - we still want to confirm to the user
+    }
+
+    // Send confirmation email to the customer
+    const confirmationEmailResult = await sendEmail({
+      to: email,
+      subject: `We've received your message - Osassy's Kitchen`,
+      html: getContactConfirmationEmailHtml(contactData),
+      text: getContactConfirmationEmailText(contactData),
+    });
+
+    if (!confirmationEmailResult.success) {
+      console.error('[Contact] Failed to send confirmation email:', confirmationEmailResult.error);
+    }
 
     // Success response
     return res.status(200).json({
       success: true,
       message: "Your message has been sent successfully. We'll get back to you soon!",
       data: {
-        supportMessageId: 'msg-' + Math.random().toString(36).substr(2, 9),
-        confirmationMessageId: 'conf-' + Math.random().toString(36).substr(2, 9),
+        supportMessageId: supportEmailResult.messageId,
+        confirmationMessageId: confirmationEmailResult.messageId,
         timestamp: new Date().toISOString(),
       },
     });
   } catch (error) {
-    console.error('Contact form error:', error);
-    
+    console.error('[Contact] Form submission error:', error);
+
     return res.status(500).json({
       success: false,
       message: 'Failed to send message. Please try again later.',

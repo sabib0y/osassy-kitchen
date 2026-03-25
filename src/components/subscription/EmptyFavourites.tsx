@@ -10,8 +10,8 @@ import styles from '@/styles/components/subscription/emptyFavourites.module.scss
 const EmptyFavourites: React.FC = () => {
   const router = useRouter();
 
-  const handleBrowseMenu = () => {
-    router.push('/menu');
+  const handleBrowseMeals = () => {
+    router.push('/meals');
   };
 
   return (
@@ -41,10 +41,10 @@ const EmptyFavourites: React.FC = () => {
 
       <button
         className={styles.browseButton}
-        onClick={handleBrowseMenu}
+        onClick={handleBrowseMeals}
         type="button"
       >
-        Browse Menu
+        Browse Meals
       </button>
     </div>
   );

@@ -56,8 +56,8 @@ const FeaturedDishes = () => {
         </div>
 
         <div className="featured-dishes__cta-wrapper">
-          <Link href="/menu" className="featured-dishes__cta">
-            View Full Menu
+          <Link href="/meals" className="featured-dishes__cta">
+            View All Meals
           </Link>
         </div>
       </div>

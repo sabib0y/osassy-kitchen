@@ -49,10 +49,10 @@ describe('SuccessStep Component', () => {
     expect(manageButton).toBeInTheDocument();
   });
 
-  it('renders "Browse Meals" button', () => {
+  it('renders "Browse More Meals" button', () => {
     render(<SuccessStep />);
 
-    const browseButton = screen.getByRole('button', { name: /browse meals/i });
+    const browseButton = screen.getByRole('button', { name: /browse more meals/i });
     expect(browseButton).toBeInTheDocument();
   });
 
@@ -65,13 +65,13 @@ describe('SuccessStep Component', () => {
     expect(mockPush).toHaveBeenCalledWith('/user/subscriptions');
   });
 
-  it('navigates to meals page when "Browse Meals" is clicked', () => {
+  it('navigates to meals page when "Browse More Meals" is clicked', () => {
     render(<SuccessStep />);
 
-    const browseButton = screen.getByRole('button', { name: /browse meals/i });
+    const browseButton = screen.getByRole('button', { name: /browse more meals/i });
     fireEvent.click(browseButton);
 
-    expect(mockPush).toHaveBeenCalledWith('/menu');
+    expect(mockPush).toHaveBeenCalledWith('/meals');
   });
 
   it('displays check mark icon', () => {

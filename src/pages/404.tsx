@@ -71,8 +71,8 @@ const Custom404Page: NextPage = () => {
               </div>
               
               <p className={styles.helpText}>
-                Still hungry? Check out our <Link href="/menu">menu</Link> or 
-                {' '}<Link href="/contact">contact us</Link> for assistance.
+                Still hungry? Check out our <Link href="/meals">meals</Link> or
+                {' '}<Link href="/help">contact us</Link> for assistance.
               </p>
             </div>
 
@@ -85,11 +85,11 @@ const Custom404Page: NextPage = () => {
               <ul className={styles.suggestionsList}>
                 <li className={styles.suggestionItem}>
                   <i className="fas fa-utensils" aria-hidden="true"></i>
-                  <Link href="/menu">Our Menu</Link>
+                  <Link href="/meals">Our Meals</Link>
                 </li>
                 <li className={styles.suggestionItem}>
                   <i className="fas fa-sync-alt" aria-hidden="true"></i>
-                  <Link href="/subscriptions/create">Meal Subscriptions</Link>
+                  <Link href="/our-process">Our Process</Link>
                 </li>
                 <li className={styles.suggestionItem}>
                   <i className="fas fa-user" aria-hidden="true"></i>
@@ -100,12 +100,12 @@ const Custom404Page: NextPage = () => {
                   <Link href="/signup">Create Account</Link>
                 </li>
                 <li className={styles.suggestionItem}>
-                  <i className="fas fa-blog" aria-hidden="true"></i>
-                  <Link href="/blog">Our Blog</Link>
+                  <i className="fas fa-question-circle" aria-hidden="true"></i>
+                  <Link href="/faq">FAQs</Link>
                 </li>
                 <li className={styles.suggestionItem}>
                   <i className="fas fa-phone" aria-hidden="true"></i>
-                  <Link href="/contact">Contact Us</Link>
+                  <Link href="/help">Help & Support</Link>
                 </li>
               </ul>
             </div>

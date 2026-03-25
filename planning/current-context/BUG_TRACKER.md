@@ -18,6 +18,55 @@ When reporting a bug, add an entry under "Open Bugs" with:
 
 ## Open Bugs
 
+### BUG-005: Email templates need more branding/styling
+- **Reported:** March 25, 2026
+- **Severity:** Low
+- **Status:** Open
+- **Affected Area:** Email templates (`src/lib/emailTemplates.ts`)
+
+**Description:**
+The contact form email templates are functional but could be enhanced with more Osassy's Kitchen branding — logo, richer styling, imagery, etc.
+
+**Notes:**
+- Consider adding logo image to email header
+- Review colour usage and typography
+- Add social media links to footer
+- Consider responsive improvements for mobile email clients
+- Test across different email clients (Gmail, Outlook, Apple Mail)
+
+---
+
+### BUG-004: Email sending requires verified domain for production
+- **Reported:** March 25, 2026
+- **Severity:** Medium
+- **Status:** Open (Workaround in place)
+- **Affected Area:** Email service (`src/lib/email.ts`)
+
+**Description:**
+Resend email service returns 403 "Domain not verified" error when trying to send emails from a Gmail address. Currently using `onboarding@resend.dev` as a temporary workaround for development/testing.
+
+**Steps to Reproduce:**
+1. Set `EMAIL_FROM` to any email address on a domain you don't own (e.g., `@gmail.com`)
+2. Submit the contact form
+3. Check Resend logs — 403 error with "Domain not verified"
+
+**Expected:** Emails should send successfully
+**Actual:** 403 error — Resend requires domain verification
+
+**Workaround:**
+Set `EMAIL_FROM="Osassy's Kitchen <onboarding@resend.dev>"` in `.env.local` for testing.
+
+**Production Fix Required:**
+1. Verify `osassyskitchen.com` domain in Resend dashboard
+2. Add DNS records (SPF, DKIM, DMARC) as instructed by Resend
+3. Update `EMAIL_FROM` to `noreply@osassyskitchen.com` or similar
+4. Update `SUPPORT_EMAIL` to the actual support inbox
+
+**Notes:**
+This is a configuration task, not a code fix. Must be done before production launch.
+
+---
+
 ### BUG-003: Delivery time slots need business validation
 - **Reported:** March 14, 2026
 - **Severity:** Medium
@@ -163,7 +212,7 @@ Document created as reference template.
 
 | Status | Count |
 |--------|-------|
-| Open | 3 |
+| Open | 5 |
 | In Progress | 0 |
 | Fixed (This Phase) | 0 |
 | Total Closed | 0 |

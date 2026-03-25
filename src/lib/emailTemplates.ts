@@ -319,3 +319,170 @@ If you continue to receive these emails without requesting them, please contact 
 Authentic Nigerian Cuisine, Delivered Fresh
 `.trim();
 }
+
+/**
+ * Contact form submission data
+ */
+export interface ContactFormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+/**
+ * Get contact form support notification email HTML template
+ * This is sent to the support team when someone submits the contact form
+ *
+ * @param data - Contact form submission data
+ * @returns HTML email content
+ */
+export function getContactSupportEmailHtml(data: ContactFormData): string {
+  const content = `
+<h2 style="margin: 0 0 24px 0; color: ${BRAND.textColour}; font-size: 24px; font-weight: 600;">
+  New Contact Form Submission 📬
+</h2>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 24px;">
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">From:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.name}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Email:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">
+        <a href="mailto:${data.email}" style="color: ${BRAND.primaryColour};">${data.email}</a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Subject:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.subject}</p>
+    </td>
+  </tr>
+</table>
+
+<div style="background-color: ${BRAND.backgroundColour}; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+  <strong style="color: ${BRAND.lightText}; font-size: 14px; display: block; margin-bottom: 8px;">Message:</strong>
+  <p style="margin: 0; color: ${BRAND.textColour}; font-size: 16px; line-height: 1.6; white-space: pre-wrap;">${data.message}</p>
+</div>
+
+<p style="margin: 0; color: ${BRAND.lightText}; font-size: 14px; line-height: 1.6;">
+  <strong>Reply directly</strong> to this email to respond to the customer, or click the email address above.
+</p>
+`.trim();
+
+  return getEmailLayout(content);
+}
+
+/**
+ * Get contact form support notification email plain text template
+ *
+ * @param data - Contact form submission data
+ * @returns Plain text email content
+ */
+export function getContactSupportEmailText(data: ContactFormData): string {
+  return `
+New Contact Form Submission
+
+From: ${data.name}
+Email: ${data.email}
+Subject: ${data.subject}
+
+Message:
+${data.message}
+
+---
+Reply directly to this email to respond to the customer.
+
+© ${new Date().getFullYear()} ${BRAND.name}. All rights reserved.
+`.trim();
+}
+
+/**
+ * Get contact form confirmation email HTML template
+ * This is sent to the customer to confirm we received their message
+ *
+ * @param data - Contact form submission data
+ * @returns HTML email content
+ */
+export function getContactConfirmationEmailHtml(data: ContactFormData): string {
+  const content = `
+<h2 style="margin: 0 0 24px 0; color: ${BRAND.textColour}; font-size: 24px; font-weight: 600;">
+  We've Received Your Message! ✉️
+</h2>
+
+<p style="margin: 0 0 16px 0; color: ${BRAND.textColour}; font-size: 16px; line-height: 1.6;">
+  Hello ${data.name},
+</p>
+
+<p style="margin: 0 0 16px 0; color: ${BRAND.textColour}; font-size: 16px; line-height: 1.6;">
+  Thank you for reaching out to ${BRAND.name}! We've received your message and our team will get back to you as soon as possible.
+</p>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 24px 0; background-color: ${BRAND.backgroundColour}; border-radius: 8px; border-left: 4px solid ${BRAND.primaryColour};">
+  <tr>
+    <td style="padding: 16px;">
+      <p style="margin: 0 0 8px 0; color: ${BRAND.lightText}; font-size: 14px;">
+        <strong>Your message:</strong>
+      </p>
+      <p style="margin: 0 0 12px 0; color: ${BRAND.textColour}; font-size: 14px;">
+        <strong>Subject:</strong> ${data.subject}
+      </p>
+      <p style="margin: 0; color: ${BRAND.textColour}; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${data.message.length > 200 ? data.message.substring(0, 200) + '...' : data.message}</p>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 0 0 16px 0; color: ${BRAND.textColour}; font-size: 16px; line-height: 1.6;">
+  <strong>What happens next?</strong>
+</p>
+
+<ul style="margin: 0 0 24px 0; padding-left: 20px; color: ${BRAND.textColour}; font-size: 16px; line-height: 1.8;">
+  <li>Our team will review your message</li>
+  <li>We typically respond within 24 hours during business days</li>
+  <li>For urgent matters, you can reach us on WhatsApp</li>
+</ul>
+
+<p style="margin: 0; color: ${BRAND.lightText}; font-size: 14px; line-height: 1.6;">
+  If you have any additional information to add, simply reply to this email.
+</p>
+`.trim();
+
+  return getEmailLayout(content);
+}
+
+/**
+ * Get contact form confirmation email plain text template
+ *
+ * @param data - Contact form submission data
+ * @returns Plain text email content
+ */
+export function getContactConfirmationEmailText(data: ContactFormData): string {
+  return `
+We've Received Your Message!
+
+Hello ${data.name},
+
+Thank you for reaching out to ${BRAND.name}! We've received your message and our team will get back to you as soon as possible.
+
+Your message:
+Subject: ${data.subject}
+${data.message.length > 200 ? data.message.substring(0, 200) + '...' : data.message}
+
+What happens next?
+- Our team will review your message
+- We typically respond within 24 hours during business days
+- For urgent matters, you can reach us on WhatsApp
+
+If you have any additional information to add, simply reply to this email.
+
+---
+© ${new Date().getFullYear()} ${BRAND.name}. All rights reserved.
+Authentic Nigerian Cuisine, Delivered Fresh
+`.trim();
+}

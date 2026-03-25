@@ -68,8 +68,7 @@ The subscription-first architecture is largely implemented. Core flows are worki
 | `/user/subscriptions/[id]/resume` | ✅ Done | Resume paused subscription with new delivery schedule |
 | `/faq` | ✅ Done | Subscription FAQs |
 | `/our-process` | ✅ Done | How the service works |
-| `/catering` | 🔴 TODO | Event catering & bulk orders |
-| `/delivery-areas` | 🔴 TODO | Delivery coverage info |
+| `/catering` | ✅ Done | Event catering & bulk orders |
 
 ### Authentication Routes
 
@@ -84,8 +83,8 @@ The subscription-first architecture is largely implemented. Core flows are worki
 
 | Route | Status | Notes |
 |-------|--------|-------|
-| `/menu` | ⚠️ Legacy | Old cart-based menu, consider removing |
-| `/subscriptions/` | ⚠️ Legacy | Old subscription pages, may need cleanup |
+| ~~`/menu`~~ | ✅ Removed | Replaced by `/meals` |
+| ~~`/subscriptions/`~~ | ✅ Removed | Replaced by `/user/subscriptions/` |
 
 ---
 
@@ -98,8 +97,7 @@ The subscription-first architecture is largely implemented. Core flows are worki
 - [x] Create `/meal-plans` page (subscription tiers)
 - [x] Create `/faq` page
 - [x] Create `/our-process` page (how it works)
-- [ ] Create `/catering` page
-- [ ] Create `/delivery-areas` page
+- [x] Create `/catering` page
 - [x] Update navigation (Header, Footer)
 
 #### Milestone 6.2: Subscription Wizard ✅ COMPLETE
@@ -128,10 +126,9 @@ The subscription-first architecture is largely implemented. Core flows are worki
 - [x] Address management (CRUD)
 
 #### Milestone 6.5: Remaining Work 🔴 TODO
-- [ ] Create `/catering` page
-- [ ] Create `/delivery-areas` page
-- [ ] Remove legacy `/menu` cart functionality
-- [ ] Clean up old `/subscriptions/` pages
+- [x] Create `/catering` page
+- [x] Remove legacy `/menu` cart functionality
+- [x] Clean up old `/subscriptions/` pages
 - [ ] Homepage refresh (subscription-focused hero)
 - [ ] Run full E2E test suite
 
@@ -175,8 +172,6 @@ Features planned but not yet implemented:
 |---------|-------------|------------|
 | Email notifications | Send transactional emails (order confirmation, delivery reminders, etc.) | DNS verification for Resend |
 | Notification preferences persistence | Save user email preferences to database and check before sending | Email notifications |
-| `/catering` page | Event catering & bulk orders | — |
-| `/delivery-areas` page | Delivery coverage info | — |
 
 ### Known Bugs
 

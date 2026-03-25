@@ -133,22 +133,22 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
 
           {/* Action Buttons */}
           <div className={styles.sidebarActions}>
-            <Link 
-              href="/subscriptions" 
-              className={styles.createSubscriptionBtn} 
+            <Link
+              href="/user/subscriptions/create"
+              className={styles.createSubscriptionBtn}
               onClick={onClose}
             >
               <i className="fas fa-plus" aria-hidden="true"></i>
               <span>New Subscription</span>
             </Link>
-            
-            <Link 
-              href="/menu" 
-              className={styles.browseMenuBtn} 
+
+            <Link
+              href="/meals"
+              className={styles.browseMenuBtn}
               onClick={onClose}
             >
               <i className="fas fa-utensils" aria-hidden="true"></i>
-              <span>Browse Menu</span>
+              <span>Browse Meals</span>
             </Link>
           </div>
 

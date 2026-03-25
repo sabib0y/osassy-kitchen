@@ -163,8 +163,8 @@ const MealDetailModal: React.FC<MealDetailModalProps> = ({ meal, isOpen, onClose
             <p className={styles.ctaText}>
               Want this dish in your weekly meal plan?
             </p>
-            <Link href="/meal-plans" className={styles.ctaButton}>
-              Start a Meal Plan to Choose This Dish
+            <Link href="/our-process" className={styles.ctaButton}>
+              Subscribe to Get This Dish
               <ArrowRight size={20} />
             </Link>
           </div>

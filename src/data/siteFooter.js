@@ -13,8 +13,8 @@ const footerData = {
     },
     {
       id: 2,
-      name: "Menu",
-      href: "/menu",
+      name: "Meals",
+      href: "/meals",
     },
     {
       id: 3,
@@ -49,8 +49,8 @@ const footerData = {
     },
     {
       id: 2,
-      name: "Menu",
-      href: "/menu",
+      name: "Meals",
+      href: "/meals",
     },
     {
       id: 3,

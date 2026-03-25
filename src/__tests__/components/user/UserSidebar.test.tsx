@@ -88,7 +88,7 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       expect(screen.getByText('New Subscription')).toBeInTheDocument()
-      expect(screen.getByText('Browse Menu')).toBeInTheDocument()
+      expect(screen.getByText('Browse Meals')).toBeInTheDocument()
       expect(screen.getByText('Help & Support')).toBeInTheDocument()
     })
 
@@ -324,12 +324,12 @@ describe('UserSidebar', () => {
       render(<UserSidebar sidebarOpen={false} onClose={mockOnClose} />)
 
       const newSubscriptionLink = screen.getByText('New Subscription').closest('[data-href]')
-      const browseMenuLink = screen.getByText('Browse Menu').closest('[data-href]')
+      const browseMealsLink = screen.getByText('Browse Meals').closest('[data-href]')
       const supportLink = screen.getByText('Help & Support').closest('[data-href]')
 
-      expect(newSubscriptionLink).toHaveAttribute('data-href', '/subscriptions')
-      expect(browseMenuLink).toHaveAttribute('data-href', '/menu')
-      expect(supportLink).toHaveAttribute('data-href', '/support')
+      expect(newSubscriptionLink).toHaveAttribute('data-href', '/user/subscriptions/create')
+      expect(browseMealsLink).toHaveAttribute('data-href', '/meals')
+      expect(supportLink).toHaveAttribute('data-href', '/help')
     })
   })
 

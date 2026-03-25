@@ -5,32 +5,27 @@ const headerData = {
   navData: [
     {
       id: 1,
-      href: "#home",
+      href: "/",
       name: "Home",
     },
     {
       id: 2,
-      href: "#services",
-      name: "Services",
+      href: "/meals",
+      name: "Meals",
     },
     {
       id: 3,
-      href: "#menu",
-      name: "Our menu",
+      href: "/our-process",
+      name: "Our Process",
     },
     {
       id: 4,
-      href: "/subscriptions",
-      name: "Subscription",
+      href: "/catering",
+      name: "Catering",
     },
     {
       id: 5,
-      href: "/help",
-      name: "Help",
-    },
-    {
-      id: 6,
-      href: "/help#contact",
+      href: "/contact",
       name: "Contact",
     },
   ],

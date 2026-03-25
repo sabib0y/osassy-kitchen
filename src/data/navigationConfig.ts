@@ -28,21 +28,27 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
+      id: 'meals',
+      name: 'Meals',
+      href: '/meals',
+      type: 'link'
+    },
+    {
       id: 'our-process',
       name: 'Our Process',
       href: '/our-process',
       type: 'link'
     },
     {
-      id: 'menu',
-      name: 'Our Menu',
-      href: '/menu',
+      id: 'catering',
+      name: 'Catering',
+      href: '/catering',
       type: 'link'
     },
     {
-      id: 'meal-plans',
-      name: 'Meal Plans',
-      href: '/meal-plans',
+      id: 'contact',
+      name: 'Contact',
+      href: '/contact',
       type: 'link'
     },
     {
@@ -62,15 +68,27 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
-      id: 'menu',
-      name: 'Our Menu',
-      href: '/menu',
+      id: 'meals',
+      name: 'Meals',
+      href: '/meals',
       type: 'link'
     },
     {
-      id: 'meal-plans',
-      name: 'Meal Plans',
-      href: '/user/subscriptions/create',
+      id: 'our-process',
+      name: 'Our Process',
+      href: '/our-process',
+      type: 'link'
+    },
+    {
+      id: 'catering',
+      name: 'Catering',
+      href: '/catering',
+      type: 'link'
+    },
+    {
+      id: 'contact',
+      name: 'Contact',
+      href: '/contact',
       type: 'link'
     },
     {
@@ -172,15 +190,27 @@ export const navigationConfig: NavigationConfig = {
       ]
     },
     {
-      id: 'menu',
-      name: 'Our Menu',
-      href: '/menu',
+      id: 'meals',
+      name: 'Meals',
+      href: '/meals',
       type: 'link'
     },
     {
-      id: 'meal-plans',
-      name: 'Meal Plans',
-      href: '/user/subscriptions/create',
+      id: 'our-process',
+      name: 'Our Process',
+      href: '/our-process',
+      type: 'link'
+    },
+    {
+      id: 'catering',
+      name: 'Catering',
+      href: '/catering',
+      type: 'link'
+    },
+    {
+      id: 'contact',
+      name: 'Contact',
+      href: '/contact',
       type: 'link'
     },
     {

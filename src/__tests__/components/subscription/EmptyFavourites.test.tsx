@@ -43,21 +43,21 @@ describe('EmptyFavourites', () => {
     ).toBeInTheDocument();
   });
 
-  it('should render a "Browse Menu" button', () => {
+  it('should render a "Browse Meals" button', () => {
     render(<EmptyFavourites />);
 
-    const button = screen.getByRole('button', { name: /browse menu/i });
+    const button = screen.getByRole('button', { name: /browse meals/i });
     expect(button).toBeInTheDocument();
   });
 
-  it('should navigate to /menu when "Browse Menu" is clicked', async () => {
+  it('should navigate to /meals when "Browse Meals" is clicked', async () => {
     const user = userEvent.setup();
     render(<EmptyFavourites />);
 
-    const button = screen.getByRole('button', { name: /browse menu/i });
+    const button = screen.getByRole('button', { name: /browse meals/i });
     await user.click(button);
 
-    expect(mockPush).toHaveBeenCalledWith('/menu');
+    expect(mockPush).toHaveBeenCalledWith('/meals');
   });
 
   it('should have accessible structure', () => {

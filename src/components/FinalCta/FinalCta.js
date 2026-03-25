@@ -11,11 +11,11 @@ const FinalCta = () => {
         </p>
 
         <div className="final-cta__buttons">
-          <Link href="/meal-plans" className="final-cta__btn final-cta__btn--primary">
+          <Link href="/our-process" className="final-cta__btn final-cta__btn--primary">
             Start My Meal Plan
           </Link>
-          <Link href="/menu" className="final-cta__btn final-cta__btn--secondary">
-            Browse Menu
+          <Link href="/meals" className="final-cta__btn final-cta__btn--secondary">
+            Browse Meals
           </Link>
         </div>
       </div>

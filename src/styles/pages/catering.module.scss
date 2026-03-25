@@ -1,0 +1,612 @@
+// Catering Page Styles
+// Using brand colours: Primary #C52D2F, Secondary #F1C40F, Accent #FF6F3C
+
+.cateringPage {
+  min-height: 100vh;
+  background: var(--background, #F9F9F9);
+}
+
+// Container
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+}
+
+// Hero Section
+.hero {
+  background: linear-gradient(135deg, var(--primary, #C52D2F) 0%, #A02527 100%);
+  color: white;
+  padding: 5rem 1.5rem 4rem;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 3.5rem 1rem 3rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 1.25rem;
+    line-height: 1.2;
+
+    @media (max-width: 768px) {
+      font-size: 2.25rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 2rem;
+    }
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    opacity: 0.95;
+    max-width: 650px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+
+    @media (max-width: 768px) {
+      font-size: 1.0625rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+.heroButton {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: white;
+  color: var(--primary, #C52D2F);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  @media (max-width: 768px) {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    background: #f5f5f5;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: 2px solid white;
+    outline-offset: 4px;
+  }
+}
+
+// Section common styles
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: #666666;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+// Services Section
+.servicesSection {
+  padding: 4rem 1.5rem;
+  background: white;
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 0.75rem;
+    color: var(--text, #333333);
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.serviceCard {
+  background: var(--background, #F9F9F9);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e5e5;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1rem 0 0.75rem;
+    color: var(--text, #333333);
+
+    @media (max-width: 768px) {
+      font-size: 1.125rem;
+    }
+  }
+
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #666666;
+    margin: 0;
+  }
+}
+
+.serviceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--primary, #C52D2F) 0%, #A02527 100%);
+  border-radius: 12px;
+  color: white;
+
+  @media (max-width: 768px) {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+// Why Choose Us Section
+.whyUsSection {
+  padding: 4rem 1.5rem;
+  background: var(--background, #F9F9F9);
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 2.5rem;
+    color: var(--text, #333333);
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.whyUsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.whyUsItem {
+  display: flex;
+  gap: 1rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+
+  @media (max-width: 768px) {
+    padding: 1.25rem;
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: var(--primary, #C52D2F);
+    margin-top: 0.25rem;
+  }
+
+  h4 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--text, #333333);
+  }
+
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #666666;
+    margin: 0;
+  }
+}
+
+// Menu Section
+.menuSection {
+  padding: 4rem 1.5rem;
+  background: white;
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 0.75rem;
+    color: var(--text, #333333);
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+.menuGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.menuCard {
+  background: var(--background, #F9F9F9);
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid #e5e5e5;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary, #C52D2F);
+    box-shadow: 0 4px 12px rgba(197, 45, 47, 0.1);
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--text, #333333);
+  }
+}
+
+.menuDescription {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #666666;
+  margin: 0 0 0.75rem;
+}
+
+.servingSize {
+  display: inline-block;
+  font-size: 0.8125rem;
+  color: var(--primary, #C52D2F);
+  font-weight: 500;
+}
+
+.menuCta {
+  text-align: center;
+  margin-top: 2.5rem;
+
+  p {
+    font-size: 1rem;
+    color: #666666;
+    margin: 0 0 1rem;
+  }
+}
+
+.menuButton {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  background: transparent;
+  color: var(--primary, #C52D2F);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid var(--primary, #C52D2F);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--primary, #C52D2F);
+    color: white;
+  }
+
+  &:focus {
+    outline: 2px solid var(--primary, #C52D2F);
+    outline-offset: 2px;
+  }
+}
+
+// Process Section
+.processSection {
+  padding: 4rem 1.5rem;
+  background: linear-gradient(135deg, #2C3E50 0%, #1a252f 100%);
+  color: white;
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 3rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.processSteps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.processStep {
+  text-align: center;
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+  }
+
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin: 0;
+  }
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--accent, #FF6F3C);
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+
+  @media (max-width: 768px) {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+}
+
+// Pricing Section
+.pricingSection {
+  padding: 4rem 1.5rem;
+  background: white;
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 2rem;
+    color: var(--text, #333333);
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+.pricingContent {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.pricingInfo {
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #555555;
+    margin: 0 0 1.5rem;
+  }
+}
+
+.pricingList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    font-size: 0.9375rem;
+    color: #555555;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e5e5e5;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    strong {
+      color: var(--text, #333333);
+    }
+  }
+}
+
+.pricingNote {
+  background: var(--background, #F9F9F9);
+  border-radius: 8px;
+  padding: 1.5rem;
+  border-left: 4px solid var(--primary, #C52D2F);
+
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #555555;
+    margin: 0;
+  }
+}
+
+// CTA Section
+.ctaSection {
+  background: linear-gradient(135deg, var(--accent, #FF6F3C) 0%, #FF8C5F 100%);
+  padding: 4rem 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
+}
+
+.ctaContent {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 1rem;
+    line-height: 1.3;
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  p {
+    font-size: 1.125rem;
+    color: white;
+    opacity: 0.95;
+    margin: 0 0 2rem;
+    line-height: 1.6;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+.ctaActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: white;
+  color: var(--accent, #FF6F3C);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  @media (max-width: 768px) {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    background: #f5f5f5;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: 2px solid white;
+    outline-offset: 4px;
+  }
+}
+
+.ctaPhone {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+
+  svg {
+    opacity: 0.9;
+  }
+}

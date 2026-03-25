@@ -336,9 +336,9 @@ const OrderList: React.FC<OrderListProps> = ({
               Clear Filters
             </button>
           ) : (
-            <a href="/menu" className={styles.browseMenuBtn}>
+            <a href="/meals" className={styles.browseMenuBtn}>
               <i className="fas fa-utensils"></i>
-              Browse Menu
+              Browse Meals
             </a>
           )}
         </div>

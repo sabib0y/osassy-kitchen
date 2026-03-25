@@ -244,8 +244,8 @@ const FAQPage: React.FC = () => {
             <div className={styles.ctaContent}>
               <h2>Ready to Get Started?</h2>
               <p>Explore our meal plans and start enjoying authentic Nigerian cuisine delivered to your door.</p>
-              <Link href="/meal-plans" className={styles.ctaButton}>
-                View Meal Plans
+              <Link href="/our-process" className={styles.ctaButton}>
+                Get Started
               </Link>
             </div>
           </div>
