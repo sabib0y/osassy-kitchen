@@ -18,6 +18,16 @@ Use `gws docs documents get --params '{"documentId": "1bR3tfq0WvNgYkKHg_dVxoovnV
 - Real-time updates via WebSockets
 - Image upload with Cloudinary
 
+## Test Credentials
+
+**Admin:**
+- Email: `admin@osassyskitchen.com`
+- Password: `admin123`
+
+**Test User:** (create via sign-up or seed)
+- Email: `test@example.com`
+- Password: `password123`
+
 ## Tech Stack
 
 - **Framework**: Next.js 13+ (Pages Router)

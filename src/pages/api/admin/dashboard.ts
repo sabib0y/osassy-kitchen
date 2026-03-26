@@ -193,8 +193,8 @@ export default async function handler(
       id: order.id,
       totalPrice: Number(order.totalPrice),
       status: order.status,
-      deliveryDate: order.deliveryDate,
-      createdAt: order.createdAt,
+      deliveryDate: order.deliveryDate ? order.deliveryDate.toISOString() : null,
+      createdAt: order.createdAt ? order.createdAt.toISOString() : null,
       user: order.user,
       itemCount: order.orderItems.length,
       items: order.orderItems.map(item => item.menuItem.name).join(', ')

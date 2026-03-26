@@ -1,0 +1,377 @@
+// Admin Settings Page Styles
+@import '../../variables';
+@import '../../animations';
+
+.settingsContainer {
+  display: flex;
+  height: 100vh;
+  background: var(--bg-secondary);
+  font-family: var(--font-primary);
+}
+
+// Sidebar Styles (same as dashboard)
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 220px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+
+  .logo {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+
+    .logoContent {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .logoIcon {
+        width: 32px;
+        height: 32px;
+        background: var(--color-primary);
+        border-radius: var(--radius-base);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-white);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-sm);
+        box-shadow: var(--shadow-button);
+      }
+
+      .logoText {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+    }
+  }
+
+  .nav {
+    padding: 1rem 0.75rem;
+
+    .navItem {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.25rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #4b5563;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      font-weight: 500;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover {
+        background: #f3f4f6;
+        color: #1f2937;
+      }
+
+      &.active {
+        background: var(--color-primary-50);
+        color: var(--color-primary);
+        font-weight: var(--font-weight-semibold);
+        box-shadow: inset 3px 0 0 var(--color-primary);
+      }
+    }
+  }
+}
+
+// Main Content Area
+.mainContent {
+  flex: 1;
+  margin-left: 220px;
+  overflow-y: auto;
+  background: #f8fafc;
+}
+
+.contentWrapper {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Page Header
+.pageHeader {
+  margin-bottom: 2rem;
+
+  .pageTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+
+  .pageSubtitle {
+    font-size: 14px;
+    color: #6b7280;
+  }
+}
+
+// Settings Grid
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Settings Card
+.settingsCard {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+
+    .cardIcon {
+      width: 24px;
+      height: 24px;
+      color: var(--color-primary);
+    }
+
+    .cardTitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+      margin: 0;
+    }
+  }
+
+  .cardContent {
+    padding: 1.5rem;
+  }
+
+  .cardNote {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+}
+
+// Info Items
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  .infoLabel {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .infoValue {
+    font-size: 14px;
+    color: #1f2937;
+    font-weight: 500;
+    text-align: right;
+  }
+}
+
+// Badge Styles
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.badgeSuccess {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  &.badgeInfo {
+    background: var(--color-info-bg, #dbeafe);
+    color: var(--color-info-dark, #1e40af);
+  }
+}
+
+// Status Indicator
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #065f46;
+
+  .statusIcon {
+    width: 16px;
+    height: 16px;
+    color: #10b981;
+  }
+}
+
+// Toggle Switch Styles
+.toggleList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toggleItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .toggleInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .toggleLabel {
+      font-size: 14px;
+      color: #1f2937;
+      font-weight: 500;
+    }
+
+    .toggleDescription {
+      font-size: 12px;
+      color: #6b7280;
+    }
+  }
+}
+
+.toggleSwitch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+
+  &.checked {
+    background: var(--color-primary);
+
+    .toggleThumb {
+      transform: translateX(20px);
+    }
+  }
+
+  .toggleThumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+  }
+}
+
+// Loading State
+.loadingContent {
+  flex: 1;
+  margin-left: 220px;
+  padding: 2rem;
+
+  .loadingGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+
+    .loadingCard {
+      height: 200px;
+      background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+      background-size: 200% 100%;
+      border-radius: 12px;
+      animation: loading 1.5s infinite;
+    }
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
+  .mainContent {
+    margin-left: 0;
+  }
+
+  .loadingContent {
+    margin-left: 0;
+
+    .loadingGrid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .infoItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+
+    .infoValue {
+      text-align: left;
+    }
+  }
+
+  .toggleItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}

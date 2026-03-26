@@ -35,111 +35,111 @@ const fetchMenuStats = async (): Promise<MenuStats> => {
 };
 
 const fetchMenuItem = async (id: string): Promise<MenuItem> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const mockItem: MenuItem = {
-    id,
-    name: 'Sample Menu Item',
-    description: 'Sample description',
-    price: 3500,
-    category: 'main-dishes',
-    available: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    subscriptionUsage: 10
-  };
-  
-  return mockItem;
+  const response = await fetch(`/api/admin/menu/${id}`);
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to fetch menu item');
+  }
+
+  const result = await response.json();
+  return result.data;
 };
 
 const createMenuItem = async (data: CreateMenuItemData): Promise<MenuItem> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  const response = await fetch('/api/admin/menu', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 
-  // In real implementation, this would upload the image and create the menu item
-  const newItem: MenuItem = {
-    id: Date.now().toString(),
-    name: data.name,
-    description: data.description,
-    price: data.price,
-    category: data.category,
-    available: data.available,
-    imageUrl: data.imageUrl,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    subscriptionUsage: 0
-  };
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to create menu item');
+  }
 
-  return newItem;
+  const result = await response.json();
+  return result.data;
 };
 
 const updateMenuItem = async (data: UpdateMenuItemData): Promise<MenuItem> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  const { id, ...updateData } = data;
 
-  const updatedItem: MenuItem = {
-    id: data.id,
-    name: data.name || 'Updated Item',
-    description: data.description || 'Updated description',
-    price: data.price || 0,
-    category: data.category || 'main-dishes',
-    available: data.available ?? true,
-    imageUrl: data.imageUrl,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    subscriptionUsage: 5
-  };
+  const response = await fetch(`/api/admin/menu/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updateData),
+  });
 
-  return updatedItem;
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to update menu item');
+  }
+
+  const result = await response.json();
+  return result.data;
 };
 
 const deleteMenuItem = async (id: string): Promise<void> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // In real implementation, this would:
-  // 1. Get the menu item to retrieve imagePublicId
-  // 2. Delete the menu item from database
-  // 3. Delete the image from Cloudinary using the imagePublicId
-  
-  // Example real implementation:
-  // const response = await fetch(`/api/admin/menu/${id}`, { method: 'DELETE' });
-  // if (!response.ok) throw new Error('Failed to delete menu item');
+  const response = await fetch(`/api/admin/menu/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to delete menu item');
+  }
 };
 
 const toggleMenuItemAvailability = async (id: string): Promise<MenuItem> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  const item: MenuItem = {
-    id,
-    name: 'Sample Item',
-    description: 'Sample description',
-    price: 3500,
-    category: 'main-dishes',
-    available: Math.random() > 0.5, // Random toggle for demo
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    subscriptionUsage: 8
-  };
-  
-  return item;
+  const response = await fetch(`/api/admin/menu/${id}`, {
+    method: 'PATCH',
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to toggle menu item availability');
+  }
+
+  const result = await response.json();
+  return result.data;
 };
 
 const bulkUpdateMenuItems = async (data: BulkMenuItemUpdate): Promise<void> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  const response = await fetch('/api/admin/menu/bulk', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to bulk update menu items');
+  }
 };
 
-const uploadMenuItemImage = async (file: File): Promise<{ url: string }> => {
-  // Mock implementation - replace with actual API call
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  // In real implementation, this would upload to cloud storage
-  return {
-    url: URL.createObjectURL(file)
-  };
+const uploadMenuItemImage = async (file: File): Promise<{ url: string; publicId: string; thumbnailUrl?: string }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch('/api/admin/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to upload image');
+  }
+
+  const result = await response.json();
+  return result.data;
 };
 
 // Query Keys

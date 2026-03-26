@@ -32,6 +32,7 @@ async function main() {
     { name: 'Fresh Okro Soup', description: 'Traditional okro soup', price: 13.99, category: 'Soup', isVegetarian: false, isSpicy: false },
     { name: 'Edikaikong Soup', description: 'Vegetable soup with stock fish', price: 14.99, category: 'Soup', isVegetarian: false, isSpicy: false },
     { name: 'Egusi Soup', description: 'Melon seed soup', price: 13.99, category: 'Soup', isVegetarian: false, isSpicy: false },
+    { name: 'Oha Soup', description: 'Traditional Igbo soup with oha leaves and cocoyam', price: 14.99, category: 'Soup', isVegetarian: false, isSpicy: false },
 
     // Specials (Isi-Ewu is spicy, neither is vegetarian)
     { name: 'Gizzard and Dodo', description: 'Garnished in red sauce', price: 16.99, category: 'Special', isVegetarian: false, isSpicy: false },

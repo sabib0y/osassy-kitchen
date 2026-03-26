@@ -3,16 +3,27 @@ import { NextPage, GetServerSidePropsContext } from 'next';
 import { useSession, getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { 
-  LayoutDashboard, 
-  ShoppingCart, 
-  Users, 
-  Package, 
-  FileText, 
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  Users,
+  Package,
+  FileText,
   Settings,
   CreditCard,
   Eye
 } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 import styles from '@/styles/components/admin/dashboard.module.scss';
 
 // --- Types ---
@@ -136,18 +147,44 @@ const AdminDashboard: NextPage = () => {
     return <div style={{ padding: '2rem' }}>Access Denied</div>;
   }
 
-  // Mock data for demonstration
-  const mockRecentOrders = [
-    { id: '123456', user: 'Jane Doe', date: '2024-06-01', status: 'Delivered', total: 8000 },
-    { id: '123457', user: 'John Smith', date: '2024-05-30', status: 'In Progress', total: 6500 },
-    { id: '123458', user: 'Mary Ann', date: '2024-05-28', status: 'Cancelled', total: 5200 },
-  ];
-
+  // TODO: Replace mockActivities with real data when an activity feed API is implemented
   const mockActivities = [
     { type: 'new_user', message: 'John Smith registered', time: '2 hours ago' },
     { type: 'order_updated', message: 'Order #123457 status changed to In Progress', time: '3 hours ago' },
     { type: 'order_cancelled', message: 'Order #123458 was cancelled', time: '5 hours ago' },
   ];
+
+  // Derive revenue trend data from recent orders (grouped by date)
+  const revenueChartData = (() => {
+    const recentOrders = dashboardData?.orders?.recent || [];
+    const dailyRevenue: Record<string, number> = {};
+
+    recentOrders.forEach((order) => {
+      if (order.createdAt) {
+        const parsedDate = new Date(order.createdAt);
+        // Validate the date is valid before formatting
+        if (!isNaN(parsedDate.getTime())) {
+          const date = parsedDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+          dailyRevenue[date] = (dailyRevenue[date] || 0) + order.totalPrice;
+        }
+      }
+    });
+
+    // Convert to array and sort by date
+    return Object.entries(dailyRevenue)
+      .map(([date, revenue]) => ({ date, revenue }))
+      .slice(-7); // Last 7 days
+  })();
+
+  // Prepare top menu items data for bar chart
+  const menuItemsChartData = (dashboardData?.menuItems?.topPerforming || [])
+    .slice(0, 5)
+    .map((item) => ({
+      name: item.menuItem?.name?.length > 12
+        ? item.menuItem.name.substring(0, 12) + '...'
+        : item.menuItem?.name || 'Unknown',
+      quantity: item._sum?.quantity || 0,
+    }));
 
   const formatCurrency = (amount: number) => {
     return `£${amount.toLocaleString()}`;
@@ -220,15 +257,64 @@ const AdminDashboard: NextPage = () => {
           <div className={styles.chartsGrid}>
             <div className={styles.chartCard}>
               <h3 className={styles.chartTitle}>Revenue Trend</h3>
-              <div className={styles.chartPlaceholder}>
-                [Recharts Line Chart Placeholder]
+              <div className={styles.chartContainer}>
+                {revenueChartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={250}>
+                    <LineChart data={revenueChartData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                      <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+                      <YAxis
+                        tickFormatter={(value) => `£${(value / 1000).toFixed(0)}k`}
+                        tick={{ fontSize: 12 }}
+                      />
+                      <Tooltip
+                        formatter={(value: number) => [`£${value.toLocaleString()}`, 'Revenue']}
+                        labelStyle={{ fontWeight: 'bold' }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="revenue"
+                        stroke="#C52D2F"
+                        strokeWidth={2}
+                        dot={{ fill: '#C52D2F', strokeWidth: 2 }}
+                        activeDot={{ r: 6 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className={styles.chartPlaceholder}>No revenue data available</div>
+                )}
               </div>
             </div>
-            
+
             <div className={styles.chartCard}>
               <h3 className={styles.chartTitle}>Popular Menu Items</h3>
-              <div className={styles.chartPlaceholder}>
-                [Recharts Bar Chart Placeholder]
+              <div className={styles.chartContainer}>
+                {menuItemsChartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={menuItemsChartData} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                      <XAxis type="number" tick={{ fontSize: 12 }} />
+                      <YAxis
+                        type="category"
+                        dataKey="name"
+                        tick={{ fontSize: 11 }}
+                        width={100}
+                      />
+                      <Tooltip
+                        formatter={(value: number) => [value, 'Orders']}
+                        labelStyle={{ fontWeight: 'bold' }}
+                      />
+                      <Bar
+                        dataKey="quantity"
+                        fill="#F1C40F"
+                        radius={[0, 4, 4, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className={styles.chartPlaceholder}>No menu item data available</div>
+                )}
               </div>
             </div>
           </div>
@@ -259,42 +345,43 @@ const AdminDashboard: NextPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {(dashboardData?.orders?.recent?.length ? 
-                    dashboardData.orders.recent.slice(0, 3) : 
-                    mockRecentOrders
-                  ).map((order) => {
-                    const orderId = order.id?.substring(0, 6) || order.id;
-                    const userName = typeof order.user === 'string' ? order.user : order.user?.name;
-                    const orderDate = 'createdAt' in order && order.createdAt 
-                      ? new Date(order.createdAt).toLocaleDateString() 
-                      : 'date' in order 
-                      ? (order as any).date 
-                      : '-';
-                    const orderTotal = 'totalPrice' in order 
-                      ? order.totalPrice 
-                      : 'total' in order 
-                      ? (order as any).total 
-                      : 0;
-
-                    return (
-                      <tr key={order.id || Math.random()}>
-                        <td className={styles.orderId}>{orderId}</td>
-                        <td>{userName}</td>
-                        <td>{orderDate}</td>
+                  {dashboardData?.orders?.recent?.length ? (
+                    dashboardData.orders.recent.slice(0, 5).map((order) => (
+                      <tr key={order.id}>
+                        <td className={styles.orderId}>{order.id.substring(0, 8)}</td>
+                        <td>{order.user?.name || 'Unknown'}</td>
+                        <td>
+                          {(() => {
+                            if (!order.createdAt) return '-';
+                            const date = new Date(order.createdAt);
+                            return isNaN(date.getTime()) ? '-' : date.toLocaleDateString('en-GB');
+                          })()}
+                        </td>
                         <td>
                           <span className={`${styles.statusBadge} ${getStatusClass(order.status)}`}>
                             {order.status}
                           </span>
                         </td>
                         <td className={styles.amount}>
-                          {formatCurrency(orderTotal)}
+                          {formatCurrency(order.totalPrice)}
                         </td>
                         <td>
-                          <button className={styles.viewBtn}>View</button>
+                          <button
+                            className={styles.viewBtn}
+                            onClick={() => router.push(`/admin/orders/${order.id}`)}
+                          >
+                            View
+                          </button>
                         </td>
                       </tr>
-                    );
-                  })}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>
+                        No recent orders found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

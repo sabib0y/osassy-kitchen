@@ -154,15 +154,15 @@ async function handleGetOrders(req: NextApiRequest, res: NextApiResponse) {
   const hasNextPage = pageNum < totalPages;
   const hasPrevPage = pageNum > 1;
 
-  res.status(200).json({ 
-    orders: transformedOrders,
+  res.status(200).json({
+    data: transformedOrders,
     pagination: {
-      currentPage: pageNum,
+      page: pageNum,
+      limit: limitNum,
+      total: totalCount,
       totalPages,
-      totalCount,
       hasNextPage,
       hasPrevPage,
-      limit: limitNum,
     }
   });
 }
