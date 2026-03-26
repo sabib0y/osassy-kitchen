@@ -1,5 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Layout from '@/components/Layout/Layout';
 import ContactForm from '@/components/help/ContactForm';
@@ -7,6 +8,9 @@ import ContactInfoCard from '@/components/help/ContactInfoCard';
 import styles from '@/styles/pages/contact.module.scss';
 
 const ContactPage: NextPage = () => {
+  const router = useRouter();
+  const { subject } = router.query;
+  const defaultSubject = typeof subject === 'string' ? subject : '';
   return (
     <Layout pageTitle="Contact Us - Osassy's Kitchen">
       <Head>
@@ -131,7 +135,7 @@ const ContactPage: NextPage = () => {
                   <p className={styles.formIntro}>
                     Fill out the form below and we'll get back to you shortly.
                   </p>
-                  <ContactForm />
+                  <ContactForm defaultSubject={defaultSubject} />
                 </div>
               </div>
             </div>

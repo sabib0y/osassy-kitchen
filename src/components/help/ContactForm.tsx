@@ -18,10 +18,12 @@ interface FormErrors {
 interface ContactFormProps {
   className?: string;
   onSuccess?: () => void;
+  defaultSubject?: string;
 }
 
 const SUBJECT_OPTIONS = [
   { value: '', label: 'Select a subject', disabled: true },
+  { value: 'Catering Inquiry', label: 'Catering & Bulk Orders' },
   { value: 'Subscription Inquiry', label: 'Subscription Inquiry' },
   { value: 'Billing Question', label: 'Billing Question' },
   { value: 'Delivery Issue', label: 'Delivery Issue' },
@@ -30,11 +32,11 @@ const SUBJECT_OPTIONS = [
   { value: 'Other', label: 'Other' },
 ];
 
-const ContactForm: React.FC<ContactFormProps> = ({ className = "", onSuccess }) => {
+const ContactForm: React.FC<ContactFormProps> = ({ className = "", onSuccess, defaultSubject = '' }) => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
-    subject: '',
+    subject: defaultSubject,
     message: ''
   });
   

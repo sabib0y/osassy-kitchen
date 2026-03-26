@@ -125,7 +125,7 @@ const CateringPage: React.FC = () => {
             <p className={styles.subtitle}>
               Bring authentic Nigerian cuisine to your next event. From intimate gatherings to grand celebrations, we deliver unforgettable flavours.
             </p>
-            <Link href="/contact" className={styles.heroButton}>
+            <Link href="/contact?subject=Catering%20Inquiry" className={styles.heroButton}>
               Get a Quote
             </Link>
           </div>
@@ -205,7 +205,7 @@ const CateringPage: React.FC = () => {
             </div>
             <div className={styles.menuCta}>
               <p>Want to see our full catering menu?</p>
-              <Link href="/contact" className={styles.menuButton}>
+              <Link href="/contact?subject=Catering%20Inquiry" className={styles.menuButton}>
                 Request Full Menu
               </Link>
             </div>
@@ -270,7 +270,7 @@ const CateringPage: React.FC = () => {
                 Get in touch today for a free consultation and custom quote.
               </p>
               <div className={styles.ctaActions}>
-                <Link href="/contact" className={styles.ctaButton}>
+                <Link href="/contact?subject=Catering%20Inquiry" className={styles.ctaButton}>
                   Request a Quote
                 </Link>
                 <div className={styles.ctaPhone}>

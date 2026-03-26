@@ -51,11 +51,11 @@ Navigation matches user intentions:
 
 ---
 
-## 4. Current Phase: Subscription-First Architecture
+## 4. Current Phase: Functional Completion
 
-### Status: NEAR COMPLETE
+### Status: IN PROGRESS
 
-The subscription-first architecture is largely implemented. Core flows are working end-to-end.
+Phase 6 (Subscription-First Architecture) is complete. Now focusing on ensuring all core functionality works end-to-end before moving to visual polish.
 
 ### Implemented Routes
 
@@ -125,16 +125,105 @@ The subscription-first architecture is largely implemented. Core flows are worki
 - [x] Email verification flow
 - [x] Address management (CRUD)
 
-#### Milestone 6.5: Remaining Work 🔴 TODO
+#### Milestone 6.5: Contact & Communication ✅ COMPLETE
+- [x] Create `/contact` page with form
+- [x] Integrate Resend email service
+- [x] Send support notification + customer confirmation emails
 - [x] Create `/catering` page
 - [x] Remove legacy `/menu` cart functionality
 - [x] Clean up old `/subscriptions/` pages
-- [ ] Homepage refresh (subscription-focused hero)
-- [ ] Run full E2E test suite
 
 ---
 
-## 6. Completed Phases
+## 6. Current Roadmap
+
+### Phase 7: Functional Completion 🔴 IN PROGRESS
+
+**Goal:** Ensure all core functionality works end-to-end before visual polish.
+
+#### 7.1: User Flow Verification (Happy Paths)
+- [x] **Guest flow:** Homepage → Meals → Meal Plans → Create subscription → Payment
+- [x] **Auth flow:** Signup → Email verification → Login → Google OAuth → Password reset
+- [x] **Subscription flow:** Create → View → Pause → Resume → Cancel
+- [x] **User dashboard:** Profile → Addresses → Orders → Subscriptions
+- [x] **Contact flow:** Submit form → Receive confirmation email
+- [x] **Catering enquiry flow:** Catering page → Contact form (pre-selected subject)
+
+#### 7.2: Admin Flow Verification
+- [ ] Admin login
+- [ ] Menu management (CRUD: create, edit, delete meals)
+- [ ] Order management (view orders, update status)
+- [ ] Subscription overview (view all subscriptions)
+
+#### 7.3: User Flow Verification (Sad Paths)
+- [ ] Invalid login credentials
+- [ ] Expired/invalid password reset token
+- [ ] Payment failure handling
+- [ ] Form validation errors (contact, signup, addresses)
+- [ ] Unauthorised access attempts (protected routes)
+- [ ] Session expiry handling
+
+#### 7.4: Bug Fixes & Core Stability
+- [ ] **BUG-001:** Fix sign-out not syncing across browser tabs (High)
+- [ ] **BUG-002:** Meal Plans nav link skips process explainer page (Low)
+- [ ] **BUG-003:** Delivery time slots need business validation (Medium — needs business input)
+- [ ] **BUG-004:** Verify email domain in Resend for production (Medium)
+- [ ] **BUG-005:** Email template styling enhancements (Low)
+
+---
+
+### Phase 8: Visual Polish 🔜 NEXT
+
+**Goal:** Consistent branding, responsive design, and polished UI across all pages.
+
+#### 8.1: Design System Audit
+- [ ] Review colour usage consistency
+- [ ] Typography consistency check
+- [ ] Button/form styling consistency
+- [ ] Spacing and layout consistency
+
+#### 8.2: Page-by-Page Polish
+- [ ] Homepage refresh (subscription-focused hero)
+- [ ] Meals page visual improvements
+- [ ] Meal Plans page styling
+- [ ] User dashboard polish
+- [ ] Admin dashboard polish
+- [ ] Auth pages (login, signup, forgot password)
+- [ ] Contact/Catering pages
+
+#### 8.3: Responsive Design
+- [ ] Mobile breakpoints (< 768px)
+- [ ] Tablet breakpoints (768px - 1024px)
+- [ ] Desktop optimisation
+
+#### 8.4: Accessibility
+- [ ] Keyboard navigation
+- [ ] Screen reader compatibility
+- [ ] Colour contrast compliance
+- [ ] Focus states
+
+---
+
+### Phase 9: Production Launch 🔜 AFTER VISUAL POLISH
+
+See `planning/phase-5-production-launch-plan.md` for detailed checklist:
+- Performance optimisation
+- Security audit
+- Infrastructure setup
+- Monitoring & observability
+- DNS & domain configuration
+- Staged rollout (soft launch → limited → public)
+
+---
+
+## 8. Completed Phases
+
+### Phase 6: Subscription-First Architecture ✅
+- Public marketing pages (meals, meal-plans, faq, our-process, catering, contact)
+- Subscription wizard with delivery time slots
+- Subscription management (pause/resume/cancel)
+- Authentication (email/password + Google OAuth)
+- Email integration (Resend)
 
 ### Phase 1: Foundation ✅
 - Prisma + PostgreSQL setup
@@ -309,4 +398,4 @@ font-family: Inter, system-ui, -apple-system, sans-serif;
 
 ---
 
-*Last updated: March 15, 2026*
+*Last updated: March 25, 2026*
