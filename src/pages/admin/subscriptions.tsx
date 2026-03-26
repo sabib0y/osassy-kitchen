@@ -3,21 +3,14 @@ import { Search, Users, PauseCircle, XCircle, PlayCircle, Calendar, RefreshCw } 
 import {
   useSubscriptions,
   useUpdateSubscriptionStatus,
-  Subscription,
   SubscriptionFilters
 } from '@/hooks/admin/useSubscriptions';
 import AdminLayout from '@/components/admin/shared/AdminLayout';
-import StatsCard from '@/components/admin/shared/StatsCard';
 import { PageLoading } from '@/components/admin/shared/LoadingSpinner';
 import { PageError } from '@/components/admin/shared/ErrorMessage';
+import styles from '@/styles/components/admin/subscriptions.module.scss';
 
 type SubscriptionStatus = 'ACTIVE' | 'PAUSED' | 'CANCELLED';
-
-const statusConfig: Record<SubscriptionStatus, { label: string; colour: string; bgColour: string }> = {
-  ACTIVE: { label: 'Active', colour: 'var(--secondary-foreground)', bgColour: 'var(--secondary)' },
-  PAUSED: { label: 'Paused', colour: 'var(--accent-foreground)', bgColour: 'var(--accent)' },
-  CANCELLED: { label: 'Cancelled', colour: 'var(--destructive-foreground)', bgColour: 'var(--destructive)' },
-};
 
 const intervalLabels: Record<string, string> = {
   WEEKLY: 'Weekly',
@@ -88,6 +81,16 @@ export default function SubscriptionsPage() {
     }).format(price);
   };
 
+  const getInitials = (name: string | null, email: string) => {
+    if (name) {
+      const parts = name.split(' ');
+      return parts.length > 1
+        ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+        : name.substring(0, 2).toUpperCase();
+    }
+    return email.substring(0, 2).toUpperCase();
+  };
+
   if (isLoading && !subscriptionsData) {
     return (
       <AdminLayout title="Subscription Management">
@@ -118,27 +121,14 @@ export default function SubscriptionsPage() {
       description="Manage customer subscriptions"
     >
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className={styles.pageHeader}>
         <div>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--primary)' }}>
-            Subscription Management
-          </h1>
-          <p className="mt-1" style={{ color: 'var(--secondary)' }}>
-            View and manage all customer subscriptions
-          </p>
+          <h1 className={styles.pageTitle}>Subscription Management</h1>
+          <p className={styles.pageDescription}>Manage customer subscriptions</p>
         </div>
         <button
           onClick={() => refetch()}
-          className="flex items-center gap-2"
-          style={{
-            background: 'var(--secondary)',
-            color: 'var(--secondary-foreground)',
-            borderRadius: '0.5rem',
-            padding: '0.5rem 1rem',
-            fontWeight: '600',
-            border: 'none',
-            cursor: 'pointer'
-          }}
+          className={`${styles.refreshBtn} ${isLoading ? styles.loading : ''}`}
         >
           <RefreshCw size={16} />
           Refresh
@@ -146,174 +136,149 @@ export default function SubscriptionsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <StatsCard
-          title="Active Subscriptions"
-          value={pagination?.totalCount ?
-            subscriptions.filter(s => s.status === 'ACTIVE').length +
-            (filters.status === 'ACTIVE' ? 0 : activeCount) : activeCount}
-          icon={Users}
-        />
-        <StatsCard
-          title="Paused Subscriptions"
-          value={pausedCount}
-          icon={PauseCircle}
-        />
-        <StatsCard
-          title="Cancelled Subscriptions"
-          value={cancelledCount}
-          icon={XCircle}
-        />
+      <div className={styles.statsGrid}>
+        <div className={styles.statsCard}>
+          <div className={`${styles.statsIcon} ${styles.active}`}>
+            <Users size={24} />
+          </div>
+          <div className={styles.statsContent}>
+            <div className={styles.statsLabel}>Active Subscriptions</div>
+            <div className={styles.statsValue}>{activeCount}</div>
+          </div>
+        </div>
+        <div className={styles.statsCard}>
+          <div className={`${styles.statsIcon} ${styles.paused}`}>
+            <PauseCircle size={24} />
+          </div>
+          <div className={styles.statsContent}>
+            <div className={styles.statsLabel}>Paused Subscriptions</div>
+            <div className={styles.statsValue}>{pausedCount}</div>
+          </div>
+        </div>
+        <div className={styles.statsCard}>
+          <div className={`${styles.statsIcon} ${styles.cancelled}`}>
+            <XCircle size={24} />
+          </div>
+          <div className={styles.statsContent}>
+            <div className={styles.statsLabel}>Cancelled Subscriptions</div>
+            <div className={styles.statsValue}>{cancelledCount}</div>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-        <div className="flex flex-wrap items-center gap-4">
+      <div className={styles.filtersCard}>
+        <div className={styles.filtersRow}>
           {/* Search */}
-          <div className="flex-1 min-w-[250px]">
-            <div className="relative">
-              <Search
-                size={18}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2"
-                style={{ color: 'var(--secondary)' }}
-              />
-              <input
-                type="text"
-                placeholder="Search by name, email, or plan..."
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg"
-                style={{ borderColor: 'var(--border)' }}
-              />
-            </div>
+          <div className={styles.searchWrapper}>
+            <Search size={18} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              className={styles.searchInput}
+            />
           </div>
 
           {/* Status Filter Buttons */}
-          <div className="flex gap-2">
+          <div className={styles.statusFilters}>
             {(['ACTIVE', 'PAUSED', 'CANCELLED'] as SubscriptionStatus[]).map((status) => (
               <button
                 key={status}
                 onClick={() => handleStatusFilter(status)}
-                style={{
-                  background: filters.status === status ? statusConfig[status].bgColour : 'transparent',
-                  color: filters.status === status ? statusConfig[status].colour : 'var(--text)',
-                  border: `1px solid ${filters.status === status ? statusConfig[status].bgColour : 'var(--border)'}`,
-                  borderRadius: '0.5rem',
-                  padding: '0.5rem 1rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                }}
+                className={`${styles.statusBtn} ${filters.status === status ? styles.active : ''}`}
               >
-                {statusConfig[status].label}
+                {status === 'ACTIVE' ? 'Active' : status === 'PAUSED' ? 'Paused' : 'Cancelled'}
               </button>
             ))}
           </div>
 
           {/* Search Button */}
-          <button
-            onClick={handleSearch}
-            style={{
-              background: 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              borderRadius: '0.5rem',
-              padding: '0.5rem 1rem',
-              fontWeight: '600',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
+          <button onClick={handleSearch} className={styles.searchBtn}>
+            <Search size={16} />
             Search
           </button>
         </div>
       </div>
 
       {/* Subscriptions Table */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      <div className={styles.tableCard}>
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
             <thead>
-              <tr style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
-                <th className="text-left px-4 py-3 font-semibold" style={{ color: 'var(--text)' }}>Customer</th>
-                <th className="text-left px-4 py-3 font-semibold" style={{ color: 'var(--text)' }}>Plan</th>
-                <th className="text-left px-4 py-3 font-semibold" style={{ color: 'var(--text)' }}>Interval</th>
-                <th className="text-left px-4 py-3 font-semibold" style={{ color: 'var(--text)' }}>Price</th>
-                <th className="text-left px-4 py-3 font-semibold" style={{ color: 'var(--text)' }}>Status</th>
-                <th className="text-left px-4 py-3 font-semibold" style={{ color: 'var(--text)' }}>Next Delivery</th>
-                <th className="text-left px-4 py-3 font-semibold" style={{ color: 'var(--text)' }}>Actions</th>
+              <tr>
+                <th>Customer</th>
+                <th>Plan</th>
+                <th>Interval</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Next Delivery</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {subscriptions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-8" style={{ color: 'var(--secondary)' }}>
+                  <td colSpan={7} className={styles.emptyRow}>
                     No subscriptions found
                   </td>
                 </tr>
               ) : (
                 subscriptions.map((subscription) => (
-                  <tr
-                    key={subscription.id}
-                    style={{ borderBottom: '1px solid var(--border)' }}
-                    className="hover:bg-gray-50"
-                  >
-                    <td className="px-4 py-3">
-                      <div>
-                        <p className="font-medium" style={{ color: 'var(--text)' }}>
-                          {subscription.user.name || 'N/A'}
-                        </p>
-                        <p className="text-sm" style={{ color: 'var(--secondary)' }}>
-                          {subscription.user.email}
-                        </p>
+                  <tr key={subscription.id}>
+                    <td>
+                      <div className={styles.customerCell}>
+                        <div className={styles.avatar}>
+                          {getInitials(subscription.user.name, subscription.user.email)}
+                        </div>
+                        <div className={styles.customerInfo}>
+                          <span className={styles.customerName}>
+                            {subscription.user.name || 'N/A'}
+                          </span>
+                          <span className={styles.customerEmail}>
+                            {subscription.user.email}
+                          </span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3" style={{ color: 'var(--text)' }}>
-                      {subscription.planName}
-                    </td>
-                    <td className="px-4 py-3" style={{ color: 'var(--text)' }}>
+                    <td className={styles.planCell}>{subscription.planName}</td>
+                    <td className={styles.intervalCell}>
                       {intervalLabels[subscription.interval] || subscription.interval}
                     </td>
-                    <td className="px-4 py-3" style={{ color: 'var(--text)' }}>
-                      {formatPrice(subscription.price)}
-                    </td>
-                    <td className="px-4 py-3">
+                    <td className={styles.priceCell}>{formatPrice(subscription.price)}</td>
+                    <td>
                       <span
-                        style={{
-                          background: statusConfig[subscription.status].bgColour,
-                          color: statusConfig[subscription.status].colour,
-                          borderRadius: '0.5rem',
-                          padding: '0.25rem 0.75rem',
-                          fontSize: '0.875rem',
-                          fontWeight: '600',
-                          display: 'inline-block',
-                        }}
+                        className={`${styles.statusBadge} ${
+                          subscription.status === 'ACTIVE'
+                            ? styles.active
+                            : subscription.status === 'PAUSED'
+                            ? styles.paused
+                            : styles.cancelled
+                        }`}
                       >
-                        {statusConfig[subscription.status].label}
+                        {subscription.status === 'ACTIVE'
+                          ? 'Active'
+                          : subscription.status === 'PAUSED'
+                          ? 'Paused'
+                          : 'Cancelled'}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2" style={{ color: 'var(--text)' }}>
-                        <Calendar size={14} style={{ color: 'var(--secondary)' }} />
+                    <td>
+                      <div className={styles.deliveryCell}>
+                        <Calendar size={14} />
                         {formatDate(subscription.nextDeliveryDate)}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
+                    <td>
+                      <div className={styles.actionGroup}>
                         {subscription.status === 'ACTIVE' && (
                           <button
                             onClick={() => handleUpdateStatus(subscription.id, 'PAUSED')}
                             disabled={updateStatusMutation.isPending}
                             title="Pause Subscription"
-                            style={{
-                              background: 'var(--accent)',
-                              color: 'var(--accent-foreground)',
-                              border: 'none',
-                              borderRadius: '0.375rem',
-                              padding: '0.375rem',
-                              cursor: updateStatusMutation.isPending ? 'not-allowed' : 'pointer',
-                              opacity: updateStatusMutation.isPending ? 0.5 : 1,
-                            }}
+                            className={`${styles.actionBtn} ${styles.pause}`}
                           >
                             <PauseCircle size={16} />
                           </button>
@@ -323,15 +288,7 @@ export default function SubscriptionsPage() {
                             onClick={() => handleUpdateStatus(subscription.id, 'ACTIVE')}
                             disabled={updateStatusMutation.isPending}
                             title="Resume Subscription"
-                            style={{
-                              background: 'var(--secondary)',
-                              color: 'var(--secondary-foreground)',
-                              border: 'none',
-                              borderRadius: '0.375rem',
-                              padding: '0.375rem',
-                              cursor: updateStatusMutation.isPending ? 'not-allowed' : 'pointer',
-                              opacity: updateStatusMutation.isPending ? 0.5 : 1,
-                            }}
+                            className={`${styles.actionBtn} ${styles.resume}`}
                           >
                             <PlayCircle size={16} />
                           </button>
@@ -341,15 +298,7 @@ export default function SubscriptionsPage() {
                             onClick={() => handleUpdateStatus(subscription.id, 'CANCELLED')}
                             disabled={updateStatusMutation.isPending}
                             title="Cancel Subscription"
-                            style={{
-                              background: 'var(--destructive)',
-                              color: 'var(--destructive-foreground)',
-                              border: 'none',
-                              borderRadius: '0.375rem',
-                              padding: '0.375rem',
-                              cursor: updateStatusMutation.isPending ? 'not-allowed' : 'pointer',
-                              opacity: updateStatusMutation.isPending ? 0.5 : 1,
-                            }}
+                            className={`${styles.actionBtn} ${styles.cancel}`}
                           >
                             <XCircle size={16} />
                           </button>
@@ -366,56 +315,48 @@ export default function SubscriptionsPage() {
 
       {/* Pagination */}
       {pagination && pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-6">
-          <div className="flex items-center gap-2">
+        <div className={styles.pagination}>
+          <div className={styles.paginationNav}>
             <button
               onClick={() => handlePageChange(pagination.currentPage - 1)}
               disabled={!pagination.hasPrevPage || isLoading}
-              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={styles.pageBtn}
             >
               Previous
             </button>
 
-            <div className="flex items-center gap-1">
-              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
-                .filter(page => {
-                  const current = pagination.currentPage;
-                  return page === 1 || page === pagination.totalPages ||
-                         (page >= current - 2 && page <= current + 2);
-                })
-                .map((page, index, array) => (
-                  <React.Fragment key={page}>
-                    {index > 0 && array[index - 1] !== page - 1 && (
-                      <span className="px-2 text-gray-500">...</span>
-                    )}
-                    <button
-                      onClick={() => handlePageChange(page)}
-                      disabled={isLoading}
-                      className="px-3 py-2 text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        background: page === pagination.currentPage ? 'var(--primary)' : 'white',
-                        color: page === pagination.currentPage ? 'var(--primary-foreground)' : 'var(--secondary)',
-                        border: page === pagination.currentPage ? 'none' : '1px solid var(--border)',
-                        cursor: isLoading ? 'not-allowed' : 'pointer'
-                      }}
-                    >
-                      {page}
-                    </button>
-                  </React.Fragment>
-                ))
-              }
-            </div>
+            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+              .filter(page => {
+                const current = pagination.currentPage;
+                return page === 1 || page === pagination.totalPages ||
+                       (page >= current - 2 && page <= current + 2);
+              })
+              .map((page, index, array) => (
+                <React.Fragment key={page}>
+                  {index > 0 && array[index - 1] !== page - 1 && (
+                    <span className={styles.pageEllipsis}>...</span>
+                  )}
+                  <button
+                    onClick={() => handlePageChange(page)}
+                    disabled={isLoading}
+                    className={`${styles.pageBtn} ${page === pagination.currentPage ? styles.active : ''}`}
+                  >
+                    {page}
+                  </button>
+                </React.Fragment>
+              ))
+            }
 
             <button
               onClick={() => handlePageChange(pagination.currentPage + 1)}
               disabled={!pagination.hasNextPage || isLoading}
-              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={styles.pageBtn}
             >
               Next
             </button>
           </div>
 
-          <div className="text-sm text-gray-700">
+          <div className={styles.paginationInfo}>
             Page {pagination.currentPage} of {pagination.totalPages} ({pagination.totalCount} total)
           </div>
         </div>

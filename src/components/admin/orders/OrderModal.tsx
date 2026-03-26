@@ -1,9 +1,10 @@
 import React from 'react';
-import { X, MapPin, Clock, User, Phone, Mail, Package } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, User, Phone, Mail, Package, CreditCard } from 'lucide-react';
 import { Order } from '@/types/admin';
 import StatusBadge from '../shared/StatusBadge';
 import { useUpdateOrderStatus } from '@/hooks/admin/useOrders';
 import { ButtonLoading } from '../shared/LoadingSpinner';
+import styles from './OrderModal.module.scss';
 
 interface OrderModalProps {
   order: Order | null;
@@ -19,14 +20,16 @@ export default function OrderModal({ order, isOpen, onClose }: OrderModalProps) 
   const handleStatusUpdate = async (status: Order['status']) => {
     try {
       await updateOrderMutation.mutateAsync({ orderId: order.id, status });
-      // Modal will automatically reflect changes due to React Query refetch
     } catch (error) {
       console.error('Failed to update order status:', error);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (dateString: string | undefined | null) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
+    return date.toLocaleDateString('en-GB', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -35,22 +38,23 @@ export default function OrderModal({ order, isOpen, onClose }: OrderModalProps) 
     });
   };
 
-  const formatCurrency = (amount: number) => {
-    return `£${amount.toLocaleString()}`;
+  const formatCurrency = (amount: number | undefined | null) => {
+    if (amount === undefined || amount === null) return '£0.00';
+    return `£${Number(amount).toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
   };
 
   const getNextStatusOptions = (currentStatus: Order['status']) => {
     switch (currentStatus) {
       case 'PENDING':
         return [
-          { value: 'IN_PROGRESS', label: 'Mark In Progress', color: 'red' },
-          { value: 'DELIVERED', label: 'Mark Delivered', color: 'green' },
-          { value: 'CANCELLED', label: 'Cancel Order', color: 'red' },
+          { value: 'IN_PROGRESS', label: 'Start Processing', variant: 'primary' as const },
+          { value: 'DELIVERED', label: 'Mark Delivered', variant: 'success' as const },
+          { value: 'CANCELLED', label: 'Cancel Order', variant: 'danger' as const },
         ];
       case 'IN_PROGRESS':
         return [
-          { value: 'DELIVERED', label: 'Mark Delivered', color: 'green' },
-          { value: 'CANCELLED', label: 'Cancel Order', color: 'red' },
+          { value: 'DELIVERED', label: 'Mark Delivered', variant: 'success' as const },
+          { value: 'CANCELLED', label: 'Cancel Order', variant: 'danger' as const },
         ];
       case 'DELIVERED':
       case 'CANCELLED':
@@ -63,213 +67,166 @@ export default function OrderModal({ order, isOpen, onClose }: OrderModalProps) 
   const statusOptions = getNextStatusOptions(order.status);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onClose} />
-        
-        <div className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                Order #{order.id.slice(-8).toUpperCase()}
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                Placed on {formatDate(order.createdAt)}
+    <>
+      <div className={styles.overlay} onClick={onClose} />
+      <div className={styles.panel}>
+        {/* Header */}
+        <div className={styles.header}>
+          <button className={styles.backBtn} onClick={onClose}>
+            <ArrowLeft size={18} />
+            Back
+          </button>
+          <div className={styles.headerInfo}>
+            <h2 className={styles.orderId}>Order #{order.id.slice(-5).toUpperCase()}</h2>
+            <StatusBadge status={order.status} size="md" />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className={styles.content}>
+          {/* Order Date */}
+          <div className={styles.section}>
+            <p className={styles.orderDate}>
+              <Clock size={14} />
+              Placed {formatDate(order.createdAt)}
+            </p>
+          </div>
+
+          {/* Customer Details */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>
+              <User size={16} />
+              Customer
+            </h3>
+            <div className={styles.sectionContent}>
+              <p className={styles.customerName}>{order.user.name}</p>
+              <p className={styles.customerDetail}>
+                <Mail size={14} />
+                {order.user.email}
               </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <StatusBadge status={order.status} size="md" />
-              <button
-                onClick={onClose}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              {order.user.phone && (
+                <p className={styles.customerDetail}>
+                  <Phone size={14} />
+                  {order.user.phone}
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column - Order Details */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Order Items */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Package className="w-5 h-5" />
-                    Order Items ({order.items.length})
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between bg-white p-3 rounded-md">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">{item.menuItem.name}</h4>
-                          <p className="text-sm text-gray-600">
-                            {formatCurrency(item.menuItem.price)} × {item.quantity}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium text-gray-900">
-                            {formatCurrency(item.price)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Order Total */}
-                  <div className="border-t border-gray-200 mt-4 pt-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Subtotal:</span>
-                      <span className="text-sm text-gray-900">
-                        {formatCurrency(order.totalPrice - order.deliveryFee)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-sm text-gray-600">Delivery Fee:</span>
-                      <span className="text-sm text-gray-900">
-                        {formatCurrency(order.deliveryFee)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
-                      <span className="font-semibold text-gray-900">Total:</span>
-                      <span className="font-semibold text-lg text-gray-900">
-                        {formatCurrency(order.totalPrice)}
-                      </span>
-                    </div>
-                  </div>
+          {/* Delivery Information */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>
+              <MapPin size={16} />
+              Delivery
+            </h3>
+            <div className={styles.sectionContent}>
+              <p className={styles.address}>{order.deliveryAddress}</p>
+              {order.deliveryDate && (
+                <p className={styles.deliveryDate}>
+                  <Clock size={14} />
+                  {formatDate(order.deliveryDate)}
+                </p>
+              )}
+              {order.specialInstructions && (
+                <div className={styles.instructions}>
+                  <span className={styles.instructionsLabel}>Notes:</span>
+                  <p>{order.specialInstructions}</p>
                 </div>
+              )}
+            </div>
+          </div>
 
-                {/* Delivery Information */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <MapPin className="w-5 h-5" />
-                    Delivery Information
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Address:</label>
-                      <p className="text-gray-900 mt-1">{order.deliveryAddress}</p>
+          {/* Order Items */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>
+              <Package size={16} />
+              Items ({Array.isArray(order.items) ? order.items.length : 0})
+            </h3>
+            <div className={styles.itemsList}>
+              {Array.isArray(order.items) && order.items.length > 0 ? (
+                order.items.map((item) => (
+                  <div key={item.id} className={styles.item}>
+                    <div className={styles.itemInfo}>
+                      <span className={styles.itemName}>{item.menuItem?.name || 'Item'}</span>
+                      <span className={styles.itemQty}>
+                        {formatCurrency(item.menuItem?.price)} × {item.quantity}
+                      </span>
                     </div>
-                    
-                    {order.deliveryDate && (
-                      <div>
-                        <label className="text-sm font-medium text-gray-600">Delivery Date:</label>
-                        <p className="text-gray-900 mt-1 flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
-                          {formatDate(order.deliveryDate)}
-                        </p>
-                      </div>
-                    )}
-                    
-                    {order.specialInstructions && (
-                      <div>
-                        <label className="text-sm font-medium text-gray-600">Special Instructions:</label>
-                        <p className="text-gray-900 mt-1">{order.specialInstructions}</p>
-                      </div>
-                    )}
+                    <span className={styles.itemPrice}>{formatCurrency(item.price)}</span>
                   </div>
+                ))
+              ) : (
+                <p className={styles.noItems}>No item details available</p>
+              )}
+            </div>
+          </div>
+
+          {/* Order Total */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>
+              <CreditCard size={16} />
+              Payment
+            </h3>
+            <div className={styles.totals}>
+              <div className={styles.totalRow}>
+                <span>Subtotal</span>
+                <span>{formatCurrency((order.totalPrice || 0) - (order.deliveryFee || 0))}</span>
+              </div>
+              <div className={styles.totalRow}>
+                <span>Delivery</span>
+                <span>{formatCurrency(order.deliveryFee || 0)}</span>
+              </div>
+              <div className={styles.totalRowFinal}>
+                <span>Total</span>
+                <span>{formatCurrency(order.totalPrice)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Timeline */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Timeline</h3>
+            <div className={styles.timeline}>
+              <div className={styles.timelineItem}>
+                <div className={styles.timelineDot} data-status="complete" />
+                <div className={styles.timelineContent}>
+                  <span className={styles.timelineLabel}>Order Placed</span>
+                  <span className={styles.timelineDate}>{formatDate(order.createdAt)}</span>
                 </div>
               </div>
-
-              {/* Right Column - Customer & Actions */}
-              <div className="space-y-6">
-                {/* Customer Information */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <User className="w-5 h-5" />
-                    Customer Details
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Name:</label>
-                      <p className="text-gray-900 mt-1">{order.user.name}</p>
-                    </div>
-                    
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Email:</label>
-                      <p className="text-gray-900 mt-1 flex items-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        {order.user.email}
-                      </p>
-                    </div>
-                    
-                    {order.user.phone && (
-                      <div>
-                        <label className="text-sm font-medium text-gray-600">Phone:</label>
-                        <p className="text-gray-900 mt-1 flex items-center gap-2">
-                          <Phone className="w-4 h-4" />
-                          {order.user.phone}
-                        </p>
-                      </div>
-                    )}
+              {order.updatedAt !== order.createdAt && (
+                <div className={styles.timelineItem}>
+                  <div className={styles.timelineDot} data-status="current" />
+                  <div className={styles.timelineContent}>
+                    <span className={styles.timelineLabel}>Status Updated</span>
+                    <span className={styles.timelineDate}>{formatDate(order.updatedAt)}</span>
                   </div>
                 </div>
-
-                {/* Status Actions */}
-                {statusOptions.length > 0 && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                      Update Status
-                    </h3>
-                    
-                    <div className="space-y-2">
-                      {statusOptions.map((option) => (
-                        <button
-                          key={option.value}
-                          onClick={() => handleStatusUpdate(option.value as Order['status'])}
-                          disabled={updateOrderMutation.isPending}
-                          className={`
-                            w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed
-                            ${option.color === 'red' ? 'bg-red-100 text-red-700 hover:bg-red-200' : ''}
-                            ${option.color === 'green' ? 'bg-green-100 text-green-700 hover:bg-green-200' : ''}
-                            ${option.color === 'red' ? 'bg-red-100 text-red-700 hover:bg-red-200' : ''}
-                          `}
-                        >
-                          {updateOrderMutation.isPending ? (
-                            <ButtonLoading size="sm" />
-                          ) : null}
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Order Timeline */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Order Timeline
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">Order Placed</p>
-                        <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
-                      </div>
-                    </div>
-                    
-                    {order.updatedAt !== order.createdAt && (
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">Status Updated</p>
-                          <p className="text-xs text-gray-500">{formatDate(order.updatedAt)}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
+
+        {/* Footer - Status Actions */}
+        {statusOptions.length > 0 && (
+          <div className={styles.footer}>
+            <p className={styles.footerLabel}>Update Status</p>
+            <div className={styles.actions}>
+              {statusOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleStatusUpdate(option.value as Order['status'])}
+                  disabled={updateOrderMutation.isPending}
+                  className={`${styles.actionBtn} ${styles[option.variant]}`}
+                >
+                  {updateOrderMutation.isPending ? <ButtonLoading size="sm" /> : null}
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 }

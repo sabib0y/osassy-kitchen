@@ -55,11 +55,7 @@ export default function AdminLayout({ children, title, description }: AdminLayou
       {/* Sidebar */}
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.open : ''}`}>
         <div className={styles.sidebarHeader}>
-          <img 
-            src="https://placehold.co/40x40" 
-            alt="Osassy's Kitchen" 
-            className={styles.logo}
-          />
+          <div className={styles.logoIcon}>OA</div>
           <span className={styles.title}>Osassy Admin</span>
           <button
             onClick={() => setSidebarOpen(false)}

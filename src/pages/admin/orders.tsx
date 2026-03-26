@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Download, Plus } from 'lucide-react';
+import { Download, Plus, RefreshCw } from 'lucide-react';
 import { useOrders, useExportOrders } from '@/hooks/admin/useOrders';
 import { Order, OrderFilters as OrderFiltersType } from '@/types/admin';
 import AdminLayout from '@/components/admin/shared/AdminLayout';
@@ -10,6 +10,7 @@ import OrderTable from '@/components/admin/orders/OrderTable';
 import OrderModal from '@/components/admin/orders/OrderModal';
 import { PageLoading, ButtonLoading } from '@/components/admin/shared/LoadingSpinner';
 import { PageError } from '@/components/admin/shared/ErrorMessage';
+import styles from '@/styles/components/admin/orders.module.scss';
 
 export default function OrdersPage() {
   const [filters, setFilters] = useState<OrderFiltersType>({
@@ -86,36 +87,29 @@ export default function OrdersPage() {
   const pagination = ordersData?.pagination;
 
   return (
-    <AdminLayout 
+    <AdminLayout
       title="Order Management"
       description="Manage and track all customer orders"
     >
-      {/* Page Header with Buttons */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Page Header */}
+      <div className={styles.pageHeader}>
         <div>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--primary)' }}>
-            Order Management
-          </h1>
-          <p className="mt-1" style={{ color: 'var(--secondary)' }}>
-            Manage all customer orders and deliveries
-          </p>
+          <h1 className={styles.pageTitle}>Order Management</h1>
+          <p className={styles.pageDescription}>Manage all customer orders and deliveries</p>
         </div>
-        <div className="flex gap-3">
+        <div className={styles.headerActions}>
+          <button
+            onClick={() => refetch()}
+            className={styles.exportBtn}
+            disabled={isLoading}
+          >
+            <RefreshCw size={16} />
+            Refresh
+          </button>
           <button
             onClick={handleExport}
             disabled={exportMutation.isPending || orders.length === 0}
-            className="btn-secondary flex items-center gap-2"
-            style={{
-              background: 'var(--secondary)',
-              color: 'var(--secondary-foreground)',
-              borderRadius: '0.5rem',
-              padding: '0.5rem 1rem',
-              fontWeight: '600',
-              transition: 'background 0.2s',
-              border: 'none',
-              cursor: exportMutation.isPending || orders.length === 0 ? 'not-allowed' : 'pointer',
-              opacity: exportMutation.isPending || orders.length === 0 ? 0.5 : 1
-            }}
+            className={styles.exportBtn}
           >
             {exportMutation.isPending ? (
               <ButtonLoading size="sm" />
@@ -124,19 +118,7 @@ export default function OrdersPage() {
             )}
             Export
           </button>
-          <button
-            className="btn-primary flex items-center gap-2"
-            style={{
-              background: 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              borderRadius: '0.5rem',
-              padding: '0.5rem 1rem',
-              fontWeight: '600',
-              transition: 'background 0.2s',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
+          <button className={styles.newOrderBtn}>
             <Plus size={16} />
             New Order
           </button>
@@ -153,7 +135,6 @@ export default function OrdersPage() {
         onApplyFilters={handleApplyFilters}
         isLoading={isLoading}
       />
-
 
       {/* Bulk Actions */}
       <BulkActions
@@ -173,56 +154,48 @@ export default function OrdersPage() {
 
       {/* Pagination */}
       {pagination && pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-6">
-          <div className="flex items-center gap-2">
+        <div className={styles.pagination}>
+          <div className={styles.paginationNav}>
             <button
               onClick={() => handlePageChange(pagination.page - 1)}
               disabled={pagination.page <= 1 || isLoading}
-              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={styles.pageBtn}
             >
               Previous
             </button>
-            
-            <div className="flex items-center gap-1">
-              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
-                .filter(page => {
-                  const current = pagination.page;
-                  return page === 1 || page === pagination.totalPages || 
-                         (page >= current - 2 && page <= current + 2);
-                })
-                .map((page, index, array) => (
-                  <React.Fragment key={page}>
-                    {index > 0 && array[index - 1] !== page - 1 && (
-                      <span className="px-2 text-gray-500">...</span>
-                    )}
-                    <button
-                      onClick={() => handlePageChange(page)}
-                      disabled={isLoading}
-                      className="px-3 py-2 text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        background: page === pagination.page ? 'var(--primary)' : 'white',
-                        color: page === pagination.page ? 'var(--primary-foreground)' : 'var(--secondary)',
-                        border: page === pagination.page ? 'none' : '1px solid var(--border)',
-                        cursor: isLoading ? 'not-allowed' : 'pointer'
-                      }}
-                    >
-                      {page}
-                    </button>
-                  </React.Fragment>
-                ))
-              }
-            </div>
-            
+
+            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+              .filter(page => {
+                const current = pagination.page;
+                return page === 1 || page === pagination.totalPages ||
+                       (page >= current - 2 && page <= current + 2);
+              })
+              .map((page, index, array) => (
+                <React.Fragment key={page}>
+                  {index > 0 && array[index - 1] !== page - 1 && (
+                    <span className={styles.pageEllipsis}>...</span>
+                  )}
+                  <button
+                    onClick={() => handlePageChange(page)}
+                    disabled={isLoading}
+                    className={`${styles.pageBtn} ${page === pagination.page ? styles.active : ''}`}
+                  >
+                    {page}
+                  </button>
+                </React.Fragment>
+              ))
+            }
+
             <button
               onClick={() => handlePageChange(pagination.page + 1)}
               disabled={pagination.page >= pagination.totalPages || isLoading}
-              className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={styles.pageBtn}
             >
               Next
             </button>
           </div>
-          
-          <div className="text-sm text-gray-700">
+
+          <div className={styles.paginationInfo}>
             Page {pagination.page} of {pagination.totalPages}
           </div>
         </div>

@@ -133,18 +133,18 @@ async function handleGetOrders(req: NextApiRequest, res: NextApiResponse) {
   // Transform the data for frontend consumption
   const transformedOrders = orders.map(order => ({
     id: order.id,
-    totalPrice: order.totalPrice,
-    deliveryDate: order.deliveryDate,
+    totalPrice: Number(order.totalPrice),
+    deliveryDate: order.deliveryDate ? order.deliveryDate.toISOString() : null,
     status: order.status,
     notes: order.notes,
-    createdAt: order.createdAt,
-    updatedAt: order.updatedAt,
+    createdAt: order.createdAt ? order.createdAt.toISOString() : null,
+    updatedAt: order.updatedAt ? order.updatedAt.toISOString() : null,
     user: order.user,
     subscription: order.subscription,
     items: order.orderItems.map(orderItem => ({
       id: orderItem.id,
       quantity: orderItem.quantity,
-      price: orderItem.price,
+      price: Number(orderItem.price),
       menuItem: orderItem.menuItem
     }))
   }));
