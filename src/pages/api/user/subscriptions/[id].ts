@@ -3,6 +3,7 @@ import { getToken } from 'next-auth/jwt';
 import { SubscriptionStatus } from '@prisma/client';
 import prisma from '../../../../lib/prisma';
 import stripe from '../../../../lib/stripe';
+import { sendAdminCancellationNotification } from '../../../../lib/email';
 
 export default async function handler(
   req: NextApiRequest,
@@ -157,6 +158,23 @@ export default async function handler(
           } catch (stripeError) {
             console.error('Stripe update failed:', stripeError);
             // Continue despite Stripe error - the database has been updated
+          }
+        }
+
+        // Send admin notification for cancellation
+        if (action === 'cancel') {
+          try {
+            await sendAdminCancellationNotification({
+              subscriptionId: subscription.id,
+              customerName: user.name || 'Customer',
+              customerEmail: user.email,
+              planName: subscription.planName,
+              cancelledAt: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            });
+            console.log('[Subscription] Admin cancellation notification sent');
+          } catch (emailError) {
+            console.error('[Subscription] Failed to send cancellation notification:', emailError);
+            // Don't fail the request - email is non-critical
           }
         }
 
@@ -359,15 +377,29 @@ export default async function handler(
       // Soft delete by setting status to CANCELLED
       const cancelledSubscription = await prisma.subscription.update({
         where: { id },
-        data: { 
+        data: {
           status: SubscriptionStatus.CANCELLED,
           updatedAt: new Date()
         }
       });
 
-      return res.status(200).json({ 
+      // Send admin notification for cancellation
+      try {
+        await sendAdminCancellationNotification({
+          subscriptionId: subscription.id,
+          customerName: user.name || 'Customer',
+          customerEmail: user.email,
+          planName: subscription.planName,
+          cancelledAt: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        });
+        console.log('[Subscription] Admin cancellation notification sent');
+      } catch (emailError) {
+        console.error('[Subscription] Failed to send cancellation notification:', emailError);
+      }
+
+      return res.status(200).json({
         message: 'Subscription cancelled successfully',
-        subscription: cancelledSubscription 
+        subscription: cancelledSubscription
       });
     }
 

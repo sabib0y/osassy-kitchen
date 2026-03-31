@@ -210,7 +210,7 @@ const DeliveryStep: React.FC<DeliveryStepProps> = ({
             <span className={styles.errorMessage}>{errors.phone}</span>
           )}
           <span className={styles.helperText}>
-            We'll text you delivery updates
+            We&apos;ll text you delivery updates
           </span>
         </div>
 

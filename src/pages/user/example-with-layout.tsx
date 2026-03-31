@@ -10,7 +10,6 @@ const ExampleWithUserLayout: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats>({
     activeSubscriptions: 0,
     totalOrders: 0,
-    upcomingDeliveries: 0,
     totalSpent: 0
   });
 
@@ -78,9 +77,9 @@ const ExampleWithUserLayout: React.FC = () => {
               textAlign: 'center'
             }}>
               <h3 style={{ margin: '0 0 8px 0', fontSize: '32px', fontWeight: '700' }}>
-                {stats.upcomingDeliveries}
+                {stats.totalOrders}
               </h3>
-              <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>Upcoming Deliveries</p>
+              <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>Total Orders</p>
             </div>
           </div>
 

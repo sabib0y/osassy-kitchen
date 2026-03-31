@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import OrderCard from './OrderCard';
 import { useOrders } from '../../hooks/useOrders';
 import { OrderFilters } from '../../lib/api-types';
@@ -336,10 +337,10 @@ const OrderList: React.FC<OrderListProps> = ({
               Clear Filters
             </button>
           ) : (
-            <a href="/meals" className={styles.browseMenuBtn}>
+            <Link href="/meals" className={styles.browseMenuBtn}>
               <i className="fas fa-utensils"></i>
               Browse Meals
-            </a>
+            </Link>
           )}
         </div>
       )}

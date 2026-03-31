@@ -3,6 +3,7 @@ import { buffer } from 'micro';
 import Stripe from 'stripe';
 import prisma from '../../../lib/prisma';
 import stripe from '../../../lib/stripe';
+import { sendAdminNewOrderNotification, sendAdminNewSubscriptionNotification, sendAdminCancellationNotification } from '../../../lib/email';
 
 // Disable body parsing to receive raw body for webhook verification
 export const config = {
@@ -220,6 +221,52 @@ export default async function handler(
         });
 
         console.log('[Webhook] Initial order created:', order.id);
+
+        // Send admin notification emails
+        try {
+          // Notify admin of new subscription
+          await sendAdminNewSubscriptionNotification({
+            subscriptionId: subscription.id,
+            customerName: user.name || 'Customer',
+            customerEmail: user.email,
+            planName: subscription.planName,
+            interval: 'Weekly',
+            price: subscription.price,
+            startDate: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+            items: parsedItems.map(item => {
+              const menuItem = menuItems.find(mi => mi.id === item.menuItemId);
+              return {
+                name: menuItem?.name || 'Unknown Item',
+                quantity: item.quantity,
+                price: menuItem?.price || 0,
+              };
+            }),
+          });
+
+          // Notify admin of new order
+          await sendAdminNewOrderNotification({
+            orderId: order.id,
+            customerName: user.name || 'Customer',
+            customerEmail: user.email,
+            items: parsedItems.map(item => {
+              const menuItem = menuItems.find(mi => mi.id === item.menuItemId);
+              return {
+                name: menuItem?.name || 'Unknown Item',
+                quantity: item.quantity,
+                price: (menuItem?.price || 0) * item.quantity,
+              };
+            }),
+            totalPrice: totalPrice,
+            deliveryDate: nextDeliveryDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+            deliveryAddress: metadata.deliveryAddress ? `${metadata.deliveryAddress}, ${metadata.deliveryCity || ''} ${metadata.deliveryPostcode || ''}`.trim() : undefined,
+          });
+
+          console.log('[Webhook] Admin notification emails sent');
+        } catch (emailError) {
+          console.error('[Webhook] Failed to send admin notification emails:', emailError);
+          // Don't fail the webhook - emails are non-critical
+        }
+
         break;
       }
 
@@ -330,6 +377,31 @@ export default async function handler(
             });
 
             console.log('[Webhook] Order created successfully:', order.id);
+
+            // Send admin notification for recurring order
+            try {
+              const subscriptionUser = await prisma.user.findUnique({
+                where: { id: subscription.userId }
+              });
+
+              if (subscriptionUser) {
+                await sendAdminNewOrderNotification({
+                  orderId: order.id,
+                  customerName: subscriptionUser.name || 'Customer',
+                  customerEmail: subscriptionUser.email,
+                  items: subscription.subscriptionItems.map(item => ({
+                    name: item.menuItem.name,
+                    quantity: item.quantity,
+                    price: item.menuItem.price * item.quantity,
+                  })),
+                  totalPrice: totalPrice,
+                  deliveryDate: deliveryDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+                });
+                console.log('[Webhook] Admin notification email sent for recurring order');
+              }
+            } catch (emailError) {
+              console.error('[Webhook] Failed to send admin notification email:', emailError);
+            }
           } else {
             console.log('[Webhook] FAILED: No subscription found or no items');
             console.log('[Webhook] stripeSubscriptionId was:', stripeSubscriptionId);
@@ -356,17 +428,39 @@ export default async function handler(
       }
 
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription;
-        
+        const stripeSubscription = event.data.object as Stripe.Subscription;
+
+        // Get subscription with user info before updating
+        const dbSubscription = await prisma.subscription.findUnique({
+          where: { stripeSubscriptionId: stripeSubscription.id },
+          include: { user: true }
+        });
+
         await prisma.subscription.update({
-          where: { stripeSubscriptionId: subscription.id },
+          where: { stripeSubscriptionId: stripeSubscription.id },
           data: {
             status: 'CANCELLED',
             updatedAt: new Date(),
           },
         });
 
-        console.log('Subscription cancelled:', subscription.id);
+        // Send admin notification
+        if (dbSubscription) {
+          try {
+            await sendAdminCancellationNotification({
+              subscriptionId: dbSubscription.id,
+              customerName: dbSubscription.user.name || 'Customer',
+              customerEmail: dbSubscription.user.email,
+              planName: dbSubscription.planName,
+              cancelledAt: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            });
+            console.log('[Webhook] Admin cancellation notification sent');
+          } catch (emailError) {
+            console.error('[Webhook] Failed to send cancellation notification:', emailError);
+          }
+        }
+
+        console.log('Subscription cancelled:', stripeSubscription.id);
         break;
       }
 

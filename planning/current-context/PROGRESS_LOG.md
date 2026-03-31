@@ -39,11 +39,9 @@
    - Removed "Apply Filters" button — filters apply automatically
    - Better visual hierarchy
 
-#### 📝 **Uncommitted Changes:**
-- 11 modified files, 3 new files
+#### 📝 **Committed:** `e130f10`
 
 #### 🔜 **Next:**
-- Commit UX improvements
 - Test admin flows (menu CRUD, order management, subscriptions)
 - Bug fixes (BUG-001 through BUG-005)
 

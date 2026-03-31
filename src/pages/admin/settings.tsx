@@ -12,7 +12,6 @@ import {
   CreditCard,
   Building2,
   Truck,
-  Bell,
   Server,
   CheckCircle
 } from 'lucide-react';
@@ -63,43 +62,8 @@ const Sidebar = () => {
   );
 };
 
-// Toggle Switch Component
-interface ToggleSwitchProps {
-  checked: boolean;
-  onChange: () => void;
-  label: string;
-  description?: string;
-}
-
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange, label, description }) => {
-  return (
-    <div className={styles.toggleItem}>
-      <div className={styles.toggleInfo}>
-        <span className={styles.toggleLabel}>{label}</span>
-        {description && <span className={styles.toggleDescription}>{description}</span>}
-      </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={onChange}
-        className={`${styles.toggleSwitch} ${checked ? styles.checked : ''}`}
-      >
-        <span className={styles.toggleThumb} />
-      </button>
-    </div>
-  );
-};
-
 const AdminSettings: NextPage = () => {
   const { data: session, status } = useSession();
-
-  // Notification preferences state (placeholder - not persisted)
-  const notificationPreferences = {
-    newOrders: true,
-    newSubscriptions: true,
-    cancellations: false,
-  };
 
   if (status === 'loading') {
     return (
@@ -176,39 +140,6 @@ const AdminSettings: NextPage = () => {
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Minimum Order Value</span>
                   <span className={styles.infoValue}>&pound;25.00</span>
-                </div>
-              </div>
-            </section>
-
-            {/* Notification Preferences */}
-            <section className={styles.settingsCard}>
-              <div className={styles.cardHeader}>
-                <Bell className={styles.cardIcon} />
-                <h2 className={styles.cardTitle}>Notification Preferences</h2>
-              </div>
-              <div className={styles.cardContent}>
-                <p className={styles.cardNote}>
-                  Email notifications are sent to the contact email address above.
-                </p>
-                <div className={styles.toggleList}>
-                  <ToggleSwitch
-                    checked={notificationPreferences.newOrders}
-                    onChange={() => {/* Placeholder - not functional */}}
-                    label="New Orders"
-                    description="Receive email when a new order is placed"
-                  />
-                  <ToggleSwitch
-                    checked={notificationPreferences.newSubscriptions}
-                    onChange={() => {/* Placeholder - not functional */}}
-                    label="New Subscriptions"
-                    description="Receive email when a customer subscribes"
-                  />
-                  <ToggleSwitch
-                    checked={notificationPreferences.cancellations}
-                    onChange={() => {/* Placeholder - not functional */}}
-                    label="Cancellations"
-                    description="Receive email when a subscription is cancelled"
-                  />
                 </div>
               </div>
             </section>

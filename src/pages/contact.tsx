@@ -30,7 +30,7 @@ const ContactPage: NextPage = () => {
           <div className={styles.container}>
             <h1>Contact Us</h1>
             <p className={styles.subtitle}>
-              We'd love to hear from you. Get in touch and we'll respond as soon as we can.
+              We&apos;d love to hear from you. Get in touch and we&apos;ll respond as soon as we can.
             </p>
           </div>
         </section>
@@ -45,7 +45,7 @@ const ContactPage: NextPage = () => {
                   <h2>Get in Touch</h2>
                   <p className={styles.infoIntro}>
                     Whether you have a question about our meal plans, need help with your subscription,
-                    or want to discuss catering for your event, we're here to help.
+                    or want to discuss catering for your event, we&apos;re here to help.
                   </p>
 
                   <div className={styles.contactDetails}>
@@ -133,7 +133,7 @@ const ContactPage: NextPage = () => {
                 <div className={styles.formCard}>
                   <h2>Send Us a Message</h2>
                   <p className={styles.formIntro}>
-                    Fill out the form below and we'll get back to you shortly.
+                    Fill out the form below and we&apos;ll get back to you shortly.
                   </p>
                   <ContactForm defaultSubject={defaultSubject} />
                 </div>

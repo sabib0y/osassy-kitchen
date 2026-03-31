@@ -168,4 +168,79 @@ export function isEmailConfigured(): boolean {
   return resend !== null;
 }
 
+// Admin notification email address
+const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'admin@osassyskitchen.com';
+
+/**
+ * Send admin notification for new order
+ */
+export async function sendAdminNewOrderNotification(
+  orderData: {
+    orderId: string;
+    customerName: string;
+    customerEmail: string;
+    items: { name: string; quantity: number; price: number }[];
+    totalPrice: number;
+    deliveryDate: string;
+    deliveryAddress?: string;
+  }
+): Promise<SendEmailResult> {
+  const { getAdminNewOrderEmailHtml, getAdminNewOrderEmailText } = await import('./emailTemplates');
+
+  return sendEmail({
+    to: adminEmail,
+    subject: `New Order #${orderData.orderId.slice(-6).toUpperCase()} - ₦${orderData.totalPrice.toLocaleString()}`,
+    html: getAdminNewOrderEmailHtml(orderData),
+    text: getAdminNewOrderEmailText(orderData),
+  });
+}
+
+/**
+ * Send admin notification for new subscription
+ */
+export async function sendAdminNewSubscriptionNotification(
+  subscriptionData: {
+    subscriptionId: string;
+    customerName: string;
+    customerEmail: string;
+    planName: string;
+    interval: string;
+    price: number;
+    startDate: string;
+    items?: { name: string; quantity: number; price: number }[];
+  }
+): Promise<SendEmailResult> {
+  const { getAdminNewSubscriptionEmailHtml, getAdminNewSubscriptionEmailText } = await import('./emailTemplates');
+
+  return sendEmail({
+    to: adminEmail,
+    subject: `New Subscription: ${subscriptionData.customerName} - ${subscriptionData.planName}`,
+    html: getAdminNewSubscriptionEmailHtml(subscriptionData),
+    text: getAdminNewSubscriptionEmailText(subscriptionData),
+  });
+}
+
+/**
+ * Send admin notification for subscription cancellation
+ */
+export async function sendAdminCancellationNotification(
+  cancellationData: {
+    subscriptionId: string;
+    customerName: string;
+    customerEmail: string;
+    planName: string;
+    cancelledAt: string;
+    reason?: string;
+  }
+): Promise<SendEmailResult> {
+  const { getAdminCancellationEmailHtml, getAdminCancellationEmailText } = await import('./emailTemplates');
+
+  return sendEmail({
+    to: adminEmail,
+    subject: `Subscription Cancelled: ${cancellationData.customerName} - ${cancellationData.planName}`,
+    html: getAdminCancellationEmailHtml(cancellationData),
+    text: getAdminCancellationEmailText(cancellationData),
+  });
+}
+
 export { resend };

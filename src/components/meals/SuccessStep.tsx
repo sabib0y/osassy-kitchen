@@ -45,7 +45,7 @@ const SuccessStep: React.FC<SuccessStepProps> = ({ onBrowseMore }) => {
 
       {/* Title */}
       <h1 className={styles.title}>
-        You're all set! <span className={styles.celebration}>🎉</span>
+        You&apos;re all set! <span className={styles.celebration}>🎉</span>
       </h1>
 
       <p className={styles.message}>
@@ -62,14 +62,14 @@ const SuccessStep: React.FC<SuccessStepProps> = ({ onBrowseMore }) => {
           <p className={styles.deliveryDate}>{getEstimatedDeliveryDate()}</p>
           <p className={styles.cardSubtext}>
             <Mail size={14} />
-            You'll receive a confirmation email with all the details shortly
+            You&apos;ll receive a confirmation email with all the details shortly
           </p>
         </div>
       </div>
 
       {/* What's Next Section */}
       <div className={styles.nextSteps}>
-        <h3 className={styles.nextStepsTitle}>What's Next?</h3>
+        <h3 className={styles.nextStepsTitle}>What&apos;s Next?</h3>
         <ul className={styles.nextStepsList}>
           <li>
             <Clock size={18} className={styles.stepIcon} />

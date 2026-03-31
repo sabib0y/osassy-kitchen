@@ -486,3 +486,402 @@ If you have any additional information to add, simply reply to this email.
 Authentic Nigerian Cuisine, Delivered Fresh
 `.trim();
 }
+
+// =============================================================================
+// ADMIN NOTIFICATION TEMPLATES
+// =============================================================================
+
+/**
+ * Order item data for admin notifications
+ */
+export interface OrderItemData {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+/**
+ * Order data for admin notifications
+ */
+export interface AdminOrderData {
+  orderId: string;
+  customerName: string;
+  customerEmail: string;
+  items: OrderItemData[];
+  totalPrice: number;
+  deliveryDate: string;
+  deliveryAddress?: string;
+}
+
+/**
+ * Get new order notification email HTML template for admin
+ */
+export function getAdminNewOrderEmailHtml(data: AdminOrderData): string {
+  const itemsHtml = data.items.map(item => `
+    <tr>
+      <td style="padding: 8px 0; border-bottom: 1px solid ${BRAND.borderColour}; color: ${BRAND.textColour}; font-size: 14px;">
+        ${item.name}
+      </td>
+      <td style="padding: 8px 0; border-bottom: 1px solid ${BRAND.borderColour}; color: ${BRAND.textColour}; font-size: 14px; text-align: center;">
+        ${item.quantity}
+      </td>
+      <td style="padding: 8px 0; border-bottom: 1px solid ${BRAND.borderColour}; color: ${BRAND.textColour}; font-size: 14px; text-align: right;">
+        ₦${item.price.toLocaleString()}
+      </td>
+    </tr>
+  `).join('');
+
+  const content = `
+<h2 style="margin: 0 0 24px 0; color: ${BRAND.textColour}; font-size: 24px; font-weight: 600;">
+  New Order Received! 🎉
+</h2>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 24px 0; background-color: rgba(34, 197, 94, 0.1); border-radius: 8px; border-left: 4px solid #22c55e;">
+  <tr>
+    <td style="padding: 16px;">
+      <p style="margin: 0; color: ${BRAND.textColour}; font-size: 16px; font-weight: 600;">
+        Order #${data.orderId.slice(-6).toUpperCase()}
+      </p>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 24px;">
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Customer:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.customerName}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Email:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">
+        <a href="mailto:${data.customerEmail}" style="color: ${BRAND.primaryColour};">${data.customerEmail}</a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Delivery Date:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.deliveryDate}</p>
+    </td>
+  </tr>
+  ${data.deliveryAddress ? `
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Delivery Address:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.deliveryAddress}</p>
+    </td>
+  </tr>
+  ` : ''}
+</table>
+
+<h3 style="margin: 0 0 16px 0; color: ${BRAND.textColour}; font-size: 18px; font-weight: 600;">
+  Order Items
+</h3>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 16px;">
+  <thead>
+    <tr>
+      <th style="padding: 8px 0; border-bottom: 2px solid ${BRAND.borderColour}; color: ${BRAND.lightText}; font-size: 12px; text-transform: uppercase; text-align: left;">Item</th>
+      <th style="padding: 8px 0; border-bottom: 2px solid ${BRAND.borderColour}; color: ${BRAND.lightText}; font-size: 12px; text-transform: uppercase; text-align: center;">Qty</th>
+      <th style="padding: 8px 0; border-bottom: 2px solid ${BRAND.borderColour}; color: ${BRAND.lightText}; font-size: 12px; text-transform: uppercase; text-align: right;">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${itemsHtml}
+  </tbody>
+</table>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 24px; background-color: ${BRAND.backgroundColour}; border-radius: 8px;">
+  <tr>
+    <td style="padding: 16px;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+        <tr>
+          <td style="color: ${BRAND.textColour}; font-size: 18px; font-weight: 700;">Total</td>
+          <td style="color: ${BRAND.primaryColour}; font-size: 18px; font-weight: 700; text-align: right;">₦${data.totalPrice.toLocaleString()}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 0; color: ${BRAND.lightText}; font-size: 14px; line-height: 1.6;">
+  Log in to the admin dashboard to manage this order.
+</p>
+`.trim();
+
+  return getEmailLayout(content);
+}
+
+/**
+ * Get new order notification email plain text template for admin
+ */
+export function getAdminNewOrderEmailText(data: AdminOrderData): string {
+  const itemsList = data.items.map(item => `- ${item.name} x${item.quantity} - ₦${item.price.toLocaleString()}`).join('\n');
+
+  return `
+New Order Received!
+
+Order #${data.orderId.slice(-6).toUpperCase()}
+
+Customer: ${data.customerName}
+Email: ${data.customerEmail}
+Delivery Date: ${data.deliveryDate}
+${data.deliveryAddress ? `Delivery Address: ${data.deliveryAddress}` : ''}
+
+Order Items:
+${itemsList}
+
+Total: ₦${data.totalPrice.toLocaleString()}
+
+Log in to the admin dashboard to manage this order.
+
+---
+© ${new Date().getFullYear()} ${BRAND.name}. All rights reserved.
+`.trim();
+}
+
+/**
+ * Subscription data for admin notifications
+ */
+export interface AdminSubscriptionData {
+  subscriptionId: string;
+  customerName: string;
+  customerEmail: string;
+  planName: string;
+  interval: string;
+  price: number;
+  startDate: string;
+  items?: OrderItemData[];
+}
+
+/**
+ * Get new subscription notification email HTML template for admin
+ */
+export function getAdminNewSubscriptionEmailHtml(data: AdminSubscriptionData): string {
+  const itemsHtml = data.items ? data.items.map(item => `
+    <tr>
+      <td style="padding: 8px 0; border-bottom: 1px solid ${BRAND.borderColour}; color: ${BRAND.textColour}; font-size: 14px;">
+        ${item.name}
+      </td>
+      <td style="padding: 8px 0; border-bottom: 1px solid ${BRAND.borderColour}; color: ${BRAND.textColour}; font-size: 14px; text-align: center;">
+        ${item.quantity}
+      </td>
+    </tr>
+  `).join('') : '';
+
+  const content = `
+<h2 style="margin: 0 0 24px 0; color: ${BRAND.textColour}; font-size: 24px; font-weight: 600;">
+  New Subscription! 🎊
+</h2>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 24px 0; background-color: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 4px solid #3b82f6;">
+  <tr>
+    <td style="padding: 16px;">
+      <p style="margin: 0; color: ${BRAND.textColour}; font-size: 16px; font-weight: 600;">
+        A new customer has subscribed to ${data.planName}!
+      </p>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 24px;">
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Customer:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.customerName}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Email:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">
+        <a href="mailto:${data.customerEmail}" style="color: ${BRAND.primaryColour};">${data.customerEmail}</a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Plan:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.planName}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Billing Interval:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.interval}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Start Date:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.startDate}</p>
+    </td>
+  </tr>
+</table>
+
+${data.items && data.items.length > 0 ? `
+<h3 style="margin: 0 0 16px 0; color: ${BRAND.textColour}; font-size: 18px; font-weight: 600;">
+  Selected Meals
+</h3>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 16px;">
+  <thead>
+    <tr>
+      <th style="padding: 8px 0; border-bottom: 2px solid ${BRAND.borderColour}; color: ${BRAND.lightText}; font-size: 12px; text-transform: uppercase; text-align: left;">Item</th>
+      <th style="padding: 8px 0; border-bottom: 2px solid ${BRAND.borderColour}; color: ${BRAND.lightText}; font-size: 12px; text-transform: uppercase; text-align: center;">Qty</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${itemsHtml}
+  </tbody>
+</table>
+` : ''}
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 24px; background-color: ${BRAND.backgroundColour}; border-radius: 8px;">
+  <tr>
+    <td style="padding: 16px;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+        <tr>
+          <td style="color: ${BRAND.textColour}; font-size: 18px; font-weight: 700;">${data.interval} Price</td>
+          <td style="color: ${BRAND.primaryColour}; font-size: 18px; font-weight: 700; text-align: right;">₦${data.price.toLocaleString()}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 0; color: ${BRAND.lightText}; font-size: 14px; line-height: 1.6;">
+  Log in to the admin dashboard to view subscription details.
+</p>
+`.trim();
+
+  return getEmailLayout(content);
+}
+
+/**
+ * Get new subscription notification email plain text template for admin
+ */
+export function getAdminNewSubscriptionEmailText(data: AdminSubscriptionData): string {
+  const itemsList = data.items ? data.items.map(item => `- ${item.name} x${item.quantity}`).join('\n') : '';
+
+  return `
+New Subscription!
+
+A new customer has subscribed to ${data.planName}!
+
+Customer: ${data.customerName}
+Email: ${data.customerEmail}
+Plan: ${data.planName}
+Billing Interval: ${data.interval}
+Start Date: ${data.startDate}
+${data.interval} Price: ₦${data.price.toLocaleString()}
+
+${itemsList ? `Selected Meals:\n${itemsList}` : ''}
+
+Log in to the admin dashboard to view subscription details.
+
+---
+© ${new Date().getFullYear()} ${BRAND.name}. All rights reserved.
+`.trim();
+}
+
+/**
+ * Cancellation data for admin notifications
+ */
+export interface AdminCancellationData {
+  subscriptionId: string;
+  customerName: string;
+  customerEmail: string;
+  planName: string;
+  cancelledAt: string;
+  reason?: string;
+}
+
+/**
+ * Get subscription cancellation notification email HTML template for admin
+ */
+export function getAdminCancellationEmailHtml(data: AdminCancellationData): string {
+  const content = `
+<h2 style="margin: 0 0 24px 0; color: ${BRAND.textColour}; font-size: 24px; font-weight: 600;">
+  Subscription Cancelled ⚠️
+</h2>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 24px 0; background-color: rgba(239, 68, 68, 0.1); border-radius: 8px; border-left: 4px solid #ef4444;">
+  <tr>
+    <td style="padding: 16px;">
+      <p style="margin: 0; color: ${BRAND.textColour}; font-size: 16px; font-weight: 600;">
+        A customer has cancelled their ${data.planName} subscription.
+      </p>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 24px;">
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Customer:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.customerName}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Email:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">
+        <a href="mailto:${data.customerEmail}" style="color: ${BRAND.primaryColour};">${data.customerEmail}</a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Plan:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.planName}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Cancelled At:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.cancelledAt}</p>
+    </td>
+  </tr>
+  ${data.reason ? `
+  <tr>
+    <td style="padding: 12px 0; border-bottom: 1px solid ${BRAND.borderColour};">
+      <strong style="color: ${BRAND.lightText}; font-size: 14px;">Reason:</strong>
+      <p style="margin: 4px 0 0 0; color: ${BRAND.textColour}; font-size: 16px;">${data.reason}</p>
+    </td>
+  </tr>
+  ` : ''}
+</table>
+
+<p style="margin: 0; color: ${BRAND.lightText}; font-size: 14px; line-height: 1.6;">
+  Consider reaching out to understand why they cancelled and if there's anything you can do to win them back.
+</p>
+`.trim();
+
+  return getEmailLayout(content);
+}
+
+/**
+ * Get subscription cancellation notification email plain text template for admin
+ */
+export function getAdminCancellationEmailText(data: AdminCancellationData): string {
+  return `
+Subscription Cancelled
+
+A customer has cancelled their ${data.planName} subscription.
+
+Customer: ${data.customerName}
+Email: ${data.customerEmail}
+Plan: ${data.planName}
+Cancelled At: ${data.cancelledAt}
+${data.reason ? `Reason: ${data.reason}` : ''}
+
+Consider reaching out to understand why they cancelled and if there's anything you can do to win them back.
+
+---
+© ${new Date().getFullYear()} ${BRAND.name}. All rights reserved.
+`.trim();
+}

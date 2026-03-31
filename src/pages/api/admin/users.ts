@@ -55,8 +55,7 @@ async function handleGetUsers(req: NextApiRequest, res: NextApiResponse) {
   const offset = (pageNum - 1) * limitNum;
 
   // Build where clause for filtering
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const whereClause: any = {};
+  const whereClause: Record<string, unknown> = {};
 
   if (role && typeof role === 'string' && role !== 'ALL') {
     whereClause.role = role.toUpperCase();

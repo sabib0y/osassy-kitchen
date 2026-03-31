@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import prisma from '../../../../../lib/prisma';
-import { AddressFormData } from '../../../../types/user';
+import { AddressFormData } from '../../../../../types/user';
 
 export default async function handler(
   req: NextApiRequest,
