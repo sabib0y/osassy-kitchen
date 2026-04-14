@@ -3,7 +3,7 @@
  * Users can explore dishes (Browse Mode) or build a meal plan (Builder Mode)
  */
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -16,10 +16,12 @@ import {
   X,
   Check,
   ShoppingBag,
-  ChevronRight
+  ChevronRight,
+  MapPin,
+  AlertTriangle,
+  ChevronDown
 } from 'lucide-react';
 import Layout from '@/components/Layout/Layout';
-import MealDetailModal from '@/components/meals/MealDetailModal';
 import PlanCard from '@/components/meal-plans/PlanCard';
 import prisma from '@/lib/prisma';
 import { MealPlan, SelectedMeal, MEAL_PLANS } from '@/types/meal-plan';
@@ -35,6 +37,9 @@ interface MenuItem {
   isVegetarian: boolean;
   isSpicy: boolean;
   imageUrl?: string | null;
+  region?: string | null;
+  allergens?: string[];
+  keyIngredients?: string[];
 }
 
 interface MealsPageProps {
@@ -66,9 +71,20 @@ const MealsPage: React.FC<MealsPageProps> = ({ menuItems, categories, popularIds
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  // Modal state
-  const [selectedMeal, setSelectedMeal] = useState<MenuItem | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Expanded card state
+  const [expandedMealId, setExpandedMealId] = useState<string | null>(null);
+  const mealsGridRef = useRef<HTMLDivElement>(null);
+
+  // Close expanded panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (expandedMealId && mealsGridRef.current && !mealsGridRef.current.contains(e.target as Node)) {
+        setExpandedMealId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [expandedMealId]);
 
   // Load state from localStorage on mount
   useEffect(() => {
@@ -138,20 +154,14 @@ const MealsPage: React.FC<MealsPageProps> = ({ menuItems, categories, popularIds
     return icons[category] || '🍽️';
   };
 
-  // Modal handlers
-  const openMealModal = (meal: MenuItem) => {
-    setSelectedMeal(meal);
-    setIsModalOpen(true);
-  };
-
-  const closeMealModal = () => {
-    setIsModalOpen(false);
-    setSelectedMeal(null);
+  // Toggle expanded detail panel
+  const toggleMealDetail = (mealId: string) => {
+    setExpandedMealId(prev => prev === mealId ? null : mealId);
   };
 
   // Plan selection handlers
   const handleStartPlanClick = () => {
-    setShowPlanSelection(true);
+    router.push('/user/subscriptions/create');
   };
 
   const handlePlanSelect = (plan: MealPlan) => {
@@ -279,34 +289,13 @@ const MealsPage: React.FC<MealsPageProps> = ({ menuItems, categories, popularIds
             {/* Category Filters - Sticky */}
             <section className={styles.filterSection}>
               <div className={styles.container}>
-                {/* Search Bar */}
-                <div className={styles.searchBar}>
-                  <Search size={20} className={styles.searchIcon} />
-                  <input
-                    type="text"
-                    placeholder="Search for dishes..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className={styles.searchInput}
-                  />
-                  {searchTerm && (
-                    <button
-                      className={styles.clearSearch}
-                      onClick={() => setSearchTerm('')}
-                      aria-label="Clear search"
-                    >
-                      <X size={18} />
-                    </button>
-                  )}
-                </div>
-
-                {/* Category Pills */}
-                <div className={styles.categoryFilters}>
+                <div className={styles.filterRow}>
+                  {/* Category Pills */}
+                  <div className={styles.categoryFilters}>
                   <button
                     className={`${styles.categoryBtn} ${selectedCategory === 'all' ? styles.active : ''}`}
                     onClick={() => setSelectedCategory('all')}
                   >
-                    <span className={styles.categoryIcon}>🍽️</span>
                     <span>All Meals</span>
                     <span className={styles.count}>{menuItems.length}</span>
                   </button>
@@ -318,12 +307,33 @@ const MealsPage: React.FC<MealsPageProps> = ({ menuItems, categories, popularIds
                         className={`${styles.categoryBtn} ${selectedCategory === category ? styles.active : ''}`}
                         onClick={() => setSelectedCategory(category)}
                       >
-                        <span className={styles.categoryIcon}>{getCategoryIcon(category)}</span>
                         <span>{category}</span>
                         <span className={styles.count}>{count}</span>
                       </button>
                     );
                   })}
+                  </div>
+
+                  {/* Search Bar */}
+                  <div className={styles.searchBar}>
+                    <Search size={20} className={styles.searchIcon} />
+                    <input
+                      type="text"
+                      placeholder="Search for dishes..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className={styles.searchInput}
+                    />
+                    {searchTerm && (
+                      <button
+                        className={styles.clearSearch}
+                        onClick={() => setSearchTerm('')}
+                        aria-label="Clear search"
+                      >
+                        <X size={18} />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </section>
@@ -358,91 +368,130 @@ const MealsPage: React.FC<MealsPageProps> = ({ menuItems, categories, popularIds
                       </button>
                     </div>
                   ) : (
-                    <div className={styles.mealsGrid}>
+                    <div className={styles.mealsGrid} ref={mealsGridRef}>
                       {filteredItems.map((meal) => {
                         const isSelected = isMealSelected(meal.id);
                         const canAdd = !isSelected && mealsSelected < mealsRequired;
+                        const isExpanded = expandedMealId === meal.id;
 
                         return (
                           <div
                             key={meal.id}
-                            className={`${styles.mealCard} ${isSelected ? styles.selected : ''}`}
-                            onClick={() => openMealModal(meal)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => e.key === 'Enter' && openMealModal(meal)}
+                            className={`${styles.mealCardWrapper} ${isExpanded ? styles.expanded : ''}`}
                           >
-                            {/* Circular Image */}
-                            <div className={styles.cardImage}>
-                              {meal.imageUrl ? (
-                                <img src={meal.imageUrl} alt={meal.name} />
-                              ) : (
-                                <div className={styles.imagePlaceholder}>
-                                  <span className={styles.placeholderIcon}>
-                                    {getCategoryIcon(meal.category)}
-                                  </span>
-                                </div>
-                              )}
-                              {isSelected && (
-                                <div className={styles.selectedOverlay}>
-                                  <Check size={24} />
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Content - Name & Description */}
-                            <div className={styles.cardContent}>
-                              <div className={styles.cardHeader}>
-                                <h3 className={styles.mealName}>{meal.name}</h3>
-                                {/* Tags inline with name */}
-                                <div className={styles.cardTags}>
-                                  {isPopular(meal.id) && (
-                                    <span className={`${styles.tag} ${styles.popular}`}>
-                                      <Star size={10} />
+                            <div
+                              className={`${styles.mealCard} ${isSelected ? styles.selected : ''}`}
+                              onClick={() => toggleMealDetail(meal.id)}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => e.key === 'Enter' && toggleMealDetail(meal.id)}
+                            >
+                              {/* Image */}
+                              <div className={styles.cardImage}>
+                                {meal.imageUrl ? (
+                                  <img src={meal.imageUrl} alt={meal.name} />
+                                ) : (
+                                  <div className={styles.imagePlaceholder}>
+                                    <span className={styles.placeholderIcon}>
+                                      {getCategoryIcon(meal.category)}
                                     </span>
-                                  )}
-                                  {meal.isSpicy && (
-                                    <span className={`${styles.tag} ${styles.spicy}`}>
-                                      <Flame size={10} />
-                                    </span>
-                                  )}
-                                  {meal.isVegetarian && (
-                                    <span className={`${styles.tag} ${styles.vegetarian}`}>
-                                      <Leaf size={10} />
-                                    </span>
-                                  )}
-                                </div>
+                                  </div>
+                                )}
+                                {isSelected && (
+                                  <div className={styles.selectedOverlay}>
+                                    <Check size={24} />
+                                  </div>
+                                )}
                               </div>
-                              {meal.description && (
-                                <p className={styles.mealDescription}>
-                                  {meal.description.slice(0, 80)}
-                                  {meal.description.length > 80 ? '...' : ''}
-                                </p>
-                              )}
+
+                              {/* Content - Name & Description */}
+                              <div className={styles.cardContent}>
+                                <div className={styles.cardHeader}>
+                                  <h3 className={styles.mealName}>{meal.name}</h3>
+                                  <div className={styles.cardTags}>
+                                    {isPopular(meal.id) && (
+                                      <span className={`${styles.tag} ${styles.popular}`}>
+                                        <Star size={10} />
+                                      </span>
+                                    )}
+                                    {meal.isSpicy && (
+                                      <span className={`${styles.tag} ${styles.spicy}`}>
+                                        <Flame size={10} />
+                                      </span>
+                                    )}
+                                    {meal.isVegetarian && (
+                                      <span className={`${styles.tag} ${styles.vegetarian}`}>
+                                        <Leaf size={10} />
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                {meal.description && (
+                                  <p className={styles.mealDescription}>
+                                    {meal.description.slice(0, 80)}
+                                    {meal.description.length > 80 ? '...' : ''}
+                                  </p>
+                                )}
+                              </div>
+
+                              {/* Price + Expand indicator */}
+                              <div className={styles.cardActions}>
+                                <span className={styles.price}>£{meal.price.toFixed(2)}</span>
+                                <ChevronDown
+                                  size={16}
+                                  className={`${styles.expandIcon} ${isExpanded ? styles.rotated : ''}`}
+                                />
+
+                                {mode === 'builder' && (
+                                  <button
+                                    className={`${styles.addBtn} ${isSelected ? styles.added : ''}`}
+                                    onClick={(e) => handleToggleMeal(meal, e)}
+                                    disabled={!canAdd && !isSelected}
+                                  >
+                                    {isSelected ? (
+                                      <>
+                                        <Check size={16} />
+                                        Added
+                                      </>
+                                    ) : canAdd ? (
+                                      'Add'
+                                    ) : (
+                                      'Full'
+                                    )}
+                                  </button>
+                                )}
+                              </div>
                             </div>
 
-                            {/* Price + Action Button (Builder Mode) */}
-                            <div className={styles.cardActions}>
-                              <span className={styles.price}>£{meal.price.toFixed(2)}</span>
+                            {/* Slide-out Detail Panel */}
+                            <div className={`${styles.detailPanel} ${isExpanded ? styles.open : ''}`}>
+                              <div className={styles.detailContent}>
+                                <p className={styles.detailDescription}>{meal.description}</p>
 
-                              {mode === 'builder' && (
-                                <button
-                                  className={`${styles.addBtn} ${isSelected ? styles.added : ''}`}
-                                  onClick={(e) => handleToggleMeal(meal, e)}
-                                  disabled={!canAdd && !isSelected}
-                                >
-                                  {isSelected ? (
-                                    <>
-                                      <Check size={16} />
-                                      Added
-                                    </>
-                                  ) : canAdd ? (
-                                    'Add'
-                                  ) : (
-                                    'Full'
-                                  )}
-                                </button>
-                              )}
+                                {meal.region && (
+                                  <div className={styles.detailRow}>
+                                    <MapPin size={14} />
+                                    <span className={styles.detailLabel}>Region:</span>
+                                    <span>{meal.region}</span>
+                                  </div>
+                                )}
+
+                                {meal.keyIngredients && meal.keyIngredients.length > 0 && (
+                                  <div className={styles.detailRow}>
+                                    <Leaf size={14} />
+                                    <span className={styles.detailLabel}>Key ingredients:</span>
+                                    <span>{meal.keyIngredients.join(', ')}</span>
+                                  </div>
+                                )}
+
+                                {meal.allergens && meal.allergens.length > 0 && (
+                                  <div className={`${styles.detailRow} ${styles.allergenRow}`}>
+                                    <AlertTriangle size={14} />
+                                    <span className={styles.detailLabel}>Allergens:</span>
+                                    <span>{meal.allergens.join(', ')}</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
@@ -610,12 +659,6 @@ const MealsPage: React.FC<MealsPageProps> = ({ menuItems, categories, popularIds
           </div>
         )}
 
-        {/* Meal Detail Modal */}
-        <MealDetailModal
-          meal={selectedMeal}
-          isOpen={isModalOpen}
-          onClose={closeMealModal}
-        />
       </Layout>
     </>
   );

@@ -137,11 +137,11 @@ Phase 6 (Subscription-First Architecture) is complete. Now focusing on ensuring 
 
 ## 6. Current Roadmap
 
-### Phase 7: Functional Completion 🔴 IN PROGRESS
+### Phase 7: Functional Completion ✅ COMPLETE (outstanding items logged as bugs)
 
 **Goal:** Ensure all core functionality works end-to-end before visual polish.
 
-#### 7.1: User Flow Verification (Happy Paths)
+#### 7.1: User Flow Verification (Happy Paths) ✅
 - [x] **Guest flow:** Homepage → Meals → Meal Plans → Create subscription → Payment
 - [x] **Auth flow:** Signup → Email verification → Login → Google OAuth → Password reset
 - [x] **Subscription flow:** Create → View → Pause → Resume → Cancel
@@ -149,30 +149,27 @@ Phase 6 (Subscription-First Architecture) is complete. Now focusing on ensuring 
 - [x] **Contact flow:** Submit form → Receive confirmation email
 - [x] **Catering enquiry flow:** Catering page → Contact form (pre-selected subject)
 
-#### 7.2: Admin Flow Verification
-- [ ] Admin login
-- [ ] Menu management (CRUD: create, edit, delete meals)
-- [ ] Order management (view orders, update status)
-- [ ] Subscription overview (view all subscriptions)
+#### 7.2: Admin Flow Verification ✅ (verified, issues logged as bugs)
+- [x] Admin login
+- [x] Menu management (CRUD: create, edit, delete meals)
+- [x] Order management (view orders, update status)
+- [x] Subscription overview (view all subscriptions)
 
-#### 7.3: User Flow Verification (Sad Paths)
-- [ ] Invalid login credentials
-- [ ] Expired/invalid password reset token
-- [ ] Payment failure handling
-- [ ] Form validation errors (contact, signup, addresses)
-- [ ] Unauthorised access attempts (protected routes)
-- [ ] Session expiry handling
+#### 7.3: User Flow Verification (Sad Paths) ✅ (verified, issues logged as bugs)
+- [x] Invalid login credentials
+- [x] Expired/invalid password reset token
+- [x] Payment failure handling
+- [x] Form validation errors (contact, signup, addresses)
+- [x] Unauthorised access attempts (protected routes) — BUG-010 logged
+- [x] Session expiry handling — BUG-015 logged
 
-#### 7.4: Bug Fixes & Core Stability
-- [ ] **BUG-001:** Fix sign-out not syncing across browser tabs (High)
-- [ ] **BUG-002:** Meal Plans nav link skips process explainer page (Low)
-- [ ] **BUG-003:** Delivery time slots need business validation (Medium — needs business input)
-- [ ] **BUG-004:** Verify email domain in Resend for production (Medium)
-- [ ] **BUG-005:** Email template styling enhancements (Low)
+#### 7.4: Bug Fixes & Core Stability → Deferred to post-polish
+- See `BUG_TRACKER.md` for all 15 open bugs
+- Will be addressed alongside Phase 9 (Production Launch)
 
 ---
 
-### Phase 8: Visual Polish 🔜 NEXT
+### Phase 8: Visual Polish 🔴 IN PROGRESS
 
 **Goal:** Consistent branding, responsive design, and polished UI across all pages.
 

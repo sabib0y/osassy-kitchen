@@ -1,49 +1,48 @@
 /**
- * Meal Plans Process Explainer Page Styles
+ * Our Process Page Styles — aligned with meals page design system
  */
 
 .mealPlansPage {
   min-height: 100vh;
+  background: var(--background, #f9f9f9);
 }
 
-/* Hero Section */
+/* Hero Section — food image with dark overlay, matching meals page */
 .hero {
-  background: linear-gradient(135deg, var(--primary) 0%, #a12325 100%);
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url('/images/hero-bg/jollof-chicken.jpg') center/cover no-repeat;
   color: white;
-  padding: 4rem 1.5rem;
+  padding: 7rem 1.5rem 4rem;
   text-align: center;
 }
 
 .heroContent {
-  max-width: 800px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
 .heroTitle {
+  font-family: "Fugaz One", sans-serif;
   font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-weight: 400;
+  margin-bottom: 0.75rem;
   line-height: 1.2;
 
   @media (min-width: 768px) {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 }
 
 .highlight {
-  color: var(--secondary);
+  color: white;
 }
 
 .heroSubtitle {
   font-size: 1.125rem;
-  opacity: 0.95;
+  opacity: 0.9;
   max-width: 650px;
   margin: 0 auto;
   line-height: 1.6;
-
-  @media (min-width: 768px) {
-    font-size: 1.25rem;
-  }
 }
 
 /* Process Sections */
@@ -52,7 +51,7 @@
   background: white;
 
   &.altBackground {
-    background: var(--background);
+    background: linear-gradient(to bottom, #f9f9f9, #f0eeee);
   }
 }
 
@@ -62,14 +61,14 @@
 }
 
 .sectionIcon {
-  color: var(--primary);
+  color: #C52D2F;
   margin-bottom: 1rem;
 }
 
 .leadText {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   line-height: 1.7;
-  color: #555;
+  color: #6c757d;
   max-width: 800px;
   margin: 0 auto 2.5rem;
   text-align: center;
@@ -94,21 +93,21 @@
   align-items: flex-start;
 
   svg {
-    color: #22c55e;
+    color: #C52D2F;
     flex-shrink: 0;
     margin-top: 0.2rem;
   }
 
   h3 {
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.4rem;
-    color: var(--text);
+    color: #212529;
   }
 
   p {
-    color: #666;
-    font-size: 0.95rem;
+    color: #6c757d;
+    font-size: 0.9375rem;
     line-height: 1.5;
   }
 }
@@ -133,24 +132,28 @@
 .infoCard {
   background: white;
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 50px;
   text-align: center;
-  border: 1px solid #eee;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 2px solid #dee2e6;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #C52D2F;
+  }
 
   h3 {
-    font-size: 0.9rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    color: #999;
+    color: #adb5bd;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 0.5rem;
   }
 
   p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--text);
+    color: #212529;
   }
 }
 
@@ -158,22 +161,22 @@
   display: flex;
   gap: 1rem;
   align-items: flex-start;
-  background: #f0fdf4;
+  background: rgba(197, 45, 47, 0.05);
   padding: 1.25rem;
   border-radius: 12px;
-  border: 1px solid #bbf7d0;
+  border: 1px solid rgba(197, 45, 47, 0.15);
   max-width: 900px;
   margin: 0 auto;
 
   svg {
-    color: #22c55e;
+    color: #C52D2F;
     flex-shrink: 0;
     margin-top: 0.2rem;
   }
 
   p {
-    color: #166534;
-    font-size: 0.95rem;
+    color: #495057;
+    font-size: 0.9375rem;
     line-height: 1.6;
     margin: 0;
 
@@ -186,7 +189,8 @@
 /* Plans Section */
 .plansSection {
   padding: 4rem 1.5rem;
-  background: #fff;
+  background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+  color: white;
 }
 
 .container {
@@ -200,31 +204,36 @@
 }
 
 .sectionTitle {
-  font-size: 2rem;
-  font-weight: 700;
+  font-family: "Fugaz One", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 400;
   margin-bottom: 0.5rem;
-  color: var(--text);
+  color: #212529;
+
+  .plansSection & {
+    color: white;
+  }
 
   @media (min-width: 768px) {
-    font-size: 2.25rem;
+    font-size: 2rem;
   }
 }
 
 .sectionSubtitle {
-  color: #666;
-  font-size: 1.1rem;
+  color: #6c757d;
+  font-size: 1.05rem;
+
+  .plansSection & {
+    color: rgba(255, 255, 255, 0.8);
+  }
 }
 
 .planCardsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 800px;
   margin: 0 auto 2rem;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 .reassurance {
@@ -232,12 +241,44 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: #666;
-  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9375rem;
   text-align: center;
 
   svg {
-    color: #22c55e;
+    color: var(--secondary, #F1C40F);
   }
 }
 
+/* Responsive */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .processSection {
+    padding: 3rem 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 5rem 1rem 3rem;
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .infoCard {
+    border-radius: 12px;
+  }
+}

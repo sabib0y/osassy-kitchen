@@ -1,13 +1,159 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** March 26, 2026 - Late Evening
+**Last Updated:** April 14, 2026
 
 ## Overall Project Status
-**Phase 7: Functional Completion** — Admin UX improvements complete. Order panels now slide in from right, Users page restyled to match theme. Ready for testing and bug fixes.
+**Phase 8: Visual Polish** — Meals page substantially reworked (images, descriptions, slide-out detail panels). Our Process, Catering, and Contact pages restyled to match unified design system.
 
 ---
 
-## 🏗️ **PHASE 7: FUNCTIONAL COMPLETION**
+## 🎨 **PHASE 8: VISUAL POLISH**
+
+### Session: April 14, 2026 — Meals Page Rework + Cross-Page Design Alignment
+
+#### ✅ **Completed:**
+
+1. **Meals Page — Filter Bar Rework**
+   - Search bar moved inline with category pills in a single row
+   - Both elements given matching pill shape and 44px height
+   - Food icons removed from category filter buttons
+
+2. **Meals Page — Menu Item Images**
+   - Added `public/images/meals/` directory with 10 dish images
+   - Updated all MenuItem DB records with local image paths
+   - Removed Oha Soup from available items
+   - Styled card images with overflow visible for plate effect
+
+3. **Meals Page — Rich Descriptions & Detail Panel**
+   - Added `region`, `allergens`, `keyIngredients` fields to MenuItem schema (migration: `add-meal-detail-fields`)
+   - Populated all 10 menu items with researched descriptions, allergen info, regional origins, and key ingredients
+   - Replaced modal popup with inline slide-out detail panel (absolutely positioned, animated)
+   - Panel shows full description, region, key ingredients, and allergens
+   - Click-outside-to-close behaviour added
+   - Chevron expand/collapse indicator on each card
+
+4. **Our Process Page — Design Alignment**
+   - Hero: food image + dark overlay, Fugaz One headings
+   - Swapped green accents to brand red (#C52D2F)
+   - Alt backgrounds use subtle gradient (#f9f9f9 → #f0eeee)
+   - Plan cards restyled to horizontal stacking layout
+   - Plans section given dark gradient background
+
+5. **Catering Page — Design Alignment**
+   - Hero: food image + dark overlay, Fugaz One headings, pill-shaped CTA
+   - Service icons: circular red-tinted backgrounds
+   - Menu cards: pill-shaped borders
+   - Process section: dark gradient, red step numbers
+   - CTA section: food image overlay
+
+6. **Contact Page — Design Alignment**
+   - Hero: food image + dark overlay, Fugaz One headings
+   - Background: subtle gradient
+   - Icon wrappers: circular red-tinted
+   - Cards: consistent borders and shadows
+
+#### 📝 **Key Files Modified:**
+- `src/pages/meals.tsx` — slide-out panel, filter bar restructure, new fields
+- `src/styles/pages/meals.module.scss` — extensive restyle
+- `prisma/schema.prisma` — added region, allergens, keyIngredients to MenuItem
+- `src/styles/pages/mealPlans.module.scss` — full restyle for Our Process
+- `src/styles/pages/catering.module.scss` — full restyle
+- `src/styles/pages/contact.module.scss` — full restyle
+- `src/styles/components/meal-plans/planCard.module.scss` — horizontal layout
+- `public/images/meals/*.png` — 10 dish images added
+
+#### 🔜 **Next:**
+- Polish remaining pages (FAQ, login/signup, user dashboard)
+- Responsive testing across all restyled pages
+- Review ContactForm component styles for consistency
+- Design system audit (ensure all pages fully aligned)
+
+---
+
+### Session: April 1, 2026 — Meals Page Visual Polish
+
+#### ✅ **Completed:**
+
+1. **Meals Hero Section**
+   - Replaced red gradient background with jollof chicken food image + dark overlay
+   - Added extra top padding (`7rem`) to account for fixed header overlap
+   - Updated hero title to use `Fugaz One` display font (matching homepage)
+
+2. **Button Styling**
+   - Updated hero CTA to pill shape (`border-radius: 50px`), uppercase, letter-spacing
+   - Outline style default (transparent + white border), fills white on hover
+   - Matches homepage button design language
+
+3. **Typography Consistency**
+   - Applied `Fugaz One` font to section title, hero title, and CTA heading
+   - Consistent with homepage heading style
+
+4. **Navigation Fix**
+   - "Choose a Plan" / "Start Your Meal Plan" buttons now navigate to `/user/subscriptions/create` instead of opening modal
+
+5. **Phase 7 Closed**
+   - Marked Phase 7 complete in `project-plan.md`
+   - Outstanding items (7.2, 7.3, 7.4) logged as bugs in `BUG_TRACKER.md`
+
+#### 📝 **Key Files Modified:**
+- `src/styles/pages/meals.module.scss` — Hero, buttons, typography
+- `src/pages/meals.tsx` — Navigation fix
+- `planning/current-context/project-plan.md` — Phase transition
+
+#### 🔜 **Next:**
+- Continue meals page polish (responsive, cards, categories)
+- Polish other internal pages (Our Process, Catering, Contact, FAQ)
+- Design system audit (colours, spacing, buttons across all pages)
+
+---
+
+## 🏗️ **PHASE 7: FUNCTIONAL COMPLETION** ✅
+
+### Session: March 31, 2026 — Admin Notifications, Code Review & Bug Triage
+
+#### ✅ **Completed:**
+
+1. **Admin Email Notifications**
+   - Added `sendAdminNewOrderNotification`, `sendAdminNewSubscriptionNotification`, `sendAdminCancellationNotification` to `src/lib/email.ts`
+   - Created branded HTML + plain text admin email templates in `src/lib/emailTemplates.ts`
+   - Wired notifications into Stripe webhook and subscription cancellation flow
+
+2. **Code Quality Fixes**
+   - Fixed apostrophe escaping in JSX (`DeliveryStep`, `SuccessStep`)
+   - Replaced `<a>` with Next.js `<Link>` in `OrderList`
+   - Fixed import path for `AddressFormData` in address API
+   - Replaced `any` with `Record<string, unknown>` in admin users API
+   - Removed non-functional notification preferences from admin settings
+
+3. **Dual Code Review (Claude + Codex)**
+   - Ran full review on commit `24099ec`
+   - Identified issues: sequential webhook awaits, HTML injection in templates, duplicate cancellation notifications, redundant DB query
+   - All findings logged as BUG-006 through BUG-009
+
+4. **Bug Triage & Logging**
+   - Bug tracker expanded from 5 to 15 open bugs
+   - Added BUG-006 to BUG-009 (from code review)
+   - Added BUG-010 (unauthenticated access to protected pages)
+   - Added BUG-011 (password visibility toggle)
+   - Added BUG-012 to BUG-014 (user-reported issues)
+   - Added BUG-015 (no session expiry configured)
+
+5. **Navigation Fix**
+   - "Choose a Plan" buttons on `/meals` now navigate to `/user/subscriptions/create` instead of opening a modal
+
+6. **Infrastructure**
+   - Updated `/wrap` slash command — review now runs before any staging/commits
+   - Stripe CLI webhook listener configured and verified
+
+#### 📝 **Committed:** `24099ec` (pushed to `origin/creating-subscription-app`)
+
+#### 🔜 **Next:**
+- Fix BUG-010 (auth guards on protected pages) — High priority
+- Fix BUG-008 (sequential awaits in webhook) — High priority
+- Admin flow verification (7.2): login, menu CRUD, order management, subscriptions
+- Open PR to `master`
+
+---
 
 ### Session: March 26, 2026 (Evening) — Admin UX Improvements
 

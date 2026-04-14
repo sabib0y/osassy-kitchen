@@ -16,13 +16,15 @@
 
 // Hero Section
 .hero {
-  background: linear-gradient(135deg, #C52D2F 0%, #8a1f21 100%);
-  padding: 3rem 2rem;
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url('/images/hero-bg/jollof-chicken.jpg') center/cover no-repeat;
+  padding: 7rem 2rem 4rem;
   text-align: center;
   color: white;
+  position: relative;
 
   .builderMode & {
-    padding: 2rem;
+    padding: 5rem 2rem 2rem;
   }
 }
 
@@ -32,8 +34,9 @@
 }
 
 .heroTitle {
+  font-family: "Fugaz One", sans-serif;
   font-size: 2.5rem;
-  font-weight: 800;
+  font-weight: 400;
   margin: 0 0 0.75rem;
   line-height: 1.2;
 
@@ -117,21 +120,23 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem 2rem;
-  background: white;
-  color: #C52D2F;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: #f8f9fa;
+    background: white;
+    color: #C52D2F;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -188,10 +193,18 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 48px;
+}
+
 .searchBar {
   position: relative;
-  max-width: 400px;
-  margin: 0 auto 1.5rem;
+  flex-shrink: 0;
+  width: 220px;
+  margin-left: auto;
 }
 
 .searchIcon {
@@ -204,10 +217,12 @@
 
 .searchInput {
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 3rem;
-  border: 2px solid #dee2e6;
-  border-radius: 8px;
-  font-size: 1rem;
+  height: 44px;
+  padding: 0 1rem 0 2.75rem;
+  border: 2px solid transparent;
+  border-radius: 50px;
+  background: #f8f9fa;
+  font-size: 0.875rem;
   transition: all 0.2s ease;
 
   &:focus {
@@ -261,7 +276,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  height: 44px;
+  padding: 0 1.25rem;
   background: #f8f9fa;
   border: 2px solid transparent;
   border-radius: 50px;
@@ -307,9 +323,10 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  font-family: "Fugaz One", sans-serif;
   font-size: 1.75rem;
-  font-weight: 700;
-  color: #212529;
+  font-weight: 400;
+  color: #333333;
   margin: 0 0 0.5rem;
 }
 
@@ -322,8 +339,8 @@
 // Meals Section
 .mealsSection {
   flex: 1;
-  padding: 3rem 0;
-  background: #f9f9f9;
+  padding: 3rem 0 5rem;
+  background: linear-gradient(to bottom, #f9f9f9, #f0eeee);
 
   .builderMode & {
     padding: 2rem 0;
@@ -377,16 +394,15 @@
 
 .cardImage {
   position: relative;
+  z-index: 11;
   flex-shrink: 0;
   width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 63px;
+  overflow: visible;
 
   img {
     width: 100%;
-    height: 100%;
+    height: 100px;
     object-fit: cover;
     transition: transform 0.3s ease;
   }
@@ -879,6 +895,86 @@
   }
 }
 
+// Meal Card Wrapper (holds card + slide-out panel)
+.mealCardWrapper {
+  position: relative;
+
+  &.expanded {
+    z-index: 12;
+  }
+}
+
+// Expand icon on card
+.expandIcon {
+  color: #adb5bd;
+  transition: transform 0.3s ease;
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
+}
+
+// Slide-out Detail Panel
+.detailPanel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  background: white;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  &.open {
+    max-height: 300px;
+    opacity: 1;
+  }
+}
+
+.detailContent {
+  padding: 1rem 1.25rem;
+}
+
+.detailDescription {
+  font-size: 0.8125rem;
+  color: #495057;
+  line-height: 1.6;
+  margin: 0 0 0.75rem;
+}
+
+.detailRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #6c757d;
+  }
+
+  &.allergenRow {
+    color: #dc3545;
+
+    svg {
+      color: #dc3545;
+    }
+  }
+}
+
+.detailLabel {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 // No Results
 .noResults {
   text-align: center;
@@ -931,8 +1027,9 @@
   margin: 0 auto;
 
   h2 {
+    font-family: "Fugaz One", sans-serif;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 400;
     margin: 0 0 1rem;
   }
 
@@ -1005,6 +1102,19 @@
   .ctaButtons {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .filterRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchBar {
+    width: 100%;
+    margin-left: 0;
+    order: -1;
   }
 }
 

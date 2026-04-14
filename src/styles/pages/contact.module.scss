@@ -1,24 +1,35 @@
-@import '../unified-theme.scss';
+// Contact Page Styles — aligned with meals page design system
 
 .contactPage {
   min-height: 100vh;
   background: var(--background, #f9f9f9);
 }
 
-// Hero Section
+// Hero Section — food image with dark overlay
 .hero {
-  background: linear-gradient(135deg, var(--primary, #C52D2F) 0%, darken(#C52D2F, 10%) 100%);
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url('/images/hero-bg/jollof-chicken.jpg') center/cover no-repeat;
   color: white;
-  padding: 5rem 1.5rem 4rem;
+  padding: 7rem 1.5rem 4rem;
   text-align: center;
 
+  @media (max-width: 768px) {
+    padding: 5rem 1rem 3rem;
+  }
+
   h1 {
+    font-family: "Fugaz One", sans-serif;
     font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
 
     @media (min-width: 768px) {
       font-size: 3rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 2rem;
     }
   }
 
@@ -34,12 +45,17 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
 }
 
 // Main Section
 .mainSection {
   padding: 4rem 1.5rem;
+  background: linear-gradient(to bottom, #f9f9f9, #f0eeee);
 
   @media (min-width: 768px) {
     padding: 5rem 1.5rem;
@@ -69,19 +85,22 @@
   background: white;
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #dee2e6;
   height: 100%;
 
   h2 {
+    font-family: "Fugaz One", sans-serif;
     font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text, #333);
+    font-weight: 400;
+    color: #212529;
     margin-bottom: 0.75rem;
   }
 
   .infoIntro {
-    color: #666;
+    color: #6c757d;
     line-height: 1.6;
+    font-size: 0.9375rem;
     margin-bottom: 2rem;
   }
 }
@@ -99,18 +118,18 @@
   align-items: flex-start;
 
   .iconWrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary, #C52D2F) 0%, var(--accent, #FF6F3C) 100%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(197, 45, 47, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 
     i {
-      color: white;
-      font-size: 1.25rem;
+      color: #C52D2F;
+      font-size: 1.125rem;
     }
   }
 
@@ -118,35 +137,36 @@
     flex: 1;
 
     h3 {
-      font-size: 1rem;
+      font-size: 0.9375rem;
       font-weight: 600;
-      color: var(--text, #333);
+      color: #212529;
       margin-bottom: 0.25rem;
     }
 
     a {
       display: block;
-      color: var(--primary, #C52D2F);
+      color: #C52D2F;
       font-weight: 500;
+      font-size: 0.9375rem;
       text-decoration: none;
       transition: color 0.2s;
 
       &:hover {
-        color: var(--accent, #FF6F3C);
+        color: #a02326;
         text-decoration: underline;
       }
     }
 
     p {
-      color: #666;
+      color: #6c757d;
       font-size: 0.9375rem;
       margin: 0;
     }
 
     span {
       display: block;
-      color: #888;
-      font-size: 0.875rem;
+      color: #adb5bd;
+      font-size: 0.8125rem;
       margin-top: 0.25rem;
     }
   }
@@ -154,41 +174,43 @@
 
 // Social Section
 .socialSection {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #dee2e6;
   padding-top: 1.5rem;
   margin-top: 1rem;
 
   h3 {
-    font-size: 1rem;
+    font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--text, #333);
+    color: #212529;
     margin-bottom: 1rem;
   }
 }
 
 .socialLinks {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 
   a {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: #f5f5f5;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: #6c757d;
     transition: all 0.2s;
 
     &:hover {
-      background: var(--primary, #C52D2F);
+      background: #C52D2F;
+      border-color: #C52D2F;
       color: white;
       transform: translateY(-2px);
     }
 
     i {
-      font-size: 1.25rem;
+      font-size: 1.125rem;
     }
   }
 }
@@ -206,17 +228,20 @@
   background: white;
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #dee2e6;
 
   h2 {
+    font-family: "Fugaz One", sans-serif;
     font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text, #333);
+    font-weight: 400;
+    color: #212529;
     margin-bottom: 0.5rem;
   }
 
   .formIntro {
-    color: #666;
+    color: #6c757d;
+    font-size: 0.9375rem;
     margin-bottom: 1.5rem;
   }
 }

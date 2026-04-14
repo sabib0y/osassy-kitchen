@@ -74,6 +74,9 @@ model MenuItem {
   available         Boolean            @default(true)
   isVegetarian      Boolean            @default(false)
   isSpicy           Boolean            @default(false)
+  region            String?
+  allergens         String[]           @default([])
+  keyIngredients    String[]           @default([])
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   orderItems        OrderItem[]
