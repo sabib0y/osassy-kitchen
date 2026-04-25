@@ -104,7 +104,7 @@ const UnauthorizedPage: NextPage = () => {
                 </li>
                 <li className={styles.suggestionItem}>
                   <i className="fas fa-question-circle" aria-hidden="true"></i>
-                  <Link href="/help">Help Center</Link>
+                  <Link href="/faq">Support</Link>
                 </li>
               </ul>
             </div>

@@ -129,14 +129,6 @@ const SubscriptionListPage: React.FC<SubscriptionListPageProps> = () => {
           {/* Subscription Navigation Tabs */}
           <SubscriptionTabs activeTab="list" />
 
-          {/* Header */}
-          <div className={styles.header}>
-            <div className={styles.headerContent}>
-              <h1>My Subscriptions</h1>
-              <p>Manage your meal delivery subscriptions</p>
-            </div>
-          </div>
-
           {/* Filter Tabs */}
           <div className={styles.filterTabs}>
             <button

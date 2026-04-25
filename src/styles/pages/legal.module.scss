@@ -5,37 +5,48 @@
 
 .legalPage {
   min-height: 100vh;
-  background: $gray-50;
+  background: linear-gradient(to bottom, #f9f9f9, #f0eeee);
 }
 
 // Hero Section
 .heroSection {
   position: relative;
-  background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
-  color: $white;
-  padding: $spacing-16 $spacing-4;
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url('/images/hero-bg/jollof-chicken.jpg') center/cover no-repeat;
+  color: white;
+  padding: 7rem 1.5rem 4rem;
   text-align: center;
 
+  @media (max-width: 768px) {
+    padding: 5rem 1rem 3rem;
+  }
+
   .heroContent {
-    max-width: $container-max-width;
+    max-width: 700px;
     margin: 0 auto;
   }
 
   .heroTitle {
-    font-family: $font-family-heading;
-    font-size: $font-size-4xl;
-    font-weight: $font-weight-bold;
-    margin: 0 0 $spacing-4;
+    font-family: "Fugaz One", sans-serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin: 0 0 0.75rem;
+    line-height: 1.2;
 
-    @include mobile {
-      font-size: $font-size-3xl;
+    @media (min-width: 768px) {
+      font-size: 3rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 2rem;
     }
   }
 
   .heroSubtitle {
-    font-size: $font-size-lg;
+    font-size: 1.125rem;
     opacity: 0.9;
     margin: 0;
+    line-height: 1.6;
   }
 }
 
@@ -72,32 +83,32 @@
     margin-bottom: $spacing-10;
 
     h2 {
-      font-family: $font-family-heading;
-      font-size: $font-size-2xl;
-      font-weight: $font-weight-bold;
-      color: $gray-900;
-      margin: 0 0 $spacing-4;
-      padding-bottom: $spacing-3;
-      border-bottom: 2px solid $primary;
+      font-family: "Fugaz One", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: #212529;
+      margin: 0 0 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #C52D2F;
       display: inline-block;
 
-      @include mobile {
-        font-size: $font-size-xl;
+      @media (max-width: 768px) {
+        font-size: 1.25rem;
       }
     }
 
     h3 {
-      font-size: $font-size-lg;
-      font-weight: $font-weight-semibold;
-      color: $gray-800;
-      margin: $spacing-6 0 $spacing-3;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #212529;
+      margin: 1.5rem 0 0.75rem;
     }
 
     p {
-      font-size: $font-size-base;
-      color: $gray-700;
-      line-height: $line-height-relaxed;
-      margin: 0 0 $spacing-4;
+      font-size: 0.9375rem;
+      color: #6c757d;
+      line-height: 1.7;
+      margin: 0 0 1rem;
     }
 
     ul {

@@ -29,6 +29,12 @@ describe('FAQ Page', () => {
       expect(screen.getByText(/ready to get started/i)).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /get started/i })).toBeInTheDocument();
     });
+
+    it('renders the support handoff section', () => {
+      expect(screen.getByText(/need more support/i)).toBeInTheDocument();
+      const contactLinks = screen.getAllByRole('link', { name: /contact us/i });
+      expect(contactLinks.some((link) => link.getAttribute('href') === '/contact')).toBe(true);
+    });
   });
 
   describe('Category Filtering', () => {

@@ -1,115 +1,229 @@
-@import '../unified-theme.scss';
+// Help Page Styles — aligned with site design system
 
 .helpPage {
   min-height: 100vh;
-  background: $gray-50;
+  background: linear-gradient(to bottom, #f9f9f9, #f0eeee);
+  padding-bottom: 6rem;
 
   .heroSection {
     position: relative;
-    background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
-    color: $white;
-    padding: $spacing-16 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+      url('/images/hero-bg/jollof-chicken.jpg') center/cover no-repeat;
+    color: white;
+    padding: 7rem 1.5rem 4rem;
     text-align: center;
 
-    h1 {
-      font-size: $font-size-4xl;
-      font-weight: $font-weight-bold;
-      margin-bottom: $spacing-4;
-      
-      @include mobile {
-        font-size: $font-size-3xl;
-      }
-    }
-
-    p {
-      font-size: $font-size-lg;
-      opacity: 0.9;
+    @media (max-width: 768px) {
+      padding: 5rem 1rem 3rem;
     }
   }
 
+  .heroContent {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .heroTitle {
+    font-family: "Fugaz One", sans-serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin: 0 0 0.75rem;
+    line-height: 1.2;
+
+    @media (min-width: 768px) {
+      font-size: 3rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 2rem;
+    }
+  }
+
+  .heroSubtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin: 0 0 2rem;
+    line-height: 1.6;
+  }
+
   .searchSection {
-    margin-top: -40px;
-    margin-bottom: $spacing-12;
+    max-width: 500px;
+    margin: 0 auto;
     position: relative;
     z-index: 10;
   }
 
-  .faqSection {
-    padding: $spacing-12 $spacing-4;
-    max-width: 1200px;
-    margin: 0 auto;
+  .heroSearch {
+    input {
+      height: 48px;
+      border-radius: 50px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      font-size: 0.9375rem;
+      padding: 0 1.25rem 0 3rem;
+      backdrop-filter: blur(8px);
 
-    h2 {
-      font-size: $font-size-3xl;
-      font-weight: $font-weight-bold;
-      text-align: center;
-      margin-bottom: $spacing-8;
-      color: $gray-900;
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: white;
+        background: rgba(255, 255, 255, 0.2);
+      }
     }
 
-    .categoryTabs {
-      display: flex;
-      gap: $spacing-2;
-      justify-content: center;
-      margin-bottom: $spacing-8;
-      flex-wrap: wrap;
-
-      button {
-        padding: $spacing-2 $spacing-4;
-        border: 2px solid $gray-200;
-        background: $white;
-        border-radius: $border-radius-lg;
-        font-size: $font-size-base;
-        cursor: pointer;
-        transition: all $transition-base;
-
-        &:hover {
-          border-color: $primary;
-          color: $primary;
-        }
-
-        &.active {
-          background: $primary;
-          border-color: $primary;
-          color: $white;
-        }
-      }
+    svg {
+      color: rgba(255, 255, 255, 0.7);
     }
   }
 
+  // Main Content
+  .mainContent {
+    padding: 0;
+  }
+
+  .contentContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  // FAQ Section
+  .faqSection {
+    padding: 4rem 1.5rem;
+
+    @media (max-width: 768px) {
+      padding: 3rem 1rem;
+    }
+  }
+
+  .sectionHeader {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .sectionTitle {
+    font-family: "Fugaz One", sans-serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: #212529;
+    margin: 0 0 0.5rem;
+
+    @media (min-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  .sectionSubtitle {
+    font-size: 1.05rem;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  // Category Tabs
+  .categoryTabs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .categoryTab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 44px;
+    padding: 0 1.25rem;
+    border: 2px solid transparent;
+    background: #f8f9fa;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #e9ecef;
+    }
+
+    &.active {
+      background: #C52D2F;
+      color: white;
+      border-color: #C52D2F;
+    }
+  }
+
+  .categoryCount {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+
+    .active & {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  // FAQ Content
+  .faqContent {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .searchResults {
+    margin-bottom: 1.5rem;
+  }
+
+  .resultsText {
+    font-size: 0.9375rem;
+    color: #6c757d;
+
+    strong {
+      color: #212529;
+    }
+  }
+
+  // Contact Section
   .contactSection {
-    background: $white;
-    padding: $spacing-16 $spacing-4;
-    border-top: 1px solid $gray-200;
+    padding: 4rem 1.5rem;
+    background: white;
 
-    .contactContainer {
-      max-width: 1200px;
-      margin: 0 auto;
+    @media (max-width: 768px) {
+      padding: 3rem 1rem;
+    }
+  }
 
-      h2 {
-        font-size: $font-size-3xl;
-        font-weight: $font-weight-bold;
-        text-align: center;
-        margin-bottom: $spacing-4;
-        color: $gray-900;
-      }
+  .contactContent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
 
-      .contactSubtitle {
-        text-align: center;
-        color: $gray-600;
-        margin-bottom: $spacing-12;
-        font-size: $font-size-lg;
-      }
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
 
-      .contactContent {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: $spacing-12;
-        
-        @include mobile {
-          grid-template-columns: 1fr;
-        }
-      }
+  .contactInfo {
+    order: 2;
+
+    @media (min-width: 769px) {
+      order: 1;
+    }
+  }
+
+  .contactFormWrapper {
+    order: 1;
+
+    @media (min-width: 769px) {
+      order: 2;
     }
   }
 }

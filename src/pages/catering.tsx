@@ -187,31 +187,6 @@ const CateringPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Menu Highlights Section */}
-        <section className={styles.menuSection}>
-          <div className={styles.container}>
-            <h2>Popular Catering Dishes</h2>
-            <p className={styles.sectionSubtitle}>
-              A taste of what we offer — full menus available on request
-            </p>
-            <div className={styles.menuGrid}>
-              {menuHighlights.map((item) => (
-                <div key={item.id} className={styles.menuCard}>
-                  <h3>{item.name}</h3>
-                  <p className={styles.menuDescription}>{item.description}</p>
-                  <span className={styles.servingSize}>{item.servingSize}</span>
-                </div>
-              ))}
-            </div>
-            <div className={styles.menuCta}>
-              <p>Want to see our full catering menu?</p>
-              <Link href="/contact?subject=Catering%20Inquiry" className={styles.menuButton}>
-                Request Full Menu
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {/* How It Works Section */}
         <section className={styles.processSection}>
           <div className={styles.container}>

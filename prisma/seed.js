@@ -17,6 +17,19 @@ async function main() {
     },
   })
 
+  // Create test user
+  const testPassword = await bcrypt.hash('password123', 10)
+  await prisma.user.upsert({
+    where: { email: 'test@example.com' },
+    update: {},
+    create: {
+      email: 'test@example.com',
+      name: 'Test User',
+      password: testPassword,
+      role: 'USER',
+    },
+  })
+
   // Seed menu items from existing data
   const menuItems = [
     // Rice dishes (none are vegetarian as they come with protein, none are spicy)

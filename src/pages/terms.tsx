@@ -184,8 +184,8 @@ const TermsPage: NextPage = () => {
                       <a href="tel:+441onal234567890">+44 (0) 123 456 7890</a>
                     </p>
                     <p>
-                      <strong>Help Centre:</strong>{' '}
-                      <Link href="/help">Visit our Help Centre</Link>
+                      <strong>Support:</strong>{' '}
+                      <Link href="/faq">Visit our FAQs</Link>
                     </p>
                   </div>
                 </section>
@@ -198,7 +198,7 @@ const TermsPage: NextPage = () => {
                   <div className={styles.links}>
                     <Link href="/privacy">Privacy Policy</Link>
                     <span className={styles.divider}>|</span>
-                    <Link href="/help">Help Centre</Link>
+                    <Link href="/faq">Support</Link>
                   </div>
                 </div>
               </article>

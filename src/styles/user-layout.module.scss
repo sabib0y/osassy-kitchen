@@ -63,9 +63,9 @@ $background-gradient: linear-gradient(135deg, #fff5f5 0%, #fff9f5 100%);
     top: 0;
     left: 0;
     right: 0;
-    height: 300px;
-    background: linear-gradient(135deg, $primary-color 0%, $accent-color 100%);
-    opacity: 0.03;
+    height: 180px;
+    background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+      url('/images/hero-bg/jollof-chicken.jpg') center/cover no-repeat;
     pointer-events: none;
   }
 
@@ -358,9 +358,8 @@ $background-gradient: linear-gradient(135deg, #fff5f5 0%, #fff9f5 100%);
 
   // Support Link
   .sidebarFooter {
-    padding: 0 16px 24px;
+    padding: 10px 16px 24px;
     border-top: 1px solid rgba(193, 45, 47, 0.1);
-    margin-top: auto;
 
     .supportLink {
       display: flex;
@@ -999,7 +998,7 @@ $background-gradient: linear-gradient(135deg, #fff5f5 0%, #fff9f5 100%);
     }
 
     .sidebarFooter {
-      padding: 0 12px 20px;
+      padding: 10px 12px 20px;
     }
   }
 

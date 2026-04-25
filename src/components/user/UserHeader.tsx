@@ -266,12 +266,12 @@ const UserHeader: React.FC<UserHeaderProps> = ({
                   <div className={styles.dropdownDivider}></div>
                   
                   <Link 
-                    href="/support" 
+                    href="/faq" 
                     className={styles.dropdownItem} 
                     onClick={() => setShowDropdown(false)}
                   >
                     <i className="fas fa-question-circle" aria-hidden="true"></i>
-                    <span>Help & Support</span>
+                    <span>Support</span>
                   </Link>
                   
                   <button 

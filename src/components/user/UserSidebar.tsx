@@ -155,12 +155,12 @@ const UserSidebar: React.FC<UserSidebarProps> = ({
           {/* Support Link */}
           <div className={styles.sidebarFooter}>
             <Link
-              href="/help"
+              href="/faq"
               className={styles.supportLink}
               onClick={onClose}
             >
               <i className="fas fa-question-circle" aria-hidden="true"></i>
-              <span>Help & Support</span>
+              <span>Support</span>
             </Link>
           </div>
         </div>

@@ -10,24 +10,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fff5f5 0%, #fff9f5 50%, #fffbf7 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 50%, #2d1f1a 100%);
   position: relative;
   padding: var(--spacing-lg);
-  
-  // Subtle food pattern background
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-      radial-gradient(circle at 25% 25%, rgba(197, 45, 47, 0.02) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, rgba(255, 111, 60, 0.02) 0%, transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(241, 196, 15, 0.01) 0%, transparent 50%);
-    pointer-events: none;
-  }
   
   @include mobile-only {
     padding: var(--spacing-md);
@@ -48,37 +33,18 @@
   text-align: center;
   margin-bottom: var(--spacing-2xl);
   
-  .logo {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto var(--spacing-lg);
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-    border-radius: var(--radius-xl);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow-primary);
-    
-    i {
-      font-size: 32px;
-      color: white;
-    }
+  .logoLink {
+    display: inline-block;
+    margin-bottom: 1rem;
   }
-  
-  .brandName {
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary);
-    margin: 0 0 var(--spacing-sm) 0;
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+
+  .logoImage {
+    height: 70px;
+    width: auto;
   }
   
   .brandTagline {
-    color: var(--text-secondary);
+    color: white;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     margin: 0;
@@ -87,18 +53,9 @@
   
   @include mobile-only {
     margin-bottom: var(--spacing-xl);
-    
-    .logo {
-      width: 70px;
-      height: 70px;
-      
-      i {
-        font-size: 28px;
-      }
-    }
-    
-    .brandName {
-      font-size: var(--font-size-2xl);
+
+    .logoImage {
+      height: 56px;
     }
   }
 }
@@ -115,14 +72,7 @@
   position: relative;
   
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    display: none;
   }
   
   @include mobile-only {
@@ -136,9 +86,10 @@
   margin-bottom: var(--spacing-xl);
   
   h1 {
+    font-family: "Fugaz One", sans-serif;
     font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-primary);
+    font-weight: 400;
+    color: #212529;
     margin: 0 0 var(--spacing-sm) 0;
   }
   

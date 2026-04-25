@@ -331,7 +331,7 @@ describe('UserHeader', () => {
       expect(screen.getByText('My Profile')).toBeInTheDocument()
       expect(screen.getByText('Payment Methods')).toBeInTheDocument()
       expect(screen.getByText('Settings')).toBeInTheDocument()
-      expect(screen.getByText('Help & Support')).toBeInTheDocument()
+      expect(screen.getByText('Support')).toBeInTheDocument()
       expect(screen.getByText('Log Out')).toBeInTheDocument()
     })
 

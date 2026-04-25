@@ -1,6 +1,6 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** April 14, 2026
+**Last Updated:** April 25, 2026
 
 ## Overall Project Status
 **Phase 8: Visual Polish** — Meals page substantially reworked (images, descriptions, slide-out detail panels). Our Process, Catering, and Contact pages restyled to match unified design system.
@@ -8,6 +8,40 @@
 ---
 
 ## 🎨 **PHASE 8: VISUAL POLISH**
+
+### Session: April 25, 2026 — Support Route Cleanup + Notification Direction
+
+#### ✅ **Completed:**
+
+1. **Support route cleanup**
+   - Removed the standalone `/help` page and redirected legacy traffic to `/faq`
+   - Renamed the user dashboard support link label to **Support**
+   - Added a contact handoff section on `/faq` pointing users to `/contact`
+
+2. **Support UI tidy-up**
+   - Adjusted the user sidebar support footer padding and divider styling
+   - Reverted the extra footer margin after review
+
+3. **Notification investigation**
+   - Confirmed the dashboard bell in `UserHeader.tsx` is still driven by mock data
+   - Found the existing WebSocket notification provider is not mounted in `_app.tsx`
+   - Identified a socket auth mismatch: the client expects `session.accessToken`, but the current NextAuth session only exposes `user.id` and `role`
+   - Confirmed the dropdown footer currently points to a non-existent `/user/notifications` route
+
+#### 📝 **Key Files Modified:**
+- `src/components/user/UserSidebar.tsx` — support link target/label update
+- `src/components/user/UserHeader.tsx` — support link target/label update
+- `src/pages/faq.tsx` — added contact handoff section
+- `src/styles/pages/faq.module.scss` — support CTA styling
+- `src/styles/user-layout.module.scss` — support footer spacing tweak
+- `next.config.js` — `/help` redirect to `/faq`
+- `planning/current-context/SITE_MAP.md` — public route map updated to reflect `/contact`
+
+#### 🔜 **Next:**
+- Mount `WebSocketProvider` in `_app.tsx`
+- Fix WebSocket auth so the client can connect with the current NextAuth setup
+- Replace `UserHeader` mock notifications with provider-backed live dropdown state
+- Remove or replace the dead `/user/notifications` footer action and update related tests
 
 ### Session: April 14, 2026 — Meals Page Rework + Cross-Page Design Alignment
 
@@ -1914,4 +1948,3 @@ Successfully completed Wave 2 of Phase 4, implementing API integration, Stripe c
 - **Build Test:** ✅ Successful
 - **Manual Testing:** ✅ All features working
 - **Integration Verified:** ✅ With Wave 1 components
-

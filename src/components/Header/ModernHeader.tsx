@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -20,7 +20,13 @@ const ModernHeader: React.FC = () => {
   const userRole = session?.user?.role;
   const navItems = getNavigationItems(isAuthenticated, userRole);
 
-  // Handle scroll effect
+  // Check scroll position before paint to avoid flash
+  const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+  useIsomorphicLayoutEffect(() => {
+    setIsScrolled(window.scrollY > 20);
+  }, []);
+
+  // Handle scroll events
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);

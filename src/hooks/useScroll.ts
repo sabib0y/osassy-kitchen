@@ -6,8 +6,12 @@ interface UseScrollReturn {
 }
 
 const useScroll = (scrollSize: number = 0): UseScrollReturn => {
-  const [scroll, setScroll] = useState<number>(0);
-  const [scrollTop, setScrollTop] = useState<boolean>(false);
+  const [scroll, setScroll] = useState<number>(() =>
+    typeof window !== 'undefined' ? window.scrollY : 0
+  );
+  const [scrollTop, setScrollTop] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.scrollY > scrollSize : false
+  );
 
   const handleSet = useCallback(() => {
     setScroll(window?.scrollY || 0);

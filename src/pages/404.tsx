@@ -72,7 +72,7 @@ const Custom404Page: NextPage = () => {
               
               <p className={styles.helpText}>
                 Still hungry? Check out our <Link href="/meals">meals</Link> or
-                {' '}<Link href="/help">contact us</Link> for assistance.
+                {' '}<Link href="/contact">contact us</Link> for assistance.
               </p>
             </div>
 
@@ -105,7 +105,7 @@ const Custom404Page: NextPage = () => {
                 </li>
                 <li className={styles.suggestionItem}>
                   <i className="fas fa-phone" aria-hidden="true"></i>
-                  <Link href="/help">Help & Support</Link>
+                  <Link href="/faq">Support</Link>
                 </li>
               </ul>
             </div>

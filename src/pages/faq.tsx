@@ -238,6 +238,21 @@ const FAQPage: React.FC = () => {
           </div>
         </section>
 
+        <section className={styles.supportSection}>
+          <div className={styles.container}>
+            <div className={styles.supportCard}>
+              <h2>Need more support?</h2>
+              <p>
+                If you still need a hand after checking the FAQs, contact our team and
+                we&apos;ll help with your order, subscription, or account.
+              </p>
+              <Link href="/contact" className={styles.supportButton}>
+                Contact Us
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className={styles.ctaSection}>
           <div className={styles.container}>

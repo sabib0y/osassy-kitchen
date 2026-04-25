@@ -524,7 +524,7 @@
     background: transparent;
 
     &.scrolled {
-      background: #1a1a1a;
+      background: #0d0c0c;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 
       // Keep text light on dark scrolled background
@@ -539,7 +539,7 @@
 
         &.active {
           color: #FF6F3C;
-          background: rgba(255, 111, 60, 0.15);
+          background: transparent;
         }
       }
 

@@ -1,4 +1,4 @@
-@import '../../styles/unified-theme.scss';
+// FAQ Accordion — compact, clean layout
 
 .faqAccordion {
   width: 100%;
@@ -6,39 +6,38 @@
   margin: 0 auto;
 
   .faqItem {
-    @include card-base;
-    margin-bottom: $spacing-4;
-    overflow: hidden;
-    transition: all $transition-base;
-    border: 1px solid $gray-200;
-    
-    &.expanded {
-      border-color: lighten($primary, 20%);
-      box-shadow: $shadow-lg;
+    border-bottom: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+
+    &:first-child {
+      border-top: 1px solid #dee2e6;
     }
 
-    &:hover {
-      border-color: lighten($primary, 30%);
+    &.expanded {
+      background: rgba(197, 45, 47, 0.02);
     }
 
     .faqHeader {
-      @include button-base;
       width: 100%;
-      padding: $spacing-5 $spacing-6;
+      padding: 1rem 0;
       background: transparent;
       border: none;
       cursor: pointer;
       text-align: left;
-      transition: all $transition-base;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      font-family: inherit;
 
       &:hover {
-        background: $gray-100;
+        .questionText {
+          color: #C52D2F;
+        }
       }
 
-      &:focus {
-        outline: 2px solid $primary;
+      &:focus-visible {
+        outline: 2px solid #C52D2F;
         outline-offset: 2px;
-        background: $gray-100;
       }
 
       .faqQuestion {
@@ -46,85 +45,77 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
+        gap: 1rem;
 
         .questionContent {
           flex: 1;
           display: flex;
-          flex-direction: column;
-          gap: $spacing-3;
-          align-items: flex-start;
+          align-items: center;
+          gap: 0.75rem;
+          min-width: 0;
 
           .categoryBadge {
             display: inline-flex;
             align-items: center;
-            padding: $spacing-1 $spacing-3;
-            border-radius: $border-radius-full;
-            font-size: $font-size-xs;
-            font-weight: $font-weight-semibold;
+            padding: 0.2rem 0.625rem;
+            border-radius: 50px;
+            font-size: 0.625rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: $letter-spacing-wide;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
 
-            // Category colors
             &.primary {
-              background: lighten($primary, 30%);
-              color: darken($primary, 15%);
+              background: rgba(197, 45, 47, 0.1);
+              color: #C52D2F;
             }
 
             &.accent {
-              background: lighten($accent, 30%);
-              color: darken($accent, 15%);
+              background: rgba(255, 111, 60, 0.1);
+              color: #FF6F3C;
             }
 
             &.secondary {
-              background: lighten($secondary, 30%);
-              color: darken($secondary, 15%);
+              background: rgba(241, 196, 15, 0.15);
+              color: #b8960e;
             }
 
             &.success {
-              background: lighten($success, 40%);
-              color: darken($success, 10%);
+              background: rgba(40, 167, 69, 0.1);
+              color: #28a745;
             }
 
             &.info {
-              background: lighten($info, 40%);
-              color: darken($info, 10%);
+              background: rgba(23, 162, 184, 0.1);
+              color: #17a2b8;
             }
 
             &.default {
-              background: $gray-100;
-              color: $gray-700;
+              background: #f8f9fa;
+              color: #6c757d;
             }
           }
 
           .questionText {
             margin: 0;
-            font-size: $font-size-lg;
-            font-weight: $font-weight-semibold;
-            color: $gray-900;
-            line-height: $line-height-tight;
-
-            @include mobile {
-              font-size: $font-size-base;
-            }
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #212529;
+            line-height: 1.4;
+            transition: color 0.2s ease;
           }
         }
       }
 
       .expandIcon {
-        margin-left: $spacing-4;
-        color: $gray-500;
-        transition: all $transition-base;
-        transform-origin: center;
-        font-size: $font-size-lg;
+        color: #adb5bd;
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
 
         &.rotated {
           transform: rotate(180deg);
-          color: $primary;
-        }
-
-        @include mobile {
-          margin-left: $spacing-2;
-          font-size: $font-size-base;
+          color: #C52D2F;
         }
       }
     }
@@ -132,174 +123,94 @@
     .faqAnswer {
       max-height: 0;
       overflow: hidden;
-      transition: all $transition-base;
+      transition: max-height 0.3s ease, opacity 0.2s ease;
       opacity: 0;
 
       &.expanded {
-        max-height: 1000px;
+        max-height: 500px;
         opacity: 1;
       }
 
       .answerContent {
-        padding: 0 $spacing-6 $spacing-5 $spacing-6;
-        border-top: 1px solid $gray-200;
-        margin-top: $spacing-2;
+        padding: 0 0 1.25rem 0;
+        margin-left: 0;
 
         p {
-          margin: $spacing-4 0 0 0;
-          font-size: $font-size-base;
-          color: $gray-600;
-          line-height: $line-height-relaxed;
-
-          &:first-child {
-            margin-top: 0;
-          }
-
-          @include mobile {
-            font-size: $font-size-sm;
-          }
+          margin: 0;
+          font-size: 0.875rem;
+          color: #6c757d;
+          line-height: 1.7;
         }
       }
     }
 
-    // Enhanced mobile layout
-    @include mobile {
+    @media (max-width: 768px) {
       .faqHeader {
-        padding: $spacing-4 $spacing-5;
+        padding: 0.875rem 0;
 
-        .faqQuestion {
-          .questionContent {
-            gap: $spacing-2;
+        .faqQuestion .questionContent {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.375rem;
 
-            .categoryBadge {
-              align-self: flex-start;
-            }
+          .questionText {
+            font-size: 0.875rem;
           }
-        }
-      }
-
-      .faqAnswer {
-        .answerContent {
-          padding: 0 $spacing-5 $spacing-4 $spacing-5;
         }
       }
     }
   }
 }
 
-// Empty state styles
+// Empty state
 .emptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: $spacing-8;
+  padding: 3rem 1rem;
   text-align: center;
   max-width: 400px;
-  margin: $spacing-8 auto;
+  margin: 2rem auto;
 
   .emptyIcon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: $gray-100;
-    border-radius: $border-radius-full;
-    margin-bottom: $spacing-4;
-    color: $gray-500;
-    font-size: $font-size-2xl;
+    background: #f8f9fa;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    color: #adb5bd;
+    font-size: 1.5rem;
   }
 
   h3 {
-    margin: 0 0 $spacing-2 0;
-    font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
-    color: $gray-900;
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #212529;
   }
 
   p {
     margin: 0;
-    font-size: $font-size-base;
-    color: $gray-500;
-    line-height: $line-height-relaxed;
+    font-size: 0.9375rem;
+    color: #6c757d;
+    line-height: 1.6;
   }
 }
 
-// Animation classes
-.faqItem {
-  animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// Accessibility improvements
+// Reduced motion
 @media (prefers-reduced-motion: reduce) {
-  .faqAccordion {
-    .faqItem {
-      animation: none;
-      
-      .faqHeader {
-        .expandIcon {
-          transition: none;
-        }
-      }
-
-      .faqAnswer {
-        transition: none;
-
-        &.expanded {
-          max-height: none;
-        }
-      }
+  .faqAccordion .faqItem {
+    .faqHeader .expandIcon {
+      transition: none;
     }
-  }
-}
-
-// High contrast mode
-@media (prefers-contrast: high) {
-  .faqAccordion {
-    .faqItem {
-      border-width: 2px;
-
+    .faqAnswer {
+      transition: none;
       &.expanded {
-        border-width: 3px;
-      }
-
-      .faqHeader {
-        &:focus {
-          outline-width: 3px;
-        }
-      }
-
-      .categoryBadge {
-        border: 1px solid currentColor;
-      }
-    }
-  }
-}
-
-// Focus improvements for keyboard navigation
-.faqAccordion {
-  .faqItem {
-    .faqHeader {
-      &:focus-visible {
-        outline: 2px solid $primary;
-        outline-offset: 2px;
-        background: $gray-100;
-      }
-
-      &:active {
-        transform: translateY(1px);
+        max-height: none;
       }
     }
   }

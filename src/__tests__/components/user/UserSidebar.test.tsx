@@ -89,7 +89,7 @@ describe('UserSidebar', () => {
 
       expect(screen.getByText('New Subscription')).toBeInTheDocument()
       expect(screen.getByText('Browse Meals')).toBeInTheDocument()
-      expect(screen.getByText('Help & Support')).toBeInTheDocument()
+      expect(screen.getByText('Support')).toBeInTheDocument()
     })
 
     it('should apply open class when sidebarOpen is true', () => {
@@ -287,7 +287,7 @@ describe('UserSidebar', () => {
     it('should call onClose when support link is clicked', () => {
       render(<UserSidebar sidebarOpen={true} onClose={mockOnClose} />)
 
-      const supportLink = screen.getByText('Help & Support').closest('a')
+      const supportLink = screen.getByText('Support').closest('a')
       fireEvent.click(supportLink as Element)
 
       expect(mockOnClose).toHaveBeenCalledTimes(1)
@@ -325,11 +325,11 @@ describe('UserSidebar', () => {
 
       const newSubscriptionLink = screen.getByText('New Subscription').closest('[data-href]')
       const browseMealsLink = screen.getByText('Browse Meals').closest('[data-href]')
-      const supportLink = screen.getByText('Help & Support').closest('[data-href]')
+      const supportLink = screen.getByText('Support').closest('[data-href]')
 
       expect(newSubscriptionLink).toHaveAttribute('data-href', '/user/subscriptions/create')
       expect(browseMealsLink).toHaveAttribute('data-href', '/meals')
-      expect(supportLink).toHaveAttribute('data-href', '/help')
+      expect(supportLink).toHaveAttribute('data-href', '/faq')
     })
   })
 
@@ -419,7 +419,7 @@ describe('UserSidebar', () => {
       // Test multiple elements
       fireEvent.click(screen.getByText('Overview').closest('a') as Element)
       fireEvent.click(screen.getByText('New Subscription').closest('a') as Element)
-      fireEvent.click(screen.getByText('Help & Support').closest('a') as Element)
+      fireEvent.click(screen.getByText('Support').closest('a') as Element)
 
       expect(mockOnClose).toHaveBeenCalledTimes(3)
     })

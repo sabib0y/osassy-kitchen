@@ -46,10 +46,26 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
-      id: 'contact',
-      name: 'Contact',
-      href: '/contact',
-      type: 'link'
+      id: 'support',
+      name: 'Support',
+      href: '#',
+      type: 'dropdown',
+      children: [
+        {
+          id: 'faq',
+          name: 'FAQs',
+          href: '/faq',
+          type: 'link',
+          icon: 'fa-question-circle'
+        },
+        {
+          id: 'contact',
+          name: 'Contact Us',
+          href: '/contact',
+          type: 'link',
+          icon: 'fa-envelope'
+        }
+      ]
     },
     {
       id: 'auth',
@@ -86,10 +102,26 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
-      id: 'contact',
-      name: 'Contact',
-      href: '/contact',
-      type: 'link'
+      id: 'support',
+      name: 'Support',
+      href: '#',
+      type: 'dropdown',
+      children: [
+        {
+          id: 'faq',
+          name: 'FAQs',
+          href: '/faq',
+          type: 'link',
+          icon: 'fa-question-circle'
+        },
+        {
+          id: 'contact',
+          name: 'Contact Us',
+          href: '/contact',
+          type: 'link',
+          icon: 'fa-envelope'
+        }
+      ]
     },
     {
       id: 'my-account',
@@ -208,10 +240,26 @@ export const navigationConfig: NavigationConfig = {
       type: 'link'
     },
     {
-      id: 'contact',
-      name: 'Contact',
-      href: '/contact',
-      type: 'link'
+      id: 'support',
+      name: 'Support',
+      href: '#',
+      type: 'dropdown',
+      children: [
+        {
+          id: 'faq',
+          name: 'FAQs',
+          href: '/faq',
+          type: 'link',
+          icon: 'fa-question-circle'
+        },
+        {
+          id: 'contact',
+          name: 'Contact Us',
+          href: '/contact',
+          type: 'link',
+          icon: 'fa-envelope'
+        }
+      ]
     },
     {
       id: 'my-account',

@@ -146,8 +146,6 @@
   }
 
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
     border-color: rgba(197, 45, 47, 0.3);
   }
 
@@ -489,7 +487,7 @@
   background: #f9f9f9;
   border-radius: 12px;
   padding: 1.5rem;
-  border-left: 4px solid #C52D2F;
+  border-bottom: 4px solid #C52D2F;
 
   p {
     font-size: 0.9375rem;

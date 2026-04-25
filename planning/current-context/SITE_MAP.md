@@ -24,7 +24,7 @@ Discover → Trust → Choose a Plan → Pick Meals → Checkout → Manage Subs
 | `/forgot-password` | Password Reset | Reset password flow |
 | `/terms` | Terms of Service | Legal terms |
 | `/privacy` | Privacy Policy | Data handling policy |
-| `/help` | Help & Contact | Contact form, support info |
+| `/contact` | Contact | Contact form and support enquiries |
 
 ---
 
@@ -109,7 +109,7 @@ Root (/)
 │   ├── /catering (events & bulk)
 │   ├── /faq
 │   ├── /delivery-areas
-│   ├── /help
+│   ├── /contact
 │   ├── /terms
 │   └── /privacy
 │

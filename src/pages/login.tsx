@@ -81,10 +81,9 @@ const LoginPage: NextPage = () => {
         <div className={styles.loginContainer}>
           {/* Brand Header */}
           <div className={styles.brandHeader}>
-            <div className={styles.logo}>
-              <i className="fas fa-utensils" aria-hidden="true"></i>
-            </div>
-            <h1 className={styles.brandName}>Osassy&apos;s Kitchen</h1>
+            <Link href="/" className={styles.logoLink}>
+              <img src="/images/logo-light.png" alt="Osassy's Kitchen" className={styles.logoImage} />
+            </Link>
             <p className={styles.brandTagline}>Authentic flavours delivered fresh</p>
           </div>
 

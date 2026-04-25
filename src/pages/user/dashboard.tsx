@@ -147,26 +147,6 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
 
       <UserLayout pageTitle="Dashboard Overview" activeTab="overview">
         <div className={styles.dashboardPage}>
-          {/* User Profile Card */}
-          <div className={styles.profileCard}>
-            <div className={styles.profileInfo}>
-              <div className={styles.userAvatar}>
-                <i className="fas fa-user-circle" aria-hidden="true"></i>
-              </div>
-              <div className={styles.userDetails}>
-                <h2>{session?.user?.name || 'Welcome'}</h2>
-                <p>{session?.user?.email}</p>
-                <span className={styles.memberSince}>Member since {new Date().getFullYear()}</span>
-              </div>
-            </div>
-            <div className={styles.quickActions}>
-              <Link href="/user/subscriptions/create" className={styles.createButton}>
-                <i className="fas fa-plus"></i>
-                New Subscription
-              </Link>
-            </div>
-          </div>
-
           {/* Stats Cards */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>

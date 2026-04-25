@@ -250,6 +250,122 @@ See `planning/phase-5-production-launch-plan.md` for detailed checklist:
 
 ---
 
+### Phase 10: Security Hardening 🔜 AFTER LAUNCH
+
+**Goal:** Harden the application against common attack vectors and ensure robust access control.
+
+#### 10.1: Authentication & Session Security
+- [ ] Configure session expiry and refresh strategy (BUG-015)
+- [ ] Implement rate limiting on login/signup/forgot-password endpoints
+- [ ] Add CSRF protection to all form submissions
+- [ ] Enforce password strength requirements (min length, complexity)
+- [ ] Add account lockout after repeated failed login attempts
+- [ ] Audit NextAuth configuration (JWT expiry, secure cookies, callback URLs)
+
+#### 10.2: API Security
+- [ ] Validate and sanitise all API inputs (Zod schemas on every endpoint)
+- [ ] Fix HTML injection vulnerability in email templates (BUG-007)
+- [ ] Add request size limits to API routes
+- [ ] Implement API rate limiting (per-user and per-IP)
+- [ ] Audit all admin endpoints for proper role-based access control
+- [ ] Review Stripe webhook signature verification
+
+#### 10.3: Infrastructure Security
+- [ ] Set security headers (CSP, X-Frame-Options, X-Content-Type-Options, HSTS)
+- [ ] Configure CORS policies
+- [ ] Audit environment variable handling (no client-side exposure)
+- [ ] Enable Vercel DDoS protection
+- [ ] Review Cloudinary upload permissions (signed uploads only)
+- [ ] Dependency audit (`npm audit`, check for known vulnerabilities)
+
+#### 10.4: Data Protection
+- [ ] Encrypt sensitive data at rest (addresses, phone numbers)
+- [ ] Implement data retention policies (auto-delete old sessions, logs)
+- [ ] Add audit logging for admin actions (who changed what, when)
+- [ ] GDPR data export endpoint (user can download their data)
+- [ ] GDPR data deletion endpoint (right to be forgotten)
+
+---
+
+### Phase 11: Performance Optimisation 🔜 AFTER SECURITY
+
+**Goal:** Ensure fast load times, smooth interactions, and efficient resource usage.
+
+#### 11.1: Core Web Vitals
+- [ ] Measure baseline LCP, FID, CLS scores
+- [ ] Optimise Largest Contentful Paint (hero images, above-fold content)
+- [ ] Reduce Cumulative Layout Shift (font loading, image dimensions)
+- [ ] Improve First Input Delay (code splitting, defer non-critical JS)
+
+#### 11.2: Image Optimisation
+- [ ] Migrate meal images to Next.js `<Image>` component (automatic WebP, lazy loading)
+- [ ] Configure Cloudinary transformations for responsive image sizes
+- [ ] Add blur placeholders for meal card images
+- [ ] Compress hero background images
+
+#### 11.3: Bundle & Loading
+- [ ] Audit bundle size (`@next/bundle-analyzer`)
+- [ ] Code split heavy pages (admin dashboard, subscription wizard)
+- [ ] Lazy load below-fold components (footer, CTA sections)
+- [ ] Preload critical fonts (Fugaz One, Inter)
+- [ ] Review and remove unused dependencies
+
+#### 11.4: Database & API
+- [ ] Add database indexes on frequently queried fields (userId, status, email)
+- [ ] Implement API response caching where appropriate (menu items, plans)
+- [ ] Optimise Prisma queries (select only needed fields, avoid N+1)
+- [ ] Review `getStaticProps` revalidation intervals
+- [ ] Add connection pooling for database (PgBouncer or Prisma Data Proxy)
+
+#### 11.5: Caching Strategy
+- [ ] Configure CDN caching for static assets
+- [ ] Implement SWR/React Query for client-side data caching
+- [ ] Cache Stripe product/price data
+- [ ] Add service worker for offline menu browsing (PWA consideration)
+
+---
+
+### Phase 12: Analytics & Monitoring 🔜 ALONGSIDE LAUNCH
+
+**Goal:** Understand user behaviour, track business metrics, and catch issues before users report them.
+
+#### 12.1: Web Analytics
+- [ ] Integrate analytics platform (Plausible, PostHog, or Vercel Analytics)
+- [ ] Track key page views (homepage, meals, meal plans, checkout)
+- [ ] Set up conversion funnel tracking (visit → plan selection → checkout → payment)
+- [ ] Track subscription lifecycle events (create, pause, resume, cancel)
+- [ ] Monitor catering enquiry submissions
+
+#### 12.2: Business Metrics Dashboard
+- [ ] Weekly active subscribers count
+- [ ] Subscription churn rate
+- [ ] Average revenue per user (ARPU)
+- [ ] Most popular meal selections
+- [ ] Delivery area heatmap
+- [ ] Catering enquiry conversion rate
+
+#### 12.3: Error Monitoring
+- [ ] Integrate error tracking (Sentry or Vercel Error Tracking)
+- [ ] Configure source maps for production error traces
+- [ ] Set up alerts for critical errors (payment failures, auth errors)
+- [ ] Monitor API response times and error rates
+- [ ] Track client-side JavaScript errors
+
+#### 12.4: Uptime & Infrastructure Monitoring
+- [ ] Set up uptime monitoring (Vercel checks, or external like BetterUptime)
+- [ ] Monitor database connection health
+- [ ] Track Stripe webhook delivery success rate
+- [ ] Set up alerts for deployment failures
+- [ ] Monitor Cloudinary usage and quotas
+
+#### 12.5: User Feedback
+- [ ] Add in-app feedback mechanism (post-delivery rating)
+- [ ] Track NPS score periodically
+- [ ] Monitor contact form submission volume and categories
+- [ ] Set up review/testimonial collection flow
+
+---
+
 ## 7. Deferred Features
 
 Features planned but not yet implemented:
