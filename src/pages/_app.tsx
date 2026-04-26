@@ -7,6 +7,7 @@ import { useState } from 'react';
 import type { AppProps } from 'next/app';
 import type { Session } from 'next-auth';
 import ContextProvider from "../context/ContextProvider";
+import { WebSocketProvider, NotificationToast } from "@/components/providers/WebSocketProvider";
 import "../assets/vendors/animate.css";
 import "../assets/vendors/font-awesome.min.css";
 import "../assets/vendors/lums-icon/style.css";
@@ -42,12 +43,15 @@ const MyApp = ({ Component, pageProps: { session, ...pageProps } }: AppProps<{ s
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <Elements stripe={stripePromise}>
-          <ContextProvider>
-            <Component {...pageProps} />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </ContextProvider>
-        </Elements>
+        <WebSocketProvider>
+          <Elements stripe={stripePromise}>
+            <ContextProvider>
+              <Component {...pageProps} />
+              <NotificationToast />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </ContextProvider>
+          </Elements>
+        </WebSocketProvider>
       </SessionProvider>
     </QueryClientProvider>
   );

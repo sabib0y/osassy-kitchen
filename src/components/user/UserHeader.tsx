@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useWebSocketContext } from '@/components/providers/WebSocketProvider';
 import styles from '../../styles/user-layout.module.scss';
 
 interface UserHeaderProps {
@@ -15,40 +16,13 @@ const UserHeader: React.FC<UserHeaderProps> = ({
 }) => {
   const { data: session } = useSession();
   const router = useRouter();
+  const { recentNotifications, clearNotifications, connected } = useWebSocketContext();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  // Mock notification data - replace with real data
-  const notifications = [
-    {
-      id: 1,
-      title: 'Order Delivered',
-      message: 'Your recent order has been delivered successfully',
-      time: '2 hours ago',
-      type: 'success',
-      read: false,
-    },
-    {
-      id: 2,
-      title: 'Subscription Renewal',
-      message: 'Your weekly subscription will renew tomorrow',
-      time: '1 day ago',
-      type: 'info',
-      read: false,
-    },
-    {
-      id: 3,
-      title: 'Payment Processed',
-      message: 'Your payment of £15.00 was processed successfully',
-      time: '3 days ago',
-      type: 'success',
-      read: true,
-    },
-  ];
-
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = recentNotifications.length;
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -84,14 +58,28 @@ const UserHeader: React.FC<UserHeaderProps> = ({
     await signOut({ callbackUrl: '/' });
   };
 
-  const handleNotificationClick = (notificationId: number) => {
-    // Mark notification as read and handle click
-    console.log('Notification clicked:', notificationId);
-    // You can add navigation logic here
+  const handleNotificationClick = (actionUrl?: string) => {
+    if (actionUrl) {
+      router.push(actionUrl);
+      setShowNotifications(false);
+    }
   };
 
-  const formatTime = (timeStr: string): string => {
-    return timeStr;
+  const formatTime = (timestamp: string): string => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSecs = Math.floor(diffMs / 1000);
+
+    if (diffSecs < 60) return 'Just now';
+
+    const rtf = new Intl.RelativeTimeFormat('en-GB', { numeric: 'auto' });
+    const diffMins = Math.floor(diffSecs / 60);
+    if (diffMins < 60) return rtf.format(-diffMins, 'minute');
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return rtf.format(-diffHours, 'hour');
+    const diffDays = Math.floor(diffHours / 24);
+    return rtf.format(-diffDays, 'day');
   };
 
   return (
@@ -166,17 +154,18 @@ const UserHeader: React.FC<UserHeaderProps> = ({
                 </div>
                 
                 <div className={styles.notificationList}>
-                  {notifications.length > 0 ? (
-                    notifications.map((notification) => (
-                      <div 
+                  {recentNotifications.length > 0 ? (
+                    recentNotifications.map((notification) => (
+                      <div
                         key={notification.id}
-                        className={`${styles.notificationItem} ${!notification.read ? styles.unread : ''}`}
-                        onClick={() => handleNotificationClick(notification.id)}
+                        className={`${styles.notificationItem} ${styles.unread}`}
+                        onClick={() => handleNotificationClick(notification.actionUrl)}
                       >
                         <div className={`${styles.notificationIcon} ${styles[notification.type]}`}>
                           <i className={
                             notification.type === 'success' ? 'fas fa-check-circle' :
                             notification.type === 'info' ? 'fas fa-info-circle' :
+                            notification.type === 'warning' ? 'fas fa-exclamation-triangle' :
                             'fas fa-exclamation-circle'
                           } aria-hidden="true"></i>
                         </div>
@@ -184,7 +173,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({
                           <h4>{notification.title}</h4>
                           <p>{notification.message}</p>
                           <span className={styles.notificationTime}>
-                            {formatTime(notification.time)}
+                            {formatTime(notification.timestamp)}
                           </span>
                         </div>
                       </div>
@@ -192,16 +181,21 @@ const UserHeader: React.FC<UserHeaderProps> = ({
                   ) : (
                     <div className={styles.noNotifications}>
                       <i className="fas fa-bell-slash" aria-hidden="true"></i>
-                      <p>No notifications</p>
+                      <p>No new notifications</p>
                     </div>
                   )}
                 </div>
-                
-                <div className={styles.notificationFooter}>
-                  <Link href="/user/notifications" className={styles.notificationLink}>
-                    View all notifications
-                  </Link>
-                </div>
+
+                {recentNotifications.length > 0 && (
+                  <div className={styles.notificationFooter}>
+                    <button
+                      className={styles.notificationLink}
+                      onClick={() => { clearNotifications(); setShowNotifications(false); }}
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

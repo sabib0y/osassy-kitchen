@@ -694,15 +694,19 @@ $background-gradient: linear-gradient(135deg, #fff5f5 0%, #fff9f5 100%);
       }
 
       .notificationFooter {
-        padding: 16px 24px;
+        padding: 12px 24px;
         border-top: 1px solid #F0F0F0;
         text-align: center;
 
-        a {
+        a, button {
+          background: none;
+          border: none;
           color: $accent-color;
           text-decoration: none;
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 600;
+          cursor: pointer;
+          padding: 0;
           transition: color 0.2s ease;
 
           &:hover {

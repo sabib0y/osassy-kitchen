@@ -3,11 +3,53 @@
 **Last Updated:** April 25, 2026
 
 ## Overall Project Status
-**Phase 8: Visual Polish** — Meals page substantially reworked (images, descriptions, slide-out detail panels). Our Process, Catering, and Contact pages restyled to match unified design system.
+**Phase 8: Visual Polish** — Meals page substantially reworked (images, descriptions, slide-out detail panels). Our Process, Catering, and Contact pages restyled to match unified design system. Live WebSocket notifications wired into the user dashboard.
 
 ---
 
 ## 🎨 **PHASE 8: VISUAL POLISH**
+
+### Session: April 25, 2026 — Live WebSocket Notifications Integration
+
+#### ✅ **Completed:**
+
+1. **WebSocket auth token plumbing**
+   - Extended NextAuth session type to include `accessToken`
+   - Session callback now encodes and exposes a signed JWT via `next-auth/jwt` `encode()`
+   - Removed unsafe `(session as any)` casts in `useWebSocket` hook and `WebSocketProvider`
+
+2. **Mounted WebSocketProvider in `_app.tsx`**
+   - Wrapped the app component tree with `WebSocketProvider` inside `SessionProvider`
+   - Added `NotificationToast` component for real-time toast notifications
+
+3. **Replaced UserHeader mock notifications with live provider state**
+   - Removed hardcoded mock notification array
+   - Wired `useWebSocketContext()` to pull `recentNotifications` from the WebSocket provider
+   - Added relative time formatting for notification timestamps
+   - Notification clicks now navigate to `actionUrl` when present
+
+4. **Removed dead `/user/notifications` route**
+   - Replaced "View all notifications" link (pointing to non-existent route) with a "Clear all" button
+   - Footer only shows when there are active notifications
+
+5. **Added `useOptionalWebSocketContext` safe hook**
+   - Returns `null` outside provider instead of throwing — useful for SSR or unauthenticated pages
+
+#### 📝 **Key Files Modified:**
+- `src/types/next-auth.d.ts` — added `accessToken` to Session type
+- `src/pages/api/auth/[...nextauth].ts` — encode JWT into session
+- `src/hooks/useWebSocket.ts` — use typed `session.accessToken` and `session.user.role`
+- `src/pages/_app.tsx` — mount WebSocketProvider + NotificationToast
+- `src/components/providers/WebSocketProvider.tsx` — remove unsafe casts, add safe hook
+- `src/components/user/UserHeader.tsx` — live notifications from provider
+
+#### 🔜 **Next:**
+- Test WebSocket connection end-to-end with the dev server running
+- Trigger a server-side notification to verify the full pipeline (server → client → dropdown)
+- Consider persisting notification read state (currently all are treated as unread)
+- Add notification count to the user sidebar if desired
+
+---
 
 ### Session: April 25, 2026 — Support Route Cleanup + Notification Direction
 

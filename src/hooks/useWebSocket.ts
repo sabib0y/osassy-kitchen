@@ -62,9 +62,7 @@ class WebSocketClient implements IWebSocketClient {
         auth: {
           token: this.config.auth?.token
         },
-        reconnection: this.config.reconnect,
-        reconnectionAttempts: this.config.reconnectAttempts,
-        reconnectionDelay: this.config.reconnectInterval,
+        reconnection: false,
         timeout: 20000
       });
 
@@ -478,6 +476,10 @@ class WebSocketClient implements IWebSocketClient {
 export function useWebSocket(config?: Partial<WSConfig>) {
   const { data: session } = useSession();
   const clientRef = useRef<WebSocketClient | null>(null);
+  const configRef = useRef(config);
+  useEffect(() => {
+    configRef.current = config;
+  }, [config]);
   const [state, setState] = useState<WSState>({
     connected: false,
     connecting: false,
@@ -505,12 +507,12 @@ export function useWebSocket(config?: Partial<WSConfig>) {
     const wsConfig: WSConfig = {
       url: process.env.NEXT_PUBLIC_WEBSOCKET_URL || window.location.origin,
       auth: {
-        token: (session as any)?.accessToken || '',
+        token: session.accessToken || '',
         userId: session.user.id,
-        role: (session.user as any).role
+        role: session.user.role
       },
       debug: process.env.NODE_ENV === 'development',
-      ...config
+      ...configRef.current
     };
 
     const client = new WebSocketClient(wsConfig);
@@ -533,37 +535,35 @@ export function useWebSocket(config?: Partial<WSConfig>) {
       }
     };
 
-    // Listen to client state changes
+    // Listen to client state changes via socket events (no polling needed)
     if (clientRef.current) {
-      // Set up event listeners for state changes
       clientRef.current.on('connect', updateState);
       clientRef.current.on('disconnect', updateState);
       clientRef.current.on('connect_error', updateState);
       clientRef.current.on('error', updateState);
+      clientRef.current.on('message', updateState);
     }
 
-    const stateInterval = setInterval(() => {
-      updateState();
-    }, 100); // More frequent updates for tests
-
     return () => {
-      clearInterval(stateInterval);
       if (clientRef.current) {
         clientRef.current.off('connect', updateState);
         clientRef.current.off('disconnect', updateState);
         clientRef.current.off('connect_error', updateState);
         clientRef.current.off('error', updateState);
+        clientRef.current.off('message', updateState);
       }
     };
-  }, [session, config]);
+  }, [session]);
 
   // Initialize on mount and session change
   useEffect(() => {
+    let cleanup: (() => void) | undefined;
     if (session?.user) {
-      initialize();
+      initialize().then(c => { cleanup = c; });
     }
 
     return () => {
+      cleanup?.();
       if (clientRef.current) {
         clientRef.current.disconnect();
         clientRef.current = null;

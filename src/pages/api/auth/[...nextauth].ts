@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
+import { encode } from "next-auth/jwt"
 import bcrypt from "bcryptjs"
 import prisma from "@/lib/prisma"
 
@@ -125,6 +126,12 @@ export const authOptions: NextAuthOptions = {
         token.picture = user.image
         token.role = (user as any).role || "USER"
         console.log("[NextAuth] JWT updated for user:", user.email)
+
+        // Encode the token once at sign-in for WebSocket authentication
+        token.accessToken = await encode({
+          token,
+          secret: process.env.NEXTAUTH_SECRET!,
+        })
       }
 
       return token
@@ -137,6 +144,8 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name as string | null
         session.user.email = token.email as string
       }
+      // Copy the pre-encoded token for WebSocket authentication
+      session.accessToken = token.accessToken as string
       return session
     },
   },

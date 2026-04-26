@@ -88,8 +88,7 @@ export function WebSocketProvider({
       joinRoom(`user:${session.user.id}`);
       
       // Join role-based room
-      const userRole = (session.user as any).role;
-      if (userRole === 'ADMIN') {
+      if (session.user.role === 'ADMIN') {
         joinRoom('admin:all');
       }
       
@@ -229,6 +228,11 @@ export function useWebSocketContext() {
   return context;
 }
 
+// Safe hook that returns null when outside provider (useful during SSR or unauthenticated pages)
+export function useOptionalWebSocketContext() {
+  return useContext(WebSocketContext);
+}
+
 // Connection Status Indicator Component (for development)
 function ConnectionStatusIndicator({
   connected,
@@ -298,7 +302,9 @@ function ConnectionStatusIndicator({
 
 // Notification Toast Component
 export function NotificationToast() {
-  const { recentNotifications, clearNotifications } = useWebSocketContext();
+  const context = useOptionalWebSocketContext();
+  if (!context) return null;
+  const { recentNotifications, clearNotifications } = context;
   const [visibleNotifications, setVisibleNotifications] = useState<NotificationPayload[]>([]);
 
   useEffect(() => {

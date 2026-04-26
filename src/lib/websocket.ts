@@ -1,11 +1,11 @@
 // WebSocket Server Utilities
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
-import jwt from 'jsonwebtoken';
-import { 
-  WSMessage, 
-  EventType, 
-  EventCategory, 
+import { decode } from 'next-auth/jwt';
+import {
+  WSMessage,
+  EventType,
+  EventCategory,
   RoomType,
   WSServerClient,
   BroadcastOptions,
@@ -15,6 +15,12 @@ import {
   WSMetrics,
   Room
 } from '@/types/websocket';
+
+interface AuthenticatedSocket extends Socket {
+  userId: string;
+  userRole: string;
+  authenticated: boolean;
+}
 
 // WebSocket Server Manager
 export class WebSocketServer {
@@ -92,12 +98,20 @@ export class WebSocketServer {
     }
 
     try {
-      const decoded = jwt.verify(token.replace('Bearer ', ''), this.config.jwtSecret) as any;
-      
+      const decoded = await decode({
+        token: token.replace('Bearer ', ''),
+        secret: this.config.jwtSecret,
+      });
+
+      if (!decoded) {
+        throw this.createError(WSErrorType.AUTH_FAILED, 'Invalid token');
+      }
+
       // Attach user data to socket
-      (socket as any).userId = decoded.id || decoded.sub;
-      (socket as any).userRole = decoded.role;
-      (socket as any).authenticated = true;
+      const authSocket = socket as AuthenticatedSocket;
+      authSocket.userId = (decoded.id as string) || (decoded.sub as string) || '';
+      authSocket.userRole = (decoded.role as string) || 'USER';
+      authSocket.authenticated = true;
     } catch (error) {
       throw this.createError(WSErrorType.AUTH_FAILED, 'Invalid token');
     }
@@ -105,8 +119,8 @@ export class WebSocketServer {
 
   // Handle new socket connection
   private handleConnection(socket: Socket): void {
-    const userId = (socket as any).userId;
-    const userRole = (socket as any).userRole;
+    const userId = (socket as AuthenticatedSocket).userId;
+    const userRole = (socket as AuthenticatedSocket).userRole;
 
     // Create client record
     const client: WSServerClient = {
