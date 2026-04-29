@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { createMockSession } from '../../test-utils'
 
 import UserHeader from '@/components/user/UserHeader'
+import { NotificationPayload } from '@/types/websocket'
 
 // Mock next-auth
 jest.mock('next-auth/react')
@@ -39,11 +40,51 @@ jest.mock('next/link', () => {
   }
 })
 
+// Mock WebSocket context
+const mockClearNotifications = jest.fn()
+const mockWebSocketContext = {
+  connected: true,
+  connecting: false,
+  reconnecting: false,
+  error: null,
+  send: jest.fn(),
+  subscribe: jest.fn(() => jest.fn()),
+  unsubscribe: jest.fn(),
+  joinRoom: jest.fn(),
+  leaveRoom: jest.fn(),
+  reconnect: jest.fn(),
+  onOrderUpdate: jest.fn(() => jest.fn()),
+  onSubscriptionUpdate: jest.fn(() => jest.fn()),
+  onNotification: jest.fn(() => jest.fn()),
+  onDashboardUpdate: jest.fn(() => jest.fn()),
+  onSystemMessage: jest.fn(() => jest.fn()),
+  recentNotifications: [] as NotificationPayload[],
+  clearNotifications: mockClearNotifications,
+}
+
+jest.mock('@/components/providers/WebSocketProvider', () => ({
+  useWebSocketContext: () => mockWebSocketContext,
+}))
+
+// Helper to create mock notifications
+const createNotification = (overrides: Partial<NotificationPayload> = {}): NotificationPayload => ({
+  id: `notif-${Math.random().toString(36).slice(2)}`,
+  title: 'Test Notification',
+  message: 'Test message',
+  type: 'info',
+  timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+  ...overrides,
+})
+
 describe('UserHeader', () => {
   const mockOnMenuClick = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
+
+    // Reset notification state
+    mockWebSocketContext.recentNotifications = []
+    mockWebSocketContext.connected = true
 
     mockUseSession.mockReturnValue({
       data: createMockSession({
@@ -112,11 +153,8 @@ describe('UserHeader', () => {
 
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      // Should find h1 with "My Subscriptions"
       expect(screen.getByRole('heading', { name: 'My Subscriptions' })).toBeInTheDocument()
-      // Should find breadcrumb link to Dashboard
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
-      // Should have "My Subscriptions" in both h1 and breadcrumb
       expect(screen.getAllByText('My Subscriptions')).toHaveLength(2)
     })
 
@@ -210,7 +248,7 @@ describe('UserHeader', () => {
     })
   })
 
-  describe('Notifications', () => {
+  describe('Notifications (live WebSocket)', () => {
     it('should display notification button', () => {
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
@@ -218,14 +256,43 @@ describe('UserHeader', () => {
       expect(notificationButton).toBeInTheDocument()
     })
 
-    it('should show unread count badge', () => {
+    it('should not show badge when there are no notifications', () => {
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      const badge = screen.getByText('2') // Based on mock data
+      const badge = document.querySelector('.notificationBadge')
+      expect(badge).not.toBeInTheDocument()
+    })
+
+    it('should show unread count badge from WebSocket context', () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'Order Delivered', type: 'success' }),
+        createNotification({ id: 'n2', title: 'Subscription Renewal', type: 'info' }),
+      ]
+
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const badge = document.querySelector('.notificationBadge')
       expect(badge).toBeInTheDocument()
+      expect(badge).toHaveTextContent('2')
+    })
+
+    it('should cap badge display at 9+', () => {
+      mockWebSocketContext.recentNotifications = Array.from({ length: 10 }, (_, i) =>
+        createNotification({ id: `n${i}` })
+      )
+
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const badge = document.querySelector('.notificationBadge')
+      expect(badge).toHaveTextContent('9+')
     })
 
     it('should open notifications dropdown when button is clicked', async () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'Order Delivered', type: 'success' }),
+        createNotification({ id: 'n2', title: 'Subscription Renewal', type: 'info' }),
+      ]
+
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
@@ -236,11 +303,41 @@ describe('UserHeader', () => {
       expect(screen.getByText('Subscription Renewal')).toBeInTheDocument()
     })
 
-    it('should close notifications dropdown when clicked outside', async () => {
+    it('should show empty state when no notifications', async () => {
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      // Open dropdown
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      await user.click(notificationButton)
+
+      expect(screen.getByText('No new notifications')).toBeInTheDocument()
+    })
+
+    it('should show notification header with unread count', async () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1' }),
+        createNotification({ id: 'n2' }),
+        createNotification({ id: 'n3' }),
+      ]
+
+      const user = userEvent.setup()
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      await user.click(notificationButton)
+
+      expect(screen.getByText('Notifications')).toBeInTheDocument()
+      expect(screen.getByText('3 unread')).toBeInTheDocument()
+    })
+
+    it('should close notifications dropdown when clicked outside', async () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'Order Delivered' }),
+      ]
+
+      const user = userEvent.setup()
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
       const notificationButton = screen.getByRole('button', { name: /notifications/i })
       await user.click(notificationButton)
 
@@ -254,26 +351,70 @@ describe('UserHeader', () => {
       })
     })
 
-    it('should handle notification item click', async () => {
+    it('should navigate to actionUrl when notification is clicked', async () => {
+      const mockPush = jest.fn()
+      mockUseRouter.mockReturnValue({
+        pathname: '/user/dashboard',
+        query: {},
+        asPath: '/user/dashboard',
+        route: '/user/dashboard',
+        push: mockPush,
+      } as any)
+
+      mockWebSocketContext.recentNotifications = [
+        createNotification({
+          id: 'n1',
+          title: 'Order Shipped',
+          actionUrl: '/user/orders/456',
+        }),
+      ]
+
       const user = userEvent.setup()
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation()
-      
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      // Open dropdown
       const notificationButton = screen.getByRole('button', { name: /notifications/i })
       await user.click(notificationButton)
 
-      // Click on notification
-      const notification = screen.getByText('Order Delivered').closest('.notificationItem')
+      const notification = screen.getByText('Order Shipped').closest('[class*="notificationItem"]')
       await user.click(notification as Element)
 
-      expect(consoleSpy).toHaveBeenCalledWith('Notification clicked:', 1)
-      
-      consoleSpy.mockRestore()
+      expect(mockPush).toHaveBeenCalledWith('/user/orders/456')
     })
 
-    it('should display correct notification types and icons', async () => {
+    it('should not navigate when notification has no actionUrl', async () => {
+      const mockPush = jest.fn()
+      mockUseRouter.mockReturnValue({
+        pathname: '/user/dashboard',
+        query: {},
+        asPath: '/user/dashboard',
+        route: '/user/dashboard',
+        push: mockPush,
+      } as any)
+
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'General Info' }),
+      ]
+
+      const user = userEvent.setup()
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      await user.click(notificationButton)
+
+      const notification = screen.getByText('General Info').closest('[class*="notificationItem"]')
+      await user.click(notification as Element)
+
+      expect(mockPush).not.toHaveBeenCalled()
+    })
+
+    it('should display correct notification type icons', async () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'Success', type: 'success' }),
+        createNotification({ id: 'n2', title: 'Info', type: 'info' }),
+        createNotification({ id: 'n3', title: 'Warning', type: 'warning' }),
+        createNotification({ id: 'n4', title: 'Error', type: 'error' }),
+      ]
+
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
@@ -282,17 +423,67 @@ describe('UserHeader', () => {
 
       expect(document.querySelector('.fa-check-circle')).toBeInTheDocument()
       expect(document.querySelector('.fa-info-circle')).toBeInTheDocument()
+      expect(document.querySelector('.fa-exclamation-triangle')).toBeInTheDocument()
+      expect(document.querySelector('.fa-exclamation-circle')).toBeInTheDocument()
     })
 
-    it('should show unread notifications correctly', async () => {
+    it('should show Clear all button when there are notifications', async () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1' }),
+      ]
+
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
       const notificationButton = screen.getByRole('button', { name: /notifications/i })
       await user.click(notificationButton)
 
-      const unreadNotifications = document.querySelectorAll('.unread')
-      expect(unreadNotifications.length).toBeGreaterThan(0)
+      expect(screen.getByText('Clear all')).toBeInTheDocument()
+    })
+
+    it('should not show Clear all button when there are no notifications', async () => {
+      const user = userEvent.setup()
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      await user.click(notificationButton)
+
+      expect(screen.queryByText('Clear all')).not.toBeInTheDocument()
+    })
+
+    it('should call clearNotifications and close dropdown when Clear all is clicked', async () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'Test' }),
+      ]
+
+      const user = userEvent.setup()
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      await user.click(notificationButton)
+
+      const clearButton = screen.getByText('Clear all')
+      await user.click(clearButton)
+
+      expect(mockClearNotifications).toHaveBeenCalledTimes(1)
+    })
+
+    it('should apply hasNotifications class when unread count > 0', () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1' }),
+      ]
+
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      expect(notificationButton).toHaveClass('hasNotifications')
+    })
+
+    it('should not apply hasNotifications class when there are no notifications', () => {
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      expect(notificationButton).not.toHaveClass('hasNotifications')
     })
   })
 
@@ -350,13 +541,11 @@ describe('UserHeader', () => {
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      // Open dropdown
       const profileButton = screen.getByRole('button', { name: /user menu/i })
       await user.click(profileButton)
 
       expect(screen.getByText('My Profile')).toBeInTheDocument()
 
-      // Click outside
       await user.click(document.body)
 
       await waitFor(() => {
@@ -368,11 +557,9 @@ describe('UserHeader', () => {
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      // Open dropdown
       const profileButton = screen.getByRole('button', { name: /user menu/i })
       await user.click(profileButton)
 
-      // Click on profile link
       const profileLink = screen.getByText('My Profile').closest('a')
       await user.click(profileLink as Element)
 
@@ -398,11 +585,9 @@ describe('UserHeader', () => {
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
-      // Open dropdown
       const profileButton = screen.getByRole('button', { name: /user menu/i })
       await user.click(profileButton)
 
-      // Click logout
       const logoutButton = screen.getByText('Log Out')
       await user.click(logoutButton)
 
@@ -451,10 +636,22 @@ describe('UserHeader', () => {
       })
     })
 
-    it('should have proper notification button aria-label', () => {
+    it('should have proper notification button aria-label with unread count', () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1' }),
+        createNotification({ id: 'n2' }),
+      ]
+
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
       const notificationButton = screen.getByRole('button', { name: /notifications \(2 unread\)/i })
+      expect(notificationButton).toBeInTheDocument()
+    })
+
+    it('should have notification button without unread count when empty', () => {
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /^notifications\s*$/i })
       expect(notificationButton).toBeInTheDocument()
     })
   })
@@ -466,33 +663,24 @@ describe('UserHeader', () => {
 
       const profileButton = screen.getByRole('button', { name: /user menu/i })
       const chevron = profileButton.querySelector('.fa-chevron-down')
-      
+
       expect(chevron).not.toHaveClass('rotated')
 
       await user.click(profileButton)
       expect(chevron).toHaveClass('rotated')
     })
-
-    it('should show notification badge when there are unread notifications', () => {
-      render(<UserHeader onMenuClick={mockOnMenuClick} />)
-
-      const notificationButton = screen.getByRole('button', { name: /notifications/i })
-      expect(notificationButton).toHaveClass('hasNotifications')
-    })
-
-    it('should handle high unread count correctly', () => {
-      // This would need to be tested by modifying the mock data or making it configurable
-      render(<UserHeader onMenuClick={mockOnMenuClick} />)
-
-      const badge = document.querySelector('.notificationBadge')
-      expect(badge).toBeInTheDocument()
-      // With current mock data (2 unread), should show "2"
-      expect(badge).toHaveTextContent('2')
-    })
   })
 
   describe('Time formatting', () => {
-    it('should format notification times correctly', async () => {
+    it('should format notification times as relative time', async () => {
+      const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'Recent', timestamp: twoHoursAgo }),
+        createNotification({ id: 'n2', title: 'Older', timestamp: oneDayAgo }),
+      ]
+
       const user = userEvent.setup()
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
@@ -500,8 +688,23 @@ describe('UserHeader', () => {
       await user.click(notificationButton)
 
       expect(screen.getByText('2 hours ago')).toBeInTheDocument()
-      expect(screen.getByText('1 day ago')).toBeInTheDocument()
-      expect(screen.getByText('3 days ago')).toBeInTheDocument()
+      // "yesterday" or "1 day ago" depending on Intl.RelativeTimeFormat
+      const timeElements = document.querySelectorAll('[class*="notificationTime"]')
+      expect(timeElements.length).toBe(2)
+    })
+
+    it('should show "Just now" for very recent notifications', async () => {
+      mockWebSocketContext.recentNotifications = [
+        createNotification({ id: 'n1', title: 'Just happened', timestamp: new Date().toISOString() }),
+      ]
+
+      const user = userEvent.setup()
+      render(<UserHeader onMenuClick={mockOnMenuClick} />)
+
+      const notificationButton = screen.getByRole('button', { name: /notifications/i })
+      await user.click(notificationButton)
+
+      expect(screen.getByText('Just now')).toBeInTheDocument()
     })
   })
 
@@ -533,7 +736,6 @@ describe('UserHeader', () => {
       render(<UserHeader onMenuClick={mockOnMenuClick} />)
 
       expect(screen.getByText('Jane')).toBeInTheDocument()
-      // Email should not appear if undefined
     })
   })
 })

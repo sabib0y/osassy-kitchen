@@ -59,7 +59,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({
   };
 
   const handleNotificationClick = (actionUrl?: string) => {
-    if (actionUrl) {
+    if (actionUrl && (actionUrl.startsWith('/') || actionUrl.startsWith('https://'))) {
       router.push(actionUrl);
       setShowNotifications(false);
     }

@@ -1,5 +1,5 @@
 // WebSocket Provider Component
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, useCallback, ReactNode } from 'react';
 import { useSession } from 'next-auth/react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import {
@@ -303,28 +303,43 @@ function ConnectionStatusIndicator({
 // Notification Toast Component
 export function NotificationToast() {
   const context = useOptionalWebSocketContext();
+
   if (!context) return null;
-  const { recentNotifications, clearNotifications } = context;
+
+  return <NotificationToastInner context={context} />;
+}
+
+function NotificationToastInner({ context }: { context: WebSocketContextType }) {
+  const { recentNotifications } = context;
   const [visibleNotifications, setVisibleNotifications] = useState<NotificationPayload[]>([]);
+  const visibleIdsRef = useRef<Set<string>>(new Set());
+  const timersRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
-    // Show new notifications
+    // Show new notifications (use ref to avoid stale closure)
     const newNotifications = recentNotifications.filter(
-      n => !visibleNotifications.find(v => v.id === n.id)
+      n => !visibleIdsRef.current.has(n.id)
     );
-    
+
     if (newNotifications.length > 0) {
+      newNotifications.forEach(n => visibleIdsRef.current.add(n.id));
       setVisibleNotifications(prev => [...newNotifications, ...prev].slice(0, 3));
-      
+
       // Auto-hide after 5 seconds
-      const timers = newNotifications.map(n => 
+      const newTimers = newNotifications.map(n =>
         setTimeout(() => {
+          visibleIdsRef.current.delete(n.id);
           setVisibleNotifications(prev => prev.filter(v => v.id !== n.id));
         }, 5000)
       );
-      
-      return () => timers.forEach(clearTimeout);
+      timersRef.current.push(...newTimers);
     }
+
+    // Always clean up all timers on unmount
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
   }, [recentNotifications]);
 
   const getNotificationStyle = (type: NotificationPayload['type']) => {
@@ -369,7 +384,7 @@ export function NotificationToast() {
           <div style={{ fontSize: 14 }}>
             {notification.message}
           </div>
-          {notification.actionUrl && (
+          {notification.actionUrl && (notification.actionUrl.startsWith('/') || notification.actionUrl.startsWith('https://')) && (
             <a
               href={notification.actionUrl}
               style={{

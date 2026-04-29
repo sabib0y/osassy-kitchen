@@ -505,20 +505,18 @@ describe('useWebSocket', () => {
     it('should use custom configuration', async () => {
       const config = {
         reconnect: false,
-        reconnectAttempts: 3,
-        reconnectInterval: 5000,
         debug: true
       };
 
       renderHook(() => useWebSocket(config));
 
       await waitFor(() => {
+        // The hook always passes reconnection: false to socket.io
+        // (reconnection is handled manually by WebSocketClient)
         expect(io).toHaveBeenCalledWith(
           expect.any(String),
           expect.objectContaining({
-            reconnection: false,
-            reconnectionAttempts: 3,
-            reconnectionDelay: 5000
+            reconnection: false
           })
         );
       });

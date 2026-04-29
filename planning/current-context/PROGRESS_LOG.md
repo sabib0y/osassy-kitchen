@@ -1,13 +1,52 @@
 # Project Progress Log - Osassy's Kitchen
 
-**Last Updated:** April 26, 2026
+**Last Updated:** April 28, 2026
 
 ## Overall Project Status
-**Phase 8: Visual Polish** — Meals page substantially reworked (images, descriptions, slide-out detail panels). Our Process, Catering, and Contact pages restyled to match unified design system. Live WebSocket notifications wired into the user dashboard.
+**Phase 8: Visual Polish** — Meals page substantially reworked (images, descriptions, slide-out detail panels). Our Process, Catering, and Contact pages restyled to match unified design system. Live WebSocket notifications wired into the user dashboard and verified end-to-end.
 
 ---
 
 ## 🎨 **PHASE 8: VISUAL POLISH**
+
+### Session: April 28, 2026 — WebSocket Notification Tests & E2E Verification
+
+#### ✅ **Completed:**
+
+1. **New WebSocketProvider test suite (35 tests)**
+   - Context creation, connection state exposure, error propagation
+   - Auto-join rooms (user, admin, global) based on session
+   - Notification tracking: add, prepend, cap at max, clear
+   - All 5 typed subscription helpers (order, subscription, notification, dashboard, system)
+   - `useWebSocketContext` throws outside provider, `useOptionalWebSocketContext` returns null safely
+   - ConnectionStatusIndicator debug states
+   - NotificationToast rendering, action links, 3-toast limit, auto-hide after 5s
+
+2. **Rewrote UserHeader tests for live WebSocket context (47 tests)**
+   - Replaced old hardcoded mock notification data with `useWebSocketContext` mock
+   - Added tests for: badge count, 9+ cap, dropdown with live data, Clear all calls `clearNotifications`, navigation on `actionUrl` click, type-specific icons, empty state, "Just now" timestamp formatting
+
+3. **Fixed stale useWebSocket configuration test**
+   - Test expected `reconnection`/`reconnectionAttempts`/`reconnectionDelay` to be passed to `io()`, but the hook always passes `reconnection: false` (reconnection is managed manually by `WebSocketClient`)
+
+4. **End-to-end WebSocket verification via dev server**
+   - Logged in as test user, confirmed Socket.IO server initialises (1 active connection, 0 errors)
+   - Triggered test notification via `/api/test-notification`
+   - Verified toast appeared with title, message, and action link
+   - Verified bell badge showed "1 unread"
+   - Verified dropdown displayed notification with relative time and Clear all button
+
+#### 📝 **Key Files:**
+- `src/__tests__/components/providers/WebSocketProvider.test.tsx` (new — 35 tests)
+- `src/__tests__/components/user/UserHeader.test.tsx` (rewritten — 47 tests)
+- `src/__tests__/hooks/useWebSocket.test.tsx` (1 test fixed — 18 tests)
+
+#### 🔜 **Next:**
+- Consider persisting notification read state (currently all treated as unread)
+- Add notification count to user sidebar if desired
+- Full test suite run to check for regressions elsewhere
+
+---
 
 ### Session: April 26, 2026 — Live WebSocket Notifications Integration
 
