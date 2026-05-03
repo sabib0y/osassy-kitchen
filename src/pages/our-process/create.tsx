@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
@@ -912,7 +912,7 @@ const MealPlanCreatePage: React.FC<MealPlanCreateProps> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   try {
     const menuItems = await prisma.menuItem.findMany({
       where: { available: true },
@@ -928,7 +928,7 @@ export const getStaticProps: GetStaticProps = async () => {
         categories,
         popularIds
       },
-      revalidate: 3600
+      revalidate: false
     };
   } catch (error) {
     console.error('Error fetching menu items:', error);
