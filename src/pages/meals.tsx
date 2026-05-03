@@ -685,8 +685,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         menuItems: JSON.parse(JSON.stringify(menuItems)),
         categories,
         popularIds
-      },
-      revalidate: false
+      }
     };
   } catch (error) {
     console.error('Error fetching menu items:', error);
