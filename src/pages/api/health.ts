@@ -3,11 +3,16 @@ import prisma from '@/lib/prisma';
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const count = await prisma.menuItem.count();
+    const menuItems = await prisma.menuItem.findMany({
+      where: { available: true },
+      orderBy: [{ category: 'asc' }, { name: 'asc' }],
+    });
+    const categories = Array.from(new Set(menuItems.map((item: any) => item.category))).sort();
     const dbUrl = process.env.DATABASE_URL?.replace(/:[^@]+@/, ':***@') || 'not set';
     return res.status(200).json({
       status: 'ok',
-      database: { connected: true, menuItems: count, url: dbUrl },
+      database: { connected: true, menuItems: menuItems.length, categories, url: dbUrl },
+      sample: menuItems[0] ? { id: menuItems[0].id, name: menuItems[0].name, available: menuItems[0].available } : null,
     });
   } catch (error) {
     const dbUrl = process.env.DATABASE_URL?.replace(/:[^@]+@/, ':***@') || 'not set';
